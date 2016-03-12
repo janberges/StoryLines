@@ -1,0 +1,9 @@
+.*
+!.gitignore
+
+*.aux
+*.log
+*.pdf
+*.sl
+*.synctex.gz
+*.pyc
