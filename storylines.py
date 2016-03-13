@@ -58,6 +58,9 @@ class Plot():
 
         self.lines.append(locals())
 
+    def clear(self):
+        self.lines = []
+
     def save(self, filename):
         # determine extent of the plotting area:
 
