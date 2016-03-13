@@ -18,6 +18,20 @@ def multiples(lower, upper, divisor=1):
     for n in range(int(ceil(lower / divisor)), int(floor(upper / divisor)) + 1):
         yield divisor * n
 
+def relevant(r, divisor=1e-3):
+    yield r[0]
+
+    for i in range(1, len(r) - 1):
+        prediction = r[i][1] \
+            + (r[i][1] - r[i - 1][1]) \
+            / (r[i][0] - r[i - 1][0]) \
+            * (r[i + 1][0] - r[i][0])
+
+        if xround(prediction, divisor) != xround(r[i + 1][1], divisor):
+            yield r[i]
+
+    yield r[-1]
+
 pt = 2.54 / 72 # cm
 
 class Plot():
@@ -157,7 +171,7 @@ class Plot():
 
                     file.write('\n\t\t   ')
                     file.write('\n\t\t-- '.join('(%.3f, %.3f)'
-                        % point for point in points))
+                        % point for point in relevant(points)))
 
                     file.write(';')
 
