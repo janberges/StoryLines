@@ -39,7 +39,7 @@ class Plot():
         self.zspacing = 1.0
 
         self.lower = 'blue'
-        self.upper = 'orange'
+        self.upper = 'red'
 
         self.legend = None
         self.corner = 0
@@ -53,7 +53,9 @@ class Plot():
 
         self.lines = []
 
-    def line(self, x=[], y=[], z=None, label=None, color='red', style='solid'):
+    def line(self, x=[], y=[], z=None, label=None,
+            color='black', style='solid'):
+
         self.lines.append(locals())
 
     def save(self, filename):
