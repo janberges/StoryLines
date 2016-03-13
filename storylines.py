@@ -21,9 +21,9 @@ def multiples(lower, upper, divisor=1):
 pt = 2.54 / 72 # cm
 
 class Plot():
-    def __init__(self):
-        self.width = 10.0
-        self.height = 6.0
+    def __init__(self, width=10.0, height=6.0, **more):
+        self.width = width
+        self.height = height
 
         self.left = 1.0
         self.right = 1.0
@@ -52,6 +52,9 @@ class Plot():
         self.outline = False
 
         self.lines = []
+
+        for name, value in more.items():
+            setattr(self, name, value)
 
     def line(self, x=[], y=[], z=None, label=None,
             color='black', style='solid'):
