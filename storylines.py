@@ -30,13 +30,11 @@ class Plot():
         self.bottom = 1.0
         self.top = 0.5
 
-        self.xlabel = None
-        self.ylabel = None
-        self.zlabel = None
-
-        self.xspacing = 1.0
-        self.yspacing = 1.0
-        self.zspacing = 1.0
+        for x in 'x', 'y', 'z':
+            setattr(self, x + 'label', None)
+            setattr(self, x + 'spacing', 1.0)
+            setattr(self, x + 'min', None)
+            setattr(self, x + 'max', None)
 
         self.lower = 'blue'
         self.upper = 'red'
@@ -77,8 +75,14 @@ class Plot():
         upper = {}
 
         for x in 'x', 'y':
-            lower[x] = min(min(line[x]) for line in self.lines if len(line[x]))
-            upper[x] = max(max(line[x]) for line in self.lines if len(line[x]))
+            xmin = getattr(self, x + 'min')
+            xmax = getattr(self, x + 'max')
+
+            lower[x] = xmin if xmin is not None \
+                else min(min(line[x]) for line in self.lines if len(line[x]))
+
+            upper[x] = xmax if xmax is not None \
+                else max(max(line[x]) for line in self.lines if len(line[x]))
 
         z = [line['z'] for line in self.lines if line['z'] is not None]
 
@@ -87,8 +91,8 @@ class Plot():
         if colorbar:
             extent['z'] = extent['y']
 
-            lower['z'] = min(z)
-            upper['z'] = max(z)
+            lower['z'] = self.zmin if self.zmin is not None else min(z)
+            upper['z'] = self.zmax if self.zmax is not None else max(z)
 
         # determine scale and tick positions
 
