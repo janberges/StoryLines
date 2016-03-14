@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from math import ceil, floor, log10
+from math import asin, atan2, ceil, floor, log10, pi, sqrt
 
 def order_of_magnitude(x):
     return int(floor(log10(abs(x)))) if x else 0
@@ -18,19 +18,50 @@ def multiples(lower, upper, divisor=1):
     for n in range(int(ceil(lower / divisor)), int(floor(upper / divisor)) + 1):
         yield divisor * n
 
-def relevant(r, divisor=1e-3):
-    yield r[0]
+def relevant(points, error=1e-3):
+    i = 0
 
-    for i in range(1, len(r) - 1):
-        prediction = r[i][1] \
-            + (r[i][1] - r[i - 1][1]) \
-            / (r[i][0] - r[i - 1][0]) \
-            * (r[i + 1][0] - r[i][0])
+    def included(angle):
+        return upper is None \
+            or lower is None \
+            or (angle - lower) % (2 * pi) \
+            <= (upper - lower) % (2 * pi)
 
-        if xround(prediction, divisor) != xround(r[i + 1][1], divisor):
-            yield r[i]
+    while True:
+        origin = points[i]
+        yield origin
 
-    yield r[-1]
+        former = 0.0
+
+        upper = None
+        lower = None
+
+        while True:
+            x = points[i + 1][0] - origin[0]
+            y = points[i + 1][1] - origin[1]
+
+            r = sqrt(x ** 2 + y ** 2)
+            phi = atan2(y, x)
+
+            if r < former or not included(phi):
+                break
+
+            i += 1
+
+            if i == len(points) - 1:
+                yield points[i]
+                return
+
+            former = r
+
+            if r > error:
+                delta = asin(error / r)
+
+                if included(phi + delta):
+                    upper = phi + delta
+
+                if included(phi - delta):
+                    lower = phi - delta
 
 pt = 2.54 / 72 # cm
 
