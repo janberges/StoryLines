@@ -288,4 +288,4 @@ class Plot():
 
             # close TikZ environment
 
-            file.write('\n\\end{tikzpicture}\n')
+            file.write('\n\\end{tikzpicture}%\n')
