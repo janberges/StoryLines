@@ -63,6 +63,19 @@ def relevant(points, error=1e-3):
                 if included(phi - delta):
                     lower = phi - delta
 
+def groups(iterable, size=3):
+    group = []
+
+    for item in iterable:
+        group.append(item)
+
+        if len(group) == size:
+            yield group
+            group = []
+
+    if group:
+        yield group
+
 pt = 2.54 / 72 # cm
 
 class Plot():
@@ -182,6 +195,10 @@ class Plot():
 
             # plot lines
 
+            form = '(%%%d.3f, %%%d.3f)' % (
+                5 if extent['x'] < 10 else 6,
+                5 if extent['y'] < 10 else 6)
+
             for line in self.lines:
                 if line['z'] is not None:
                     ratio = (line['z'] - lower['z']) / (upper['z'] - lower['z'])
@@ -201,8 +218,9 @@ class Plot():
                         for n in line[x]] for x in 'x', 'y'])
 
                     file.write('\n\t\t   ')
-                    file.write('\n\t\t-- '.join('(%.3f, %.3f)'
-                        % point for point in relevant(points)))
+                    file.write('\n\t\t-- '.join(' -- '.join(form % point
+                        for point in group)
+                        for group in groups(relevant(points))))
 
                     file.write(';')
 
