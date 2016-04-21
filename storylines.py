@@ -63,7 +63,7 @@ def relevant(points, error=1e-3):
                 if included(phi - delta):
                     lower = phi - delta
 
-def groups(iterable, size=3):
+def groups(iterable, size=4):
     group = []
 
     for item in iterable:
@@ -102,6 +102,7 @@ class Plot():
         self.margin = 0.2
         self.length = 0.4
 
+        self.marks = 0.05
         self.tick = 0.07
         self.tip = 0.1
 
@@ -183,7 +184,8 @@ class Plot():
         with open(filename, 'w') as file:
             # open TikZ environment
 
-            file.write('\\begin{tikzpicture}[line cap=round]')
+            file.write('\\begin{tikzpicture}'
+                '[line cap=round, mark size=%.3gcm]' % self.marks)
 
             # set bounding box
 
@@ -212,17 +214,16 @@ class Plot():
                     labels.append([options, line['label']])
 
                 if len(line['x']) and len(line['y']):
-                    file.write('\n\t\\draw [%s]' % options)
+                    file.write('\n\t\\draw [%s] plot coordinates {' % options)
 
                     points = zip(*[[scale[x] * (n - lower[x])
                         for n in line[x]] for x in 'x', 'y'])
 
-                    file.write('\n\t\t   ')
-                    file.write('\n\t\t-- '.join(' -- '.join(form % point
-                        for point in group)
-                        for group in groups(relevant(points))))
+                    for group in groups(relevant(points)):
+                        file.write('\n\t\t')
+                        file.write(' '.join(form % point for point in group))
 
-                    file.write(';')
+                    file.write(' };')
 
             # paint colorbar
 
@@ -295,11 +296,16 @@ class Plot():
                     file.write('\n\t\t%s \\\\' % self.legend)
 
                 file.write('\n\t\t\\begin{tikzpicture}'
-                    '[x=%.3gcm, y=\\baselineskip]' % self.length)
+                    '[x=%.3gcm, y=\\baselineskip, mark indices={2}]'
+                    % (0.5 * self.length))
 
-                for n, (options, label) in enumerate(reversed(labels)):
-                    file.write('\n\t\t\t\\draw [%s] (0, %d) -- +(1, 0) '
-                        'node [right, black] {%s};' % (options, n, label))
+                for line, (options, label) in enumerate(reversed(labels)):
+                    file.write('\n\t\t\t\\node [right] at (2, %d) {%s};'
+                        % (line, label))
+
+                    file.write('\n\t\t\t\\draw [%s]' % options)
+                    file.write('\n\t\t\t\tplot coordinates '
+                        '{ (0, %(n)d) (1, %(n)d) (2, %(n)d) };' % dict(n=line))
 
                 file.write('\n\t\t\\end{tikzpicture}')
                 file.write('\n\t\t};')
