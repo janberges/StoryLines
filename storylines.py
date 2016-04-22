@@ -113,9 +113,7 @@ class Plot():
         for name, value in more.items():
             setattr(self, name, value)
 
-    def line(self, x=[], y=[], z=None, label=None, omit=True,
-            color='black', style='solid'):
-
+    def line(self, x=[], y=[], z=None, label=None, omit=True, **options):
         self.lines.append(locals())
 
     def clear(self):
@@ -205,10 +203,13 @@ class Plot():
                 if line['z'] is not None:
                     ratio = (line['z'] - lower['z']) / (upper['z'] - lower['z'])
 
-                    line['color'] = '%s!%.1f!%s' \
+                    line['options']['color'] = '%s!%.1f!%s' \
                         % (self.upper, 100 * ratio, self.lower)
 
-                options = '%(color)s, %(style)s' % line
+                options = ', '.join(key.replace('_', ' ')
+                    + ('' if value is True else '=%s' % value)
+                    for key, value in line['options'].items()
+                    if value is not False)
 
                 if line['label'] is not None:
                     labels.append([options, line['label']])
