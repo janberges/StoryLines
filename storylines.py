@@ -113,7 +113,7 @@ class Plot():
         for name, value in more.items():
             setattr(self, name, value)
 
-    def line(self, x=[], y=[], z=None, label=None,
+    def line(self, x=[], y=[], z=None, label=None, omit=True,
             color='black', style='solid'):
 
         self.lines.append(locals())
@@ -219,7 +219,10 @@ class Plot():
                     points = zip(*[[scale[x] * (n - lower[x])
                         for n in line[x]] for x in 'x', 'y'])
 
-                    for group in groups(relevant(points)):
+                    if line['omit']:
+                        points = relevant(points)
+
+                    for group in groups(points):
                         file.write('\n\t\t')
                         file.write(' '.join(form % point for point in group))
 
