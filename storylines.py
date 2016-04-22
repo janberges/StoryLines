@@ -269,19 +269,22 @@ class Plot():
             # label coordinate axes
 
             if self.xlabel:
-                file.write('\n\t\\node '
-                    '[below=\\baselineskip] at (%.3f, %.3f) {%s};'
-                    % (extent['x'] / 2, -self.tick, self.xlabel))
+                file.write('\n\t\\node [below=\\baselineskip] at '
+                    '(%.3f, %.3f)' % (extent['x'] / 2, -self.tick))
+
+                file.write('\n\t\t{%s};' % self.xlabel)
 
             if self.ylabel:
-                file.write('\n\t\\node '
-                    '[rotate=90, above=\\baselineskip] at (%.3f, %.3f) {%s};'
-                    % (-self.tick, extent['y'] / 2, self.ylabel))
+                file.write('\n\t\\node [rotate=90, above=\\baselineskip] at '
+                    '(%.3f, %.3f)' % (-self.tick, extent['y'] / 2))
+
+                file.write('\n\t\t{%s};' % self.ylabel)
 
             if self.zlabel and colorbar:
-                file.write('\n\t\\node '
-                    '[rotate=90, below=\\baselineskip] at (%.3f, %.3f) {%s};'
-                    % (extent['x'] + self.tip, extent['y'] / 2, self.zlabel))
+                file.write('\n\t\\node [rotate=90, below=\\baselineskip] at '
+                    '(%.3f, %.3f)' % (extent['x'] + self.tip, extent['y'] / 2))
+
+                file.write('\n\t\t{%s};' % self.zlabel)
 
             # add legend
 
