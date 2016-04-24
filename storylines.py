@@ -76,6 +76,12 @@ def groups(iterable, size=4):
     if group:
         yield group
 
+def csv(options):
+    return ', '.join(key.replace('_', ' ')
+        + ('' if value is True else '=%s' % value)
+        for key, value in options.items()
+        if value is not False)
+
 pt = 2.54 / 72 # cm
 
 class Plot():
@@ -102,7 +108,6 @@ class Plot():
         self.margin = 0.2
         self.length = 0.4
 
-        self.marks = 0.05
         self.tick = 0.07
         self.tip = 0.1
 
@@ -110,8 +115,13 @@ class Plot():
 
         self.lines = []
 
+        self.options = dict(line_cap='round', mark_size='0.05cm')
+
         for name, value in more.items():
-            setattr(self, name, value)
+            if hasattr(self, name):
+                setattr(self, name, value)
+            else:
+                self.options[name] = value
 
     def line(self, x=[], y=[], z=None, label=None, omit=True, **options):
         self.lines.append(locals())
@@ -182,8 +192,7 @@ class Plot():
         with open(filename, 'w') as file:
             # open TikZ environment
 
-            file.write('\\begin{tikzpicture}'
-                '[line cap=round, mark size=%.3gcm]' % self.marks)
+            file.write('\\begin{tikzpicture}[%s]' % csv(self.options))
 
             # set bounding box
 
@@ -206,10 +215,7 @@ class Plot():
                     line['options']['color'] = '%s!%.1f!%s' \
                         % (self.upper, 100 * ratio, self.lower)
 
-                options = ', '.join(key.replace('_', ' ')
-                    + ('' if value is True else '=%s' % value)
-                    for key, value in line['options'].items()
-                    if value is not False)
+                options = csv(line['options'])
 
                 if line['label'] is not None:
                     labels.append([options, line['label']])
