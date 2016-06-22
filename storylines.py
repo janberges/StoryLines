@@ -97,6 +97,7 @@ class Plot():
         for x in 'x', 'y', 'z':
             setattr(self, x + 'label', None)
             setattr(self, x + 'spacing', 1.0)
+            setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
             setattr(self, x + 'max', None)
 
@@ -182,7 +183,8 @@ class Plot():
             # choose ticks with a spacing close to the given one
 
             ticks[x] = [(scale[x] * (n - lower[x]), n)
-                for n in multiples(lower[x], upper[x], xround_mantissa(
+                for n in multiples(lower[x], upper[x],
+                    getattr(self, x + 'step') or xround_mantissa(
                     getattr(self, x + 'spacing') / scale[x]))]
 
         # build LaTeX file
