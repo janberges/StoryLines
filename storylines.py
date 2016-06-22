@@ -130,7 +130,7 @@ class Plot():
     def clear(self):
         self.lines = []
 
-    def save(self, filename):
+    def save(self, filename, external=False):
         # determine extent of the plotting area:
 
         extent = {}
@@ -192,6 +192,12 @@ class Plot():
         labels = []
 
         with open(filename, 'w') as file:
+            # set filename for externalization
+
+            if external:
+                file.write('\\tikzsetnextfilename{%s}\n%%\n'
+                    % filename.rsplit('.', 1)[0])
+
             # open TikZ environment
 
             file.write('\\begin{tikzpicture}[%s]' % csv(self.options))

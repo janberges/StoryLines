@@ -14,4 +14,4 @@ plot.xlabel = '$t / \mathrm s$'
 plot.ylabel = '$\sin(\omega t)$'
 plot.zlabel = '$\omega / \mathrm{s^{-1}}$'
 
-plot.save('example.sl')
+plot.save('plot.tex', external=True)

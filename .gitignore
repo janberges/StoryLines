@@ -1,9 +1,14 @@
 .*
 !.gitignore
 
+*.tex
+!example.tex
+
 *.aux
+*.auxlock
+*.dpth
 *.log
+*.md5
 *.pdf
-*.sl
-*.synctex.gz
 *.pyc
+*.synctex.gz
