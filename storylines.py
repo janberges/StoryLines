@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import division
 from math import asin, atan2, ceil, floor, log10, pi, sqrt
 
 def order_of_magnitude(x):
