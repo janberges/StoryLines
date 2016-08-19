@@ -20,6 +20,11 @@ def multiples(lower, upper, divisor=1):
         yield divisor * n
 
 def relevant(points, error=1e-3):
+    if len(points) < 3:
+        for point in points:
+            yield point
+        return
+
     i = 0
 
     def included(angle):
