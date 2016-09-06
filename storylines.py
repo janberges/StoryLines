@@ -102,6 +102,7 @@ class Plot():
 
         for x in 'x', 'y', 'z':
             setattr(self, x + 'label', None)
+            setattr(self, x + 'ticks', None)
             setattr(self, x + 'spacing', 1.0)
             setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
@@ -186,12 +187,17 @@ class Plot():
 
             scale[x] = extent[x] / (upper[x] - lower[x])
 
-            # choose ticks with a spacing close to the given one
+            # use ticks or choose ticks with a spacing close to the given one
 
-            ticks[x] = [(scale[x] * (n - lower[x]), n)
-                for n in multiples(lower[x], upper[x],
-                    getattr(self, x + 'step') or xround_mantissa(
-                    getattr(self, x + 'spacing') / scale[x]))]
+            if getattr(self, x + 'ticks') is not None:
+                ticks[x] = [(scale[x] * (n - lower[x]), label) for n, label in
+                    [tick if hasattr(tick, '__len__') else (tick, '$%g$' % tick)
+                        for tick in getattr(self, x + 'ticks')]]
+            else:
+                ticks[x] = [(scale[x] * (n - lower[x]), '$%g$' % n)
+                    for n in multiples(lower[x], upper[x],
+                        getattr(self, x + 'step') or xround_mantissa(
+                        getattr(self, x + 'spacing') / scale[x]))]
 
         # build LaTeX file
 
@@ -264,18 +270,18 @@ class Plot():
 
             for x, label in ticks['x']:
                 file.write('\n\t\t(%.3f, 0) -- +(0, %.3f) '
-                    'node [below] {$%g$}' % (x, -self.tick, label))
+                    'node [below] {%s}' % (x, -self.tick, label))
 
             for y, label in ticks['y']:
                 file.write('\n\t\t(0, %.3f) -- +(%.3f, 0) '
-                    'node [rotate=90, above] {$%g$}' % (y, -self.tick, label))
+                    'node [rotate=90, above] {%s}' % (y, -self.tick, label))
 
             file.write(';')
 
             if colorbar:
                 for z, label in ticks['z']:
                     file.write('\n\t\\node '
-                        '[rotate=90, below] at (%.3f, %.3f) {$%g$};'
+                        '[rotate=90, below] at (%.3f, %.3f) {%s};'
                         % (extent['x'] + self.tip, z, label))
 
             # draw coordinate axes
