@@ -131,7 +131,9 @@ class Plot():
             else:
                 self.options[name] = value
 
-    def line(self, x=[], y=[], z=None, label=None, omit=True, **options):
+    def line(self, x=[], y=[], z=None, label=None, omit=True, yref=None,
+        **options):
+
         self.lines.append(locals())
 
     def clear(self):
@@ -242,6 +244,13 @@ class Plot():
 
                 if len(line['x']) and len(line['y']):
                     file.write('\n\t\\draw [%s] plot coordinates {' % options)
+
+                    if line['yref'] is not None:
+                        for x in 'x', 'y':
+                            line[x] = list(line[x])
+
+                        line['x'] =  line['x'][:1] + line['x'] +  line['x'][-1:]
+                        line['y'] = [line['yref']] + line['y'] + [line['yref']]
 
                     points = zip(*[[scale[x] * (n - lower[x])
                         for n in line[x]] for x in 'x', 'y'])
