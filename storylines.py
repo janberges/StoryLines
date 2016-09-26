@@ -123,7 +123,10 @@ class Plot():
 
         self.lines = []
 
-        self.options = dict(line_cap='round', mark_size='0.05cm')
+        self.options = dict(
+            line_cap='round',
+            line_join='round',
+            mark_size='0.05cm')
 
         for name, value in more.items():
             if hasattr(self, name):
