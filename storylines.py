@@ -213,7 +213,7 @@ class Plot():
 
             if external:
                 file.write('\\tikzsetnextfilename{%s}\n%%\n'
-                    % filename.rsplit('.', 1)[0])
+                    % filename.rsplit('.', 1)[0].rsplit('/', 1)[-1])
 
             # open TikZ environment
 
