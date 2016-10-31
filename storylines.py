@@ -331,7 +331,7 @@ class Plot():
 
             # add legend
 
-            if labels:
+            if self.legend is not None or labels:
                 left = self.corner in {2, 3}
                 down = self.corner in {3, 4}
 
@@ -345,19 +345,22 @@ class Plot():
                 if self.legend:
                     file.write('\n\t\t%s \\\\' % self.legend)
 
-                file.write('\n\t\t\\begin{tikzpicture}'
-                    '[x=%.3gcm, y=\\baselineskip, mark indices={2}]'
-                    % (0.5 * self.length))
+                if labels:
+                    file.write('\n\t\t\\begin{tikzpicture}'
+                        '[x=%.3gcm, y=\\baselineskip, mark indices={2}]'
+                        % (0.5 * self.length))
 
-                for line, (options, label) in enumerate(reversed(labels)):
-                    file.write('\n\t\t\t\\node [right] at (2, %d) {%s};'
-                        % (line, label))
+                    for line, (options, label) in enumerate(reversed(labels)):
+                        file.write('\n\t\t\t\\node [right] at (2, %d) {%s};'
+                            % (line, label))
 
-                    file.write('\n\t\t\t\\draw [%s]' % options)
-                    file.write('\n\t\t\t\tplot coordinates '
-                        '{ (0, %(n)d) (1, %(n)d) (2, %(n)d) };' % dict(n=line))
+                        file.write('\n\t\t\t\\draw [%s]' % options)
+                        file.write('\n\t\t\t\tplot coordinates '
+                            '{ (0, %(n)d) (1, %(n)d) (2, %(n)d) };'
+                            % dict(n=line))
 
-                file.write('\n\t\t\\end{tikzpicture}')
+                    file.write('\n\t\t\\end{tikzpicture}')
+
                 file.write('\n\t\t};')
 
             # close TikZ environment
