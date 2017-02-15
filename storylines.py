@@ -120,6 +120,7 @@ class Plot():
         self.tip = 0.1
 
         self.axes = True
+        self.colorbar = True
         self.outline = False
 
         self.lines = []
@@ -167,13 +168,15 @@ class Plot():
 
         z = [line['z'] for line in self.lines if line['z'] is not None]
 
-        colorbar = bool(z)
-
-        if colorbar:
+        if z:
             extent['z'] = extent['y']
 
             lower['z'] = self.zmin if self.zmin is not None else min(z)
             upper['z'] = self.zmax if self.zmax is not None else max(z)
+
+            colorbar = self.colorbar
+        else:
+            colorbar = False
 
         # determine scale and tick positions
 
