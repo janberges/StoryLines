@@ -144,7 +144,7 @@ class Plot():
     def clear(self):
         self.lines = []
 
-    def save(self, filename, external=False):
+    def save(self, filename, external=False, standalone=False):
         # determine extent of the plotting area:
 
         extent = {}
@@ -213,9 +213,18 @@ class Plot():
         labels = []
 
         with open(filename, 'w') as file:
+            # print preable and open document
+
+            if standalone:
+                file.write('\\documentclass{article}\n')
+                file.write('\\usepackage[paperwidth=%gcm, paperheight=%gcm, '
+                    'margin=0cm]{geometry}\n' % (self.width, self.height))
+                file.write('\\usepackage{tikz}\n')
+                file.write('\\begin{document}\n\\noindent\n' )
+
             # set filename for externalization
 
-            if external:
+            if external and not standalone:
                 file.write('\\tikzsetnextfilename{%s}\n%%\n'
                     % filename.rsplit('.', 1)[0].rsplit('/', 1)[-1])
 
@@ -369,3 +378,8 @@ class Plot():
             # close TikZ environment
 
             file.write('\n\\end{tikzpicture}%\n')
+
+            # close document
+
+            if standalone:
+                file.write('\\end{document}\n')
