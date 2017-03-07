@@ -115,6 +115,7 @@ class Plot():
         self.corner = 0
         self.margin = 0.2
         self.length = 0.4
+        self.box    = False
 
         self.tick = 0.07
         self.tip = 0.1
@@ -350,12 +351,19 @@ class Plot():
                 x, h = (0, 'right') if left else (extent['x'], 'left')
                 y, v = (0, 'above') if down else (extent['y'], 'below')
 
-                file.write('\n\t\\node '
-                    '[align=center, %s %s=%.3gcm] at (%.3f, %.3f) {'
-                    % (v, h, self.margin, x, y))
+                file.write('\n\t\\node [align=center, %s %s=%.3gcm'
+                    % (v, h, self.margin))
+
+                if self.box:
+                    file.write(', draw, fill=white, rounded corners')
+
+                file.write('] at (%.3f, %.3f) {' % (x, y))
 
                 if self.legend:
-                    file.write('\n\t\t%s \\\\' % self.legend)
+                    file.write('\n\t\t%s' % self.legend)
+
+                    if labels:
+                        file.write(' \\\\')
 
                 if labels:
                     file.write('\n\t\t\\begin{tikzpicture}'
