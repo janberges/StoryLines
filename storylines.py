@@ -248,7 +248,7 @@ class Plot():
                 5 if extent['y'] < 10 else 6)
 
             for line in self.lines:
-                if line['z'] is not None:
+                if line['z'] is not None and 'color' not in line['options']:
                     ratio = (line['z'] - lower['z']) / (upper['z'] - lower['z'])
 
                     line['options']['color'] = '%s!%.1f!%s' \
