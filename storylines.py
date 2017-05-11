@@ -124,6 +124,8 @@ class Plot():
         self.colorbar = True
         self.outline = False
 
+        self.preamble = None
+
         self.lines = []
 
         self.options = dict(
@@ -221,6 +223,10 @@ class Plot():
                 file.write('\\usepackage[paperwidth=%gcm, paperheight=%gcm, '
                     'margin=0cm]{geometry}\n' % (self.width, self.height))
                 file.write('\\usepackage{tikz}\n')
+
+                if self.preamble:
+                    file.write('%s\n' % self.preamble)
+
                 file.write('\\begin{document}\n\\noindent\n' )
 
             # set filename for externalization
