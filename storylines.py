@@ -124,6 +124,8 @@ class Plot():
         self.colorbar = True
         self.outline = False
 
+        self.background = None
+
         self.preamble = None
 
         self.lines = []
@@ -246,6 +248,13 @@ class Plot():
 
             file.write('\n\t\t(%.3f, %.3f) rectangle +(%.3f, %.3f);'
                 % (-self.left, -self.bottom, self.width, self.height))
+
+            # add background image
+
+            if self.background is not None:
+                file.write('\n\t\\node [anchor=south west, inner sep=0] '
+                    '{ \includegraphics[width=%.3fcm, height=%.3fcm]{%s} };'
+                    % (extent['x'], extent['y'], self.background))
 
             # plot lines
 
