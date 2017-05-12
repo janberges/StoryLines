@@ -173,7 +173,7 @@ class Plot():
 
         z = [line['z'] for line in self.lines if line['z'] is not None]
 
-        if z:
+        if z or self.zmin is not None and self.zmax is not None:
             extent['z'] = extent['y']
 
             lower['z'] = self.zmin if self.zmin is not None else min(z)
