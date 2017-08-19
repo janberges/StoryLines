@@ -113,6 +113,7 @@ class Plot():
 
         self.legend = None
         self.corner = 0
+        self.side   = None
         self.margin = 0.2
         self.length = 0.4
         self.box    = False
@@ -360,14 +361,25 @@ class Plot():
             # add legend
 
             if self.legend is not None or labels:
-                left = self.corner in {2, 3}
-                down = self.corner in {3, 4}
+                if self.side is None:
+                    left = self.corner in {2, 3}
+                    down = self.corner in {3, 4}
 
-                x, h = (0, 'right') if left else (extent['x'], 'left')
-                y, v = (0, 'above') if down else (extent['y'], 'below')
+                    x, h = (0, 'right') if left else (extent['x'], 'left')
+                    y, v = (0, 'above') if down else (extent['y'], 'below')
 
-                file.write('\n\t\\node [align=center, %s %s=%.3gcm'
-                    % (v, h, self.margin))
+                    file.write('\n\t\\node [align=center, %s %s=%.3gcm'
+                        % (v, h, self.margin))
+                else:
+                    self.side %= 4
+
+                    s = ['above', 'left', 'below', 'right'][self.side]
+
+                    x = extent['x'] * [0.5, 1.0, 0.5, 0.0][self.side]
+                    y = extent['y'] * [0.0, 0.5, 1.0, 0.5][self.side]
+
+                    file.write('\n\t\\node [align=center, %s=%.3gcm'
+                        % (s, self.margin))
 
                 if self.box:
                     file.write(', draw, fill=white, rounded corners')
