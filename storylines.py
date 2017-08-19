@@ -103,6 +103,7 @@ class Plot():
         for x in 'x', 'y', 'z':
             setattr(self, x + 'label', None)
             setattr(self, x + 'ticks', None)
+            setattr(self, x + 'format', lambda x: '$%g$' % x)
             setattr(self, x + 'spacing', 1.0)
             setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
@@ -209,7 +210,8 @@ class Plot():
                     [tick if hasattr(tick, '__len__') else (tick, '$%g$' % tick)
                         for tick in getattr(self, x + 'ticks')]]
             else:
-                ticks[x] = [(scale[x] * (n - lower[x]), '$%g$' % n)
+                formatter = getattr(self, x + 'format')
+                ticks[x] = [(scale[x] * (n - lower[x]), formatter(n))
                     for n in multiples(lower[x], upper[x],
                         getattr(self, x + 'step') or xround_mantissa(
                         getattr(self, x + 'spacing') / scale[x]))]
