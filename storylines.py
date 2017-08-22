@@ -129,6 +129,7 @@ class Plot():
         self.background = None
 
         self.preamble = None
+        self.fontsize = 10
 
         self.lines = []
 
@@ -224,7 +225,7 @@ class Plot():
             # print preable and open document
 
             if standalone:
-                file.write('\\documentclass{article}\n')
+                file.write('\\documentclass[%dpt]{scrartcl}\n' % self.fontsize)
                 file.write('\\usepackage[paperwidth=%gcm, paperheight=%gcm, '
                     'margin=0cm]{geometry}\n' % (self.width, self.height))
                 file.write('\\usepackage{tikz}\n')
