@@ -304,16 +304,21 @@ class Plot():
 
                     file.write(' };')
 
+            # paint colorbar
+
+            if colorbar:
+                file.write('\n\t\\shade [bottom color=%s, top color=%s]'
+                    % (self.lower, self.upper))
+
+                file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
+                    % (extent['x'], extent['x'] + self.tip, extent['z']))
+
+                for z, label in ticks['z']:
+                    file.write('\n\t\\node '
+                        '[rotate=90, below] at (%.3f, %.3f) {%s};'
+                        % (extent['x'] + self.tip, z, label))
+
             if self.axes:
-                # paint colorbar
-
-                if colorbar:
-                    file.write('\n\t\\shade [bottom color=%s, top color=%s]'
-                        % (self.lower, self.upper))
-
-                    file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
-                        % (extent['x'], extent['x'] + self.tip, extent['z']))
-
                 # draw tick marks and labels
 
                 file.write('\n\t\\draw [line cap=butt]')
@@ -327,12 +332,6 @@ class Plot():
                         'node [rotate=90, above] {%s}' % (y, -self.tick, label))
 
                 file.write(';')
-
-                if colorbar:
-                    for z, label in ticks['z']:
-                        file.write('\n\t\\node '
-                            '[rotate=90, below] at (%.3f, %.3f) {%s};'
-                            % (extent['x'] + self.tip, z, label))
 
                 # draw coordinate axes
 
