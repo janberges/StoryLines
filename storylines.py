@@ -321,17 +321,20 @@ class Plot():
             if self.axes:
                 # draw tick marks and labels
 
-                file.write('\n\t\\draw [line cap=butt]')
+                if ticks['x'] or ticks['y']:
+                    file.write('\n\t\\draw [line cap=butt]')
 
-                for x, label in ticks['x']:
-                    file.write('\n\t\t(%.3f, 0) -- +(0, %.3f) '
-                        'node [below] {%s}' % (x, -self.tick, label))
+                    for x, label in ticks['x']:
+                        file.write('\n\t\t(%.3f, 0) -- +(0, %.3f) '
+                            'node [below] {%s}'
+                            % (x, -self.tick, label))
 
-                for y, label in ticks['y']:
-                    file.write('\n\t\t(0, %.3f) -- +(%.3f, 0) '
-                        'node [rotate=90, above] {%s}' % (y, -self.tick, label))
+                    for y, label in ticks['y']:
+                        file.write('\n\t\t(0, %.3f) -- +(%.3f, 0) '
+                            'node [rotate=90, above] {%s}'
+                            % (y, -self.tick, label))
 
-                file.write(';')
+                    file.write(';')
 
                 # draw coordinate axes
 
