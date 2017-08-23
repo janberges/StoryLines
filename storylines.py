@@ -256,7 +256,8 @@ class Plot():
             # add background image
 
             if self.background is not None:
-                file.write('\n\t\\node [anchor=south west, inner sep=0] '
+                file.write('\n\t\\node '
+                    '[anchor=south west, inner sep=0, outer sep=0] '
                     '{ \includegraphics[width=%.3fcm, height=%.3fcm]{%s} };'
                     % (extent['x'], extent['y'], self.background))
 
