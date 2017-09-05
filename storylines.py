@@ -423,4 +423,4 @@ class Plot():
             # close document
 
             if standalone:
-                file.write('\\end{document}\n')
+                file.write('\\vspace*{-1pt}\\end{document}\n')
