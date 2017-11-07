@@ -369,7 +369,7 @@ class Plot():
                 file.write('\n\t\t{%s};' % self.ylabel)
 
             if self.zlabel and colorbar:
-                file.write('\n\t\\node [rotate=90, below=')
+                file.write('\n\t\\node [rotate=90, below')
 
                 if ticks['z']:
                     file.write('=\\baselineskip')
