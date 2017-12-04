@@ -159,7 +159,7 @@ class Plot():
         extent['x'] = self.width - self.left - self.right
         extent['y'] = self.height - self.bottom - self.top
 
-        # determine data limits:
+        # determine data limits (x, y):
 
         lower = {}
         upper = {}
@@ -173,6 +173,20 @@ class Plot():
 
             upper[x] = xmax if xmax is not None \
                 else max(max(line[x]) for line in self.lines if len(line[x]))
+
+        # determine width or height for proportional plot:
+
+        if not self.height:
+            extent['y'] = (upper['y'] - lower['y']) * extent['x'] \
+                        / (upper['x'] - lower['x'])
+            self.height = extent['y'] + self.bottom + self.top
+
+        elif not self.width:
+            extent['x'] = (upper['x'] - lower['x']) * extent['y'] \
+                        / (upper['y'] - lower['y'])
+            self.width = extent['x'] + self.left + self.right
+
+        # determine data limits (z):
 
         z = [line['z'] for line in self.lines if line['z'] is not None]
 
