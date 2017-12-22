@@ -306,8 +306,8 @@ class Plot():
                             line[x] =      [xref] + line[x] + [xref]
                             line[y] = line[y][:1] + line[y] + line[y][-1:]
 
-                    points = zip(*[[scale[x] * (n - lower[x])
-                        for n in line[x]] for x in 'x', 'y'])
+                    points = list(zip(*[[scale[x] * (n - lower[x])
+                        for n in line[x]] for x in ('x', 'y')]))
 
                     if line['omit']:
                         points = relevant(points)
