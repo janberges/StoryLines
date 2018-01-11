@@ -423,6 +423,7 @@ class Plot():
                 file.write('] at (%.3f, %.3f) {' % (x, y))
 
                 if self.legend:
+                    file.write('\n\t\t\\tikzset{sharp corners}')
                     file.write('\n\t\t%s' % self.legend)
 
                     if labels:
