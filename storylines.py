@@ -220,13 +220,14 @@ class Plot():
 
             # use ticks or choose ticks with a spacing close to the given one
 
+            xformat = getattr(self, x + 'format')
+
             if getattr(self, x + 'ticks') is not None:
                 ticks[x] = [(scale[x] * (n - lower[x]), label) for n, label in
-                    [tick if hasattr(tick, '__len__') else (tick, '$%g$' % tick)
+                    [tick if hasattr(tick, '__len__') else (tick, xformat(tick))
                         for tick in getattr(self, x + 'ticks')]]
             else:
-                formatter = getattr(self, x + 'format')
-                ticks[x] = [(scale[x] * (n - lower[x]), formatter(n))
+                ticks[x] = [(scale[x] * (n - lower[x]), xformat(n))
                     for n in multiples(lower[x], upper[x],
                         getattr(self, x + 'step') or xround_mantissa(
                         getattr(self, x + 'spacing') / scale[x]))]
