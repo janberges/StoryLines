@@ -120,6 +120,7 @@ class Plot():
         self.box    = False
 
         self.tick = 0.07
+        self.gap = 0.0
         self.tip = 0.1
 
         self.axes = True
@@ -326,7 +327,9 @@ class Plot():
                     % (self.lower, self.upper))
 
                 file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
-                    % (extent['x'], extent['x'] + self.tip, extent['z']))
+                    % (extent['x'] + self.gap,
+                       extent['x'] + self.tip,
+                       extent['z']))
 
                 for z, label in ticks['z']:
                     file.write('\n\t\\node '
