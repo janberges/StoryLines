@@ -95,6 +95,8 @@ class Plot():
         self.width = width
         self.height = height
 
+        self.flexible = False
+
         self.left = 1.0
         self.right = 1.0
         self.bottom = 1.0
@@ -253,13 +255,21 @@ class Plot():
 
             # set filename for externalization
 
-            if external and not standalone:
+            elif external:
                 file.write('\\tikzsetnextfilename{%s}\n%%\n'
                     % filename.rsplit('.', 1)[0].rsplit('/', 1)[-1])
 
             # open TikZ environment
 
-            file.write('\\begin{tikzpicture}[%s]' % csv(self.options))
+            if self.flexible:
+                file.write('\\begingroup%%'
+                    '\n\\let\\unit\\relax%%'
+                    '\n\\newlength\\unit%%'
+                    '\n\\setlength\\unit{%g\\linewidth}%%'
+                    '\n\\begin{tikzpicture}[x=\\unit, x=\\unit, %s]'
+                    % (1.0 / self.width, csv(self.options)))
+            else:
+                file.write('\\begin{tikzpicture}[%s]' % csv(self.options))
 
             # set bounding box
 
@@ -452,9 +462,14 @@ class Plot():
 
             # close TikZ environment
 
-            file.write('\n\\end{tikzpicture}%\n')
+            file.write('\n\\end{tikzpicture}%')
+
+            if self.flexible:
+                file.write('\n\\endgroup%')
 
             # close document
 
             if standalone:
-                file.write('\\vspace*{-1pt}\\end{document}\n')
+                file.write('\n\\vspace*{-1pt}\\end{document}')
+
+            file.write('\n')
