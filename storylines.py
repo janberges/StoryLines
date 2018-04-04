@@ -114,6 +114,8 @@ class Plot():
         self.lower = 'blue'
         self.upper = 'red'
 
+        self.label = None
+
         self.legend = None
         self.corner = 0
         self.side   = None
@@ -406,6 +408,19 @@ class Plot():
                     % (extent['x'] + self.tip, extent['y'] / 2))
 
                 file.write('\n\t\t{%s};' % self.zlabel)
+
+            # add label
+
+            if self.label is not None:
+                file.write('\n\t\\node [left')
+
+                if ticks['y']:
+                    file.write('=\\baselineskip')
+
+                file.write('] at (%.3f, %.3f)'
+                    % (-self.tick, extent['y']))
+
+                file.write('\n\t\t{%s};' % self.label)
 
             # add legend
 
