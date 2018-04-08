@@ -1,2 +1,6 @@
-'StoryLines' provides a Python class to create TikZ pictures of (families of)
-curves in the Cartesian plane. Take a look at the application example.
+S t o r y L i n e s
+
+Line plots with Python and TikZ
+
+$ python example.py
+$ pdflatex example.tex
