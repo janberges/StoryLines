@@ -123,7 +123,7 @@ class Plot():
         self.length = 0.4
         self.box    = False
 
-        self.tick = 0.07
+        self.tick = '0.7mm'
         self.gap = 0.0
         self.tip = 0.1
 
@@ -363,14 +363,14 @@ class Plot():
                     file.write('\n\t\\draw [line cap=butt]')
 
                     for x, label in ticks['x']:
-                        file.write('\n\t\t(%.3f, 0) -- +(0, %.3f) '
+                        file.write('\n\t\t(%.3f, 0) -- +(0, -%s) '
                             'node [below] {%s}'
-                            % (x, -self.tick, label))
+                            % (x, self.tick, label))
 
                     for y, label in ticks['y']:
-                        file.write('\n\t\t(0, %.3f) -- +(%.3f, 0) '
+                        file.write('\n\t\t(0, %.3f) -- +(-%s, 0) '
                             'node [rotate=90, above] {%s}'
-                            % (y, -self.tick, label))
+                            % (y, self.tick, label))
 
                     file.write(';')
 
@@ -390,8 +390,8 @@ class Plot():
                 if ticks['x']:
                     file.write('=\\baselineskip')
 
-                file.write('] at (%.3f, %.3f)'
-                    % (extent['x'] / 2, -self.tick))
+                file.write('] at (%.3f, -%s)'
+                    % (extent['x'] / 2, self.tick))
 
                 file.write('\n\t\t{%s};' % self.xlabel)
 
@@ -401,8 +401,8 @@ class Plot():
                 if ticks['y']:
                     file.write('=\\baselineskip')
 
-                file.write('] at (%.3f, %.3f)'
-                    % (-self.tick, extent['y'] / 2))
+                file.write('] at (-%s, %.3f)'
+                    % (self.tick, extent['y'] / 2))
 
                 file.write('\n\t\t{%s};' % self.ylabel)
 
@@ -425,8 +425,8 @@ class Plot():
                 if ticks['y']:
                     file.write('=\\baselineskip')
 
-                file.write('] at (%.3f, %.3f)'
-                    % (-self.tick, extent['y']))
+                file.write('] at (-%s, %.3f)'
+                    % (self.tick, extent['y']))
 
                 file.write('\n\t\t{%s};' % self.label)
 
