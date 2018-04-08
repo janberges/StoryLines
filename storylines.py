@@ -286,8 +286,16 @@ class Plot():
             if self.background is not None:
                 file.write('\n\t\\node '
                     '[anchor=south west, inner sep=0, outer sep=0] '
-                    '{ \includegraphics[width=%.3fcm, height=%.3fcm]{%s} };'
-                    % (extent['x'], extent['y'], self.background))
+                    '{ \includegraphics[')
+
+                if self.flexible:
+                    file.write('width=%.3f\\unit, height=%.3f\\unit'
+                        % (extent['x'], extent['y']))
+                else:
+                    file.write('width=%.3fcm, height=%.3fcm'
+                        % (extent['x'], extent['y']))
+
+                file.write(']{%s} };' % self.background)
 
             # plot lines
 
