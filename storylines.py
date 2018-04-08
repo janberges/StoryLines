@@ -268,7 +268,7 @@ class Plot():
                     '\n\\let\\unit\\relax%%'
                     '\n\\newlength\\unit%%'
                     '\n\\setlength\\unit{%g\\linewidth}%%'
-                    '\n\\begin{tikzpicture}[x=\\unit, x=\\unit, %s]'
+                    '\n\\begin{tikzpicture}[x=\\unit, y=\\unit, %s]'
                     % (1.0 / self.width, csv(self.options)))
             else:
                 file.write('\\begin{tikzpicture}[%s]' % csv(self.options))
