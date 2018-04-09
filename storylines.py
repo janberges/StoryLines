@@ -116,12 +116,11 @@ class Plot():
 
         self.label = None
 
-        self.legend = None
-        self.corner = 0
-        self.side   = None
-        self.margin = 0.2
-        self.length = 0.4
-        self.box    = False
+        self.ltop  = None
+        self.lpos = 'lt'
+        self.lopt = 'below left'
+        self.llen = '4mm'
+        self.lbox = False
 
         self.tick = '0.7mm'
         self.gap = 0.0
@@ -432,51 +431,61 @@ class Plot():
 
             # add legend
 
-            if self.legend is not None or labels:
-                if self.side is None:
-                    left = self.corner in {2, 3}
-                    down = self.corner in {3, 4}
+            if self.ltop is not None or labels:
+                x = []
+                y = []
 
-                    x, h = (0, 'right') if left else (extent['x'], 'left')
-                    y, v = (0, 'above') if down else (extent['y'], 'below')
+                positions = dict(
+                    L = (x, -self.left),
+                    B = (y, -self.bottom),
+                    l = (x, 0.0),
+                    b = (y, 0.0),
+                    r = (x, extent['x']),
+                    t = (y, extent['y']),
+                    R = (x, extent['x'] + self.right),
+                    T = (y, extent['y'] + self.top),
+                    )
 
-                    file.write('\n\t\\node [align=center, %s %s=%.3gcm'
-                        % (v, h, self.margin))
-                else:
-                    self.side %= 4
+                abbreviations = dict(c='lr', C='LR', m='bt', M='BT')
 
-                    s = ['above', 'left', 'below', 'right'][self.side]
+                for abbreviation in abbreviations.items():
+                    self.lpos = self.lpos.replace(*abbreviation)
 
-                    x = extent['x'] * [0.5, 1.0, 0.5, 0.0][self.side]
-                    y = extent['y'] * [0.0, 0.5, 1.0, 0.5][self.side]
+                for char in self.lpos:
+                    positions[char][0].append(positions[char][1])
 
-                    file.write('\n\t\\node [align=center, %s=%.3gcm'
-                        % (s, self.margin))
+                x = sum(x) / len(x)
+                y = sum(y) / len(y)
 
-                if self.box:
+                file.write('\n\t\\node [align=center')
+
+                if self.lopt:
+                    file.write(', %s' % self.lopt)
+
+                if self.lbox:
                     file.write(', draw, fill=white, rounded corners')
 
                 file.write('] at (%.3f, %.3f) {' % (x, y))
 
-                if self.legend:
+                if self.ltop:
                     file.write('\n\t\t\\tikzset{sharp corners}')
-                    file.write('\n\t\t%s' % self.legend)
+                    file.write('\n\t\t%s' % self.ltop)
 
                     if labels:
                         file.write(' \\\\')
 
                 if labels:
                     file.write('\n\t\t\\begin{tikzpicture}'
-                        '[x=%.3gcm, y=\\baselineskip, mark indices={2}]'
-                        % (0.5 * self.length))
+                        '[x=%s, y=\\baselineskip, mark indices={2}]'
+                        % self.llen)
 
                     for line, (options, label) in enumerate(reversed(labels)):
-                        file.write('\n\t\t\t\\node [right] at (2, %d) {%s};'
+                        file.write('\n\t\t\t\\node [right] at (1, %d) {%s};'
                             % (line, label))
 
                         file.write('\n\t\t\t\\draw [%s]' % options)
                         file.write('\n\t\t\t\tplot coordinates '
-                            '{ (0, %(n)d) (1, %(n)d) (2, %(n)d) };'
+                            '{ (0, %(n)d) (0.5, %(n)d) (1, %(n)d) };'
                             % dict(n=line))
 
                     file.write('\n\t\t\\end{tikzpicture}')
