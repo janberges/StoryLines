@@ -241,7 +241,7 @@ class Plot():
         labels = []
 
         with open(filename, 'w') as file:
-            # print preable and open document
+            # print premable and open document
 
             if standalone:
                 file.write('\\documentclass[%dpt]{scrartcl}\n' % self.fontsize)
