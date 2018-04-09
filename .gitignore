@@ -6,3 +6,4 @@
 *.pdf
 *.pyc
 *.tex
+!README.tex

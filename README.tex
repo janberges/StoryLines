@@ -1,0 +1,70 @@
+\documentclass[10pt]{article}
+
+\usepackage[a4paper]{geometry}
+
+\usepackage{array, tikz}
+
+\newlength\spacing
+\setlength\spacing{6pt}
+
+\pagestyle{empty}
+
+\begin{document}
+  \centering
+
+  \huge
+  \texttt{\textit{Story\rlap{Line}}}%
+  \tikz[baseline=2pt] \draw[ultra thick, orange, line cap=round]
+    (0, 0) to (4pc, 0) arc (-90:90:3pt) arc (270:0:3pt);
+  \bigskip
+
+  \normalsize
+  Plot lines with Python and Ti\textcolor{orange}{\textit{k}}Z
+  \vspace{2cm}
+
+  \begin{tabular}{>{\it} l >{\tt} l l}
+    \textbf{Parameter} & \textbf{Default} & \textbf{Description} \\
+    [\spacing]
+    width & 10.0 & Figure width \\
+    height & 6.0 & Figure height \\
+    [\spacing]
+    left & 1.0 & Left margin \\
+    right & 1.0 & Right margin \\
+    bottom & 1.0 & Bottom margin \\
+    top & 0.5 & Top margin \\
+    [\spacing]
+    xlabel & None & Axis label \\
+    xticks & None & List of ticks, e.g. \verb|[0, (0.5, '$\frac12$'), 1]| \\
+    xformat & \dots & Tick formatter, by default \verb|lambda x: '$%g$' % x| \\
+    xspacing & 1.0 & Approximate tick spacing in cm \\
+    xstep & None & Exact tick increment \\
+    xmax & None & Upper axis limit \\
+    xmin & None & Lower axis limit \\
+    [\spacing]
+    upper & red & Upper color of bar \\
+    lower & blue & Lower color of bar\\
+    [\spacing]
+    label & None & Subfigure label, e.g. \verb|(a)| \\
+    [\spacing]
+    ltop & None & Legend title \\
+    lpos & lt & Legend position, a combination of \verb|lrbtcmLRBTCM|\\
+    lopt & below left & Legend options, e.g. for orientation \\
+    llen & 4mm & Length of example lines next to labels \\
+    lbox & False & Draw box around legend? \\
+    [\spacing]
+    tick & 0.7mm & Length of tick marks \\
+    gap & 0.0 & Gap between plot area and colorbar \\
+    tip & 0.1 & Overlap of axis tips \\
+    [\spacing]
+    axes & True & Draw axes and their labels? \\
+    colorbar & True & Draw colorbar? \\
+    outline & False & Draw figure outline? \\
+    [\spacing]
+    background & None & Path to background image \\
+    [\spacing]
+    preamble & None & Definitions for standalone figures \\
+    fontsize & 10 & Font size for standalone figures \\
+    [\spacing]
+    flexible & False & Scale plot to fill whole line? \\
+  \end{tabular}
+\end{document}
