@@ -151,6 +151,12 @@ class Plot():
     def line(self, x=[], y=[], z=None, label=None, omit=True,
         xref=None, yref=None, **options):
 
+        if not hasattr(x, '__len__'):
+            x = [x]
+
+        if not hasattr(y, '__len__'):
+            y = [y]
+
         self.lines.append(locals())
 
     def clear(self):
@@ -177,6 +183,14 @@ class Plot():
 
             upper[x] = xmax if xmax is not None \
                 else max(max(line[x]) for line in self.lines if len(line[x]))
+
+        # handle horizontal and vertical lines:
+
+        for x, y in ('x', 'y'), ('y', 'x'):
+            for line in self.lines:
+                if not len(line[x]) and len(line[y]) == 1:
+                    line[x] = [lower[x], upper[x]]
+                    line[y] = [line[y][0]] * 2
 
         # determine width or height for proportional plot:
 
