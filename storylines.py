@@ -114,6 +114,8 @@ class Plot():
         self.lower = 'blue'
         self.upper = 'red'
 
+        self.title = None
+
         self.label = None
 
         self.ltop  = None
@@ -505,6 +507,12 @@ class Plot():
                     file.write('\n\t\t\\end{tikzpicture}')
 
                 file.write('\n\t\t};')
+
+            # add title:
+
+            if self.title is not None:
+                file.write('\n\t\\node [above] at (%.3f, %.3f) {%s};'
+                    % (extent['x'] / 2, extent['y'], self.title))
 
             # close TikZ environment
 
