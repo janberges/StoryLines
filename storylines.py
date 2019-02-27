@@ -138,6 +138,7 @@ class Plot():
         self.fontsize = 10
 
         self.lines = []
+        self.nodes = []
 
         self.options = dict(
             line_cap='round',
@@ -160,6 +161,9 @@ class Plot():
             y = [y]
 
         self.lines.append(locals())
+
+    def node(self, x, y, content, **options):
+        self.nodes.append(locals())
 
     def clear(self):
         self.lines = []
@@ -431,6 +435,17 @@ class Plot():
                     % (extent['x'] + self.tip, extent['y'] / 2))
 
                 file.write('\n\t\t{%s};' % self.zlabel)
+
+            # write nodes:
+
+            for node in self.nodes:
+                r = dict()
+
+                for x in 'x', 'y':
+                    r[x] = scale[x] * (node[x] - lower[x])
+
+                file.write('\n\t\\node [%s] at (%.3f, %.3f) {%s};'
+                    % (csv(node['options']), r['x'], r['y'], node['content']))
 
             # add label
 
