@@ -2,6 +2,7 @@
 
 from __future__ import division
 from math import asin, atan2, ceil, floor, log10, pi, sqrt
+import os
 
 def order_of_magnitude(x):
     return int(floor(log10(abs(x)))) if x else 0
@@ -168,7 +169,9 @@ class Plot():
     def clear(self):
         self.lines = []
 
-    def save(self, filename, external=False, standalone=False):
+    def save(self, filename, external=False, standalone=False, pdf=False,
+            clean=True):
+
         # determine extent of the plotting area:
 
         extent = {}
@@ -542,3 +545,14 @@ class Plot():
                 file.write('\n\\vspace*{-1pt}\\end{document}')
 
             file.write('\n')
+
+        # typeset document and clean up:
+
+        if standalone and pdf:
+            os.system('pdflatex --interaction=batchmode %s' % filename)
+
+            if clean and filename.endswith('.tex'):
+                stem = filename[:-4]
+
+                for suffix in 'aux', 'log', 'tex':
+                    os.system('rm %s.%s' % (stem, suffix))
