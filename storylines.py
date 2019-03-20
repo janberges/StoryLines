@@ -3,6 +3,7 @@
 from __future__ import division
 from math import asin, atan2, ceil, floor, log10, pi, sqrt
 import os
+import re
 
 def order_of_magnitude(x):
     return int(floor(log10(abs(x)))) if x else 0
@@ -140,6 +141,7 @@ class Plot():
 
         self.lines = []
         self.nodes = []
+        self.codes = []
 
         self.options = dict(
             line_cap='round',
@@ -165,6 +167,9 @@ class Plot():
 
     def node(self, x, y, content, **options):
         self.nodes.append(locals())
+
+    def code(self, data):
+        self.codes.append(data)
 
     def clear(self):
         self.lines = []
@@ -361,6 +366,18 @@ class Plot():
                         file.write(' '.join(form % point for point in group))
 
                     file.write(' };')
+
+            # insert TikZ code with special coordinates:
+
+            for code in self.codes:
+                for x in 'x', 'y':
+                    code = re.sub('<%s=(.*?)>' % x, lambda match: '%.3f'
+                        % (scale[x] * (float(match.group(1)) - lower[x])), code)
+
+                    code = re.sub('<d%s=(.*?)>' % x, lambda match: '%.3f'
+                        % (scale[x] * float(match.group(1))), code)
+
+                file.write(code)
 
             # paint colorbar
 
