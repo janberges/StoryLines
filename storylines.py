@@ -323,61 +323,6 @@ class Plot():
 
                 file.write(']{%s} };' % self.background)
 
-            # plot lines
-
-            form = '(%%%d.3f, %%%d.3f)' % (
-                5 if extent['x'] < 10 else 6,
-                5 if extent['y'] < 10 else 6)
-
-            for line in self.lines:
-                if line['z'] is not None and 'color' not in line['options']:
-                    ratio = (line['z'] - lower['z']) / (upper['z'] - lower['z'])
-
-                    line['options']['color'] = '%s!%.1f!%s' \
-                        % (self.upper, 100 * ratio, self.lower)
-
-                options = csv(line['options'])
-
-                if line['label'] is not None:
-                    labels.append([options, line['label']])
-
-                if len(line['x']) and len(line['y']):
-                    file.write('\n\t\\draw [%s] plot coordinates {' % options)
-
-                    for x, y in ('x', 'y'), ('y', 'x'):
-                        xref = line[x + 'ref']
-
-                        if xref is not None:
-                            line[x] = list(line[x])
-                            line[y] = list(line[y])
-
-                            line[x] =      [xref] + line[x] + [xref]
-                            line[y] = line[y][:1] + line[y] + line[y][-1:]
-
-                    points = list(zip(*[[scale[x] * (n - lower[x])
-                        for n in line[x]] for x in ('x', 'y')]))
-
-                    if line['omit']:
-                        points = relevant(points)
-
-                    for group in groups(points):
-                        file.write('\n\t\t')
-                        file.write(' '.join(form % point for point in group))
-
-                    file.write(' };')
-
-            # insert TikZ code with special coordinates:
-
-            for code in self.codes:
-                for x in 'x', 'y':
-                    code = re.sub('<%s=(.*?)>' % x, lambda match: '%.3f'
-                        % (scale[x] * (float(match.group(1)) - lower[x])), code)
-
-                    code = re.sub('<d%s=(.*?)>' % x, lambda match: '%.3f'
-                        % (scale[x] * float(match.group(1))), code)
-
-                file.write(code)
-
             # paint colorbar
 
             if colorbar:
@@ -454,6 +399,61 @@ class Plot():
                     % (extent['x'] + self.tip, extent['y'] / 2))
 
                 file.write('\n\t\t{%s};' % self.zlabel)
+
+            # plot lines
+
+            form = '(%%%d.3f, %%%d.3f)' % (
+                5 if extent['x'] < 10 else 6,
+                5 if extent['y'] < 10 else 6)
+
+            for line in self.lines:
+                if line['z'] is not None and 'color' not in line['options']:
+                    ratio = (line['z'] - lower['z']) / (upper['z'] - lower['z'])
+
+                    line['options']['color'] = '%s!%.1f!%s' \
+                        % (self.upper, 100 * ratio, self.lower)
+
+                options = csv(line['options'])
+
+                if line['label'] is not None:
+                    labels.append([options, line['label']])
+
+                if len(line['x']) and len(line['y']):
+                    file.write('\n\t\\draw [%s] plot coordinates {' % options)
+
+                    for x, y in ('x', 'y'), ('y', 'x'):
+                        xref = line[x + 'ref']
+
+                        if xref is not None:
+                            line[x] = list(line[x])
+                            line[y] = list(line[y])
+
+                            line[x] =      [xref] + line[x] + [xref]
+                            line[y] = line[y][:1] + line[y] + line[y][-1:]
+
+                    points = list(zip(*[[scale[x] * (n - lower[x])
+                        for n in line[x]] for x in ('x', 'y')]))
+
+                    if line['omit']:
+                        points = relevant(points)
+
+                    for group in groups(points):
+                        file.write('\n\t\t')
+                        file.write(' '.join(form % point for point in group))
+
+                    file.write(' };')
+
+            # insert TikZ code with special coordinates:
+
+            for code in self.codes:
+                for x in 'x', 'y':
+                    code = re.sub('<%s=(.*?)>' % x, lambda match: '%.3f'
+                        % (scale[x] * (float(match.group(1)) - lower[x])), code)
+
+                    code = re.sub('<d%s=(.*?)>' % x, lambda match: '%.3f'
+                        % (scale[x] * float(match.group(1))), code)
+
+                file.write(code)
 
             # write nodes:
 
