@@ -272,9 +272,8 @@ class Plot():
             # print premable and open document
 
             if standalone:
-                file.write('\\documentclass[%dpt]{scrartcl}\n' % self.fontsize)
-                file.write('\\usepackage[paperwidth=%gcm, paperheight=%gcm, '
-                    'margin=0cm]{geometry}\n' % (self.width, self.height))
+                file.write('\\documentclass[%dpt, varwidth]{standalone}\n'
+                    % self.fontsize)
                 file.write('\\usepackage{tikz}\n')
 
                 if self.preamble:
@@ -559,7 +558,7 @@ class Plot():
             # close document
 
             if standalone:
-                file.write('\n\\vspace*{-1pt}\\end{document}')
+                file.write('\n\\end{document}')
 
             file.write('\n')
 
