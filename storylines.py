@@ -274,7 +274,7 @@ class Plot():
             # print premable and open document
 
             if standalone:
-                file.write('\\documentclass[%dpt, varwidth]{standalone}\n'
+                file.write('\\documentclass[%dpt, varwidth=\\maxdimen]{standalone}\n'
                     % self.fontsize)
                 file.write('\\usepackage{tikz}\n')
 
