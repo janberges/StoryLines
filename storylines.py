@@ -120,7 +120,9 @@ class Plot():
 
         self.label = None
 
-        self.ltop  = None
+        self.ltop = None
+        self.lali = 'center'
+        self.lsep = None
         self.lpos = 'lt'
         self.lopt = 'below left'
         self.llen = '4mm'
@@ -509,7 +511,7 @@ class Plot():
                 x = sum(x) / len(x)
                 y = sum(y) / len(y)
 
-                file.write('\n\t\\node [align=center')
+                file.write('\n\t\\node [align=%s' % self.lali)
 
                 if self.lopt:
                     file.write(', %s' % self.lopt)
@@ -525,6 +527,9 @@ class Plot():
 
                     if labels:
                         file.write(' \\\\')
+
+                        if self.lsep is not None:
+                            file.write('[%s]' % self.lsep)
 
                 if labels:
                     file.write('\n\t\t\\begin{tikzpicture}'
