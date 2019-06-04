@@ -133,6 +133,7 @@ class Plot():
         self.tip = 0.1
 
         self.axes = True
+        self.axes_first = False
         self.colorbar = True
         self.outline = False
 
@@ -326,82 +327,86 @@ class Plot():
 
                 file.write(']{%s} };' % self.background)
 
-            # paint colorbar
+            def draw_axes():
+                # paint colorbar
 
-            if colorbar:
-                file.write('\n\t\\shade [bottom color=%s, top color=%s]'
-                    % (self.lower, self.upper))
+                if colorbar:
+                    file.write('\n\t\\shade [bottom color=%s, top color=%s]'
+                        % (self.lower, self.upper))
 
-                file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
-                    % (extent['x'] + self.gap,
-                       extent['x'] + self.tip,
-                       extent['z']))
+                    file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
+                        % (extent['x'] + self.gap,
+                           extent['x'] + self.tip,
+                           extent['z']))
 
-                for z, label in ticks['z']:
-                    file.write('\n\t\\node '
-                        '[rotate=90, below] at (%.3f, %.3f) {%s};'
-                        % (extent['x'] + self.tip, z, label))
+                    for z, label in ticks['z']:
+                        file.write('\n\t\\node '
+                            '[rotate=90, below] at (%.3f, %.3f) {%s};'
+                            % (extent['x'] + self.tip, z, label))
 
-            if self.axes:
-                # draw tick marks and labels
+                if self.axes:
+                    # draw tick marks and labels
 
-                if ticks['x'] or ticks['y']:
-                    file.write('\n\t\\draw [line cap=butt]')
+                    if ticks['x'] or ticks['y']:
+                        file.write('\n\t\\draw [line cap=butt]')
 
-                    for x, label in ticks['x']:
-                        file.write('\n\t\t(%.3f, 0) -- +(0, -%s) '
-                            'node [below] {%s}'
-                            % (x, self.tick, label))
+                        for x, label in ticks['x']:
+                            file.write('\n\t\t(%.3f, 0) -- +(0, -%s) '
+                                'node [below] {%s}'
+                                % (x, self.tick, label))
 
-                    for y, label in ticks['y']:
-                        file.write('\n\t\t(0, %.3f) -- +(-%s, 0) '
-                            'node [rotate=90, above] {%s}'
-                            % (y, self.tick, label))
+                        for y, label in ticks['y']:
+                            file.write('\n\t\t(0, %.3f) -- +(-%s, 0) '
+                                'node [rotate=90, above] {%s}'
+                                % (y, self.tick, label))
 
-                    file.write(';')
+                        file.write(';')
 
-                # draw coordinate axes
+                    # draw coordinate axes
 
-                file.write('\n\t\\draw [%s, line cap=butt]'
-                    % ('->' if colorbar else '<->'))
+                    file.write('\n\t\\draw [%s, line cap=butt]'
+                        % ('->' if colorbar else '<->'))
 
-                file.write('\n\t\t(%.3f, 0) -- (0, 0) -- (0, %.3f);'
-                    % (extent['x'] + self.tip, extent['y'] + self.tip))
+                    file.write('\n\t\t(%.3f, 0) -- (0, 0) -- (0, %.3f);'
+                        % (extent['x'] + self.tip, extent['y'] + self.tip))
 
-            # label coordinate axes
+                # label coordinate axes
 
-            if self.xlabel:
-                file.write('\n\t\\node [below')
+                if self.xlabel:
+                    file.write('\n\t\\node [below')
 
-                if ticks['x']:
-                    file.write('=\\baselineskip')
+                    if ticks['x']:
+                        file.write('=\\baselineskip')
 
-                file.write('] at (%.3f, -%s)'
-                    % (extent['x'] / 2, self.tick))
+                    file.write('] at (%.3f, -%s)'
+                        % (extent['x'] / 2, self.tick))
 
-                file.write('\n\t\t{%s};' % self.xlabel)
+                    file.write('\n\t\t{%s};' % self.xlabel)
 
-            if self.ylabel:
-                file.write('\n\t\\node [rotate=90, above')
+                if self.ylabel:
+                    file.write('\n\t\\node [rotate=90, above')
 
-                if ticks['y']:
-                    file.write('=\\baselineskip')
+                    if ticks['y']:
+                        file.write('=\\baselineskip')
 
-                file.write('] at (-%s, %.3f)'
-                    % (self.tick, extent['y'] / 2))
+                    file.write('] at (-%s, %.3f)'
+                        % (self.tick, extent['y'] / 2))
 
-                file.write('\n\t\t{%s};' % self.ylabel)
+                    file.write('\n\t\t{%s};' % self.ylabel)
 
-            if self.zlabel and colorbar:
-                file.write('\n\t\\node [rotate=90, below')
+                if self.zlabel and colorbar:
+                    file.write('\n\t\\node [rotate=90, below')
 
-                if ticks['z']:
-                    file.write('=\\baselineskip')
+                    if ticks['z']:
+                        file.write('=\\baselineskip')
 
-                file.write('] at (%.3f, %.3f)'
-                    % (extent['x'] + self.tip, extent['y'] / 2))
+                    file.write('] at (%.3f, %.3f)'
+                        % (extent['x'] + self.tip, extent['y'] / 2))
 
-                file.write('\n\t\t{%s};' % self.zlabel)
+                    file.write('\n\t\t{%s};' % self.zlabel)
+
+            if self.axes_first:
+                draw_axes()
 
             # plot lines
 
@@ -461,6 +466,9 @@ class Plot():
                             code)
 
                     file.write(code)
+
+            if not self.axes_first:
+                draw_axes()
 
             # add label
 
