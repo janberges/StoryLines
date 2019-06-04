@@ -71,6 +71,35 @@ def relevant(points, error=1e-3):
                 if included(phi - delta):
                     lower = phi - delta
 
+def cut(points, minimum, maximum):
+    points = [tuple(point) for point in points]
+
+    n = 1
+
+    while n < len(points):
+        x1, y1 = points[n - 1]
+        x2, y2 = points[n]
+
+        for y in maximum, minimum:
+            if y1 < y < y2 or y1 > y > y2:
+                x = (x1 * (y2 - y) + x2 * (y - y1)) / (y2 - y1)
+                points.insert(n, (x, y))
+
+        n += 1
+
+    group = []
+
+    for point in points:
+        if minimum <= point[1] <= maximum:
+            group.append(point)
+
+        elif group:
+            yield group
+            group = []
+
+    if group:
+        yield group
+
 def groups(iterable, size=4):
     group = []
 
