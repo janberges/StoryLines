@@ -142,8 +142,6 @@ class Plot():
         self.fontsize = 10
 
         self.lines = []
-        self.nodes = []
-        self.codes = []
 
         self.options = dict(
             line_cap='round',
@@ -157,7 +155,7 @@ class Plot():
                 self.options[name] = value
 
     def line(self, x=[], y=[], z=None, label=None, omit=True,
-        xref=None, yref=None, **options):
+        xref=None, yref=None, code=None, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -168,10 +166,11 @@ class Plot():
         self.lines.append(locals())
 
     def node(self, x, y, content, **options):
-        self.nodes.append(locals())
+        self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
+            % (csv(node['options']), x, y, content))
 
     def code(self, data):
-        self.codes.append(data)
+        self.line(code=data)
 
     def clear(self):
         self.lines = []
@@ -447,28 +446,21 @@ class Plot():
 
                     file.write(' };')
 
-            # insert TikZ code with special coordinates:
+                # insert TikZ code with special coordinates:
 
-            for code in self.codes:
-                for x in 'x', 'y':
-                    code = re.sub('<%s=(.*?)>' % x, lambda match: '%.3f'
-                        % (scale[x] * (float(match.group(1)) - lower[x])), code)
+                if line['code']:
+                    code = line['code']
 
-                    code = re.sub('<d%s=(.*?)>' % x, lambda match: '%.3f'
-                        % (scale[x] * float(match.group(1))), code)
+                    for x in 'x', 'y':
+                        code = re.sub('<%s=(.*?)>' % x, lambda match: '%.3f'
+                            % (scale[x] * (float(match.group(1)) - lower[x])),
+                            code)
 
-                file.write(code)
+                        code = re.sub('<d%s=(.*?)>' % x, lambda match: '%.3f'
+                            % (scale[x] * float(match.group(1))),
+                            code)
 
-            # write nodes:
-
-            for node in self.nodes:
-                r = dict()
-
-                for x in 'x', 'y':
-                    r[x] = scale[x] * (node[x] - lower[x])
-
-                file.write('\n\t\\node [%s] at (%.3f, %.3f) {%s};'
-                    % (csv(node['options']), r['x'], r['y'], node['content']))
+                    file.write(code)
 
             # add label
 
