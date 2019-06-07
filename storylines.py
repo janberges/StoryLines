@@ -197,7 +197,7 @@ class Plot():
 
     def node(self, x, y, content, **options):
         self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
-            % (csv(node['options']), x, y, content))
+            % (csv(options), x, y, content))
 
     def code(self, data):
         self.line(code=data)
