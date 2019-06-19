@@ -163,6 +163,7 @@ class Plot():
 
         self.axes = True
         self.axes_first = False
+        self.frame = True
         self.colorbar = True
         self.outline = False
 
@@ -392,6 +393,11 @@ class Plot():
                         file.write(';')
 
                     # draw coordinate axes
+
+                    if self.frame:
+                        file.write('\n\t\\draw [gray, line cap=butt]'
+                            '\n\t\t(%.3f, 0) -- (%.3f, %.3f) -- (0, %.3f);'
+                            % tuple(extent[x] for x in 'xxyy'))
 
                     file.write('\n\t\\draw [%s, line cap=butt]'
                         % ('->' if colorbar else '<->'))
