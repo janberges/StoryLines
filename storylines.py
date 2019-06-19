@@ -580,7 +580,7 @@ class Plot():
                             '{ (0, %(n)d) (0.5, %(n)d) (1, %(n)d) };'
                             % dict(n=line))
 
-                    file.write('\n\t\t\\end{tikzpicture}')
+                    file.write('\n\t\t\\end{tikzpicture}%')
 
                 file.write('\n\t\t};')
 
