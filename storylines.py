@@ -71,7 +71,7 @@ def relevant(points, error=1e-3):
                 if included(phi - delta):
                     lower = phi - delta
 
-def cut(points, minimum, maximum):
+def cut(points, minimum, maximum, join=False):
     points = [tuple(point) for point in points]
 
     n = 1
@@ -93,7 +93,7 @@ def cut(points, minimum, maximum):
         if minimum <= point[1] <= maximum:
             group.append(point)
 
-        elif group:
+        elif group and not join:
             yield group
             group = []
 
