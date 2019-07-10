@@ -100,6 +100,15 @@ def cut(points, minimum, maximum, join=False):
     if group:
         yield group
 
+def cut2d(points, xmin, xmax, ymin, ymax):
+    for group in cut(points, ymin, ymax):
+        group = [(y, x) for x, y in group]
+
+        for group in cut(group, xmin, xmax):
+            group = [(x, y) for y, x in group]
+
+            yield group
+
 def groups(iterable, size=4):
     group = []
 
