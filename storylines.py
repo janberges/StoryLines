@@ -161,8 +161,7 @@ class Plot():
         self.gap = 0.0
         self.tip = 0.1
 
-        self.axes = True
-        self.axes_first = False
+        self.xyaxes = True
         self.frame = True
         self.colorbar = True
         self.outline = False
@@ -186,7 +185,7 @@ class Plot():
                 self.options[name] = value
 
     def line(self, x=[], y=[], z=None, label=None, omit=True,
-        xref=None, yref=None, code=None, **options):
+        xref=None, yref=None, code=None, axes=False, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -202,6 +201,9 @@ class Plot():
 
     def code(self, data):
         self.line(code=data)
+
+    def axes(self):
+        self.line(axes=True)
 
     def clear(self):
         self.lines = []
@@ -358,6 +360,9 @@ class Plot():
                 file.write(']{%s} };' % self.background)
 
             def draw_axes():
+                if draw_axes.done:
+                    return
+
                 # paint colorbar
 
                 if colorbar:
@@ -374,7 +379,7 @@ class Plot():
                             '[rotate=90, below] at (%.3f, %.3f) {%s};'
                             % (extent['x'] + self.tip, z, label))
 
-                if self.axes:
+                if self.xyaxes:
                     # draw tick marks and labels
 
                     if ticks['x'] or ticks['y']:
@@ -440,8 +445,9 @@ class Plot():
 
                     file.write('\n\t\t{%s};' % self.zlabel)
 
-            if self.axes_first:
-                draw_axes()
+                draw_axes.done = True
+
+            draw_axes.done = False
 
             # plot lines
 
@@ -502,8 +508,10 @@ class Plot():
 
                     file.write(code)
 
-            if not self.axes_first:
-                draw_axes()
+                if line['axes']:
+                    draw_axes()
+
+            draw_axes()
 
             # add label
 
