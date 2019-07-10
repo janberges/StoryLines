@@ -207,8 +207,6 @@ class Plot():
 
     def clear(self):
         self.lines = []
-        self.nodes = []
-        self.codes = []
 
     def save(self, filename, external=False, standalone=False, pdf=False,
             clean=True):
