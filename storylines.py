@@ -217,8 +217,7 @@ class Plot():
     def clear(self):
         self.lines = []
 
-    def save(self, filename, external=False, standalone=False, pdf=False,
-            clean=True):
+    def save(self, filename, external=False, standalone=False, pdf=False):
 
         # determine extent of the plotting area:
 
@@ -311,7 +310,9 @@ class Plot():
 
         labels = []
 
-        with open(filename, 'w') as file:
+        stem = filename.rsplit('.', 1)[0].rsplit('/', 1)[-1]
+
+        with open('%s.tex' % stem, 'w') as file:
             # print premable and open document
 
             if standalone:
@@ -327,8 +328,7 @@ class Plot():
             # set filename for externalization
 
             elif external:
-                file.write('\\tikzsetnextfilename{%s}\n%%\n'
-                    % filename.rsplit('.', 1)[0].rsplit('/', 1)[-1])
+                file.write('\\tikzsetnextfilename{%s}\n%%\n' % stem)
 
             # open TikZ environment
 
@@ -622,10 +622,7 @@ class Plot():
         # typeset document and clean up:
 
         if standalone and pdf:
-            os.system('pdflatex --interaction=batchmode %s' % filename)
+            os.system('pdflatex --interaction=batchmode %s.tex' % stem)
 
-            if clean and filename.endswith('.tex'):
-                stem = filename[:-4]
-
-                for suffix in 'aux', 'log', 'tex':
-                    os.system('rm %s.%s' % (stem, suffix))
+            for suffix in 'aux', 'log':
+                os.system('rm %s.%s' % (stem, suffix))
