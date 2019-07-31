@@ -100,11 +100,11 @@ def cut(points, minimum, maximum, join=False):
     if group:
         yield group
 
-def cut2d(points, xmin, xmax, ymin, ymax):
-    for group in cut(points, ymin, ymax):
+def cut2d(points, xmin, xmax, ymin, ymax, join=False):
+    for group in cut(points, ymin, ymax, join):
         group = [(y, x) for x, y in group]
 
-        for group in cut(group, xmin, xmax):
+        for group in cut(group, xmin, xmax, join):
             group = [(x, y) for y, x in group]
 
             yield group
@@ -217,7 +217,7 @@ class Plot():
     def clear(self):
         self.lines = []
 
-    def cut(self, xmin=None, xmax=None, ymin=None, ymax=None):
+    def cut(self, xmin=None, xmax=None, ymin=None, ymax=None, join=False):
         new_lines = []
 
         if xmin is None: xmin = self.xmin
@@ -229,7 +229,7 @@ class Plot():
             x = line.pop('x')
             y = line.pop('y')
 
-            for group in cut2d(list(zip(x, y)), xmin, xmax, ymin, ymax):
+            for group in cut2d(list(zip(x, y)), xmin, xmax, ymin, ymax, join):
                 new_line = line.copy()
 
                 new_line['x'], new_line['y'] = tuple(zip(*group))
