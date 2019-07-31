@@ -217,6 +217,26 @@ class Plot():
     def clear(self):
         self.lines = []
 
+    def cut(self, xmin=None, xmax=None, ymin=None, ymax=None):
+        new_lines = []
+
+        if xmin is None: xmin = self.xmin
+        if xmax is None: xmax = self.xmax
+        if ymin is None: ymin = self.ymin
+        if ymax is None: ymax = self.ymax
+
+        for line in self.lines:
+            x = line.pop('x')
+            y = line.pop('y')
+
+            for group in cut2d(list(zip(x, y)), xmin, xmax, ymin, ymax):
+                new_line = line.copy()
+
+                new_line['x'], new_line['y'] = tuple(zip(*group))
+                new_lines.append(new_line)
+
+        self.lines = new_lines
+
     def save(self, filename, external=False, standalone=False, pdf=False):
 
         # determine extent of the plotting area:
