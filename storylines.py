@@ -202,7 +202,8 @@ class Plot():
         if not hasattr(y, '__len__'):
             y = [y]
 
-        self.lines.append(locals())
+        self.lines.append(dict(x=x, y=y, z=z, label=label, omit=omit,
+            xref=xref, yref=yref, code=code, axes=axes, options=options))
 
     def node(self, x, y, content, **options):
         self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
