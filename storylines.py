@@ -218,7 +218,9 @@ class Plot():
     def clear(self):
         self.lines = []
 
-    def cut(self, xmin=None, xmax=None, ymin=None, ymax=None, join=False):
+    def cut(self, xmin=None, xmax=None, ymin=None, ymax=None, join=False,
+            first=None, last=None):
+
         new_lines = []
 
         if xmin is None: xmin = self.xmin
@@ -226,7 +228,7 @@ class Plot():
         if ymin is None: ymin = self.ymin
         if ymax is None: ymax = self.ymax
 
-        for line in self.lines:
+        for line in self.lines[first:last]:
             x = line.pop('x')
             y = line.pop('y')
 
@@ -236,7 +238,7 @@ class Plot():
                 new_line['x'], new_line['y'] = tuple(zip(*group))
                 new_lines.append(new_line)
 
-        self.lines = new_lines
+        self.lines[first:last] = new_lines
 
     def save(self, filename, external=False, standalone=False, pdf=False):
 
