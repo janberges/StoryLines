@@ -241,6 +241,8 @@ class Plot():
         self.lines[first:last] = new_lines
 
     def save(self, filename, external=False, standalone=False, pdf=False):
+        if pdf:
+            standalone = True
 
         # determine extent of the plotting area:
 
@@ -644,7 +646,7 @@ class Plot():
 
         # typeset document and clean up:
 
-        if standalone and pdf:
+        if pdf:
             os.system('pdflatex --interaction=batchmode %s.tex' % stem)
 
             for suffix in 'aux', 'log':
