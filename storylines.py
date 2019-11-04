@@ -164,6 +164,7 @@ class Plot():
         self.lpos = 'lt'
         self.lopt = 'below left'
         self.llen = '4mm'
+        self.lbls = '\\baselineskip'
         self.lbox = False
 
         self.tick = '0.7mm'
@@ -608,8 +609,8 @@ class Plot():
 
                 if labels:
                     file.write('\n\t\t\\begin{tikzpicture}'
-                        '[x=%s, y=\\baselineskip, mark indices={2}]'
-                        % self.llen)
+                        '[x=%s, y=%s, mark indices={2}]'
+                        % (self.llen, self.lbls))
 
                     for line, (options, label) in enumerate(reversed(labels)):
                         file.write('\n\t\t\t\\node [right] at (1, %d) {%s};'
