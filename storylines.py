@@ -336,7 +336,12 @@ class Plot():
 
         labels = []
 
-        stem = filename.rsplit('.', 1)[0].rsplit('/', 1)[-1]
+        head, tail = os.path.split(filename)
+        stem = os.path.splitext(tail)[0]
+
+        if head:
+            cwd = os.getcwd()
+            os.chdir(head)
 
         with open('%s.tex' % stem, 'w') as file:
             # print premable and open document
@@ -652,3 +657,6 @@ class Plot():
 
             for suffix in 'aux', 'log':
                 os.system('rm %s.%s' % (stem, suffix))
+
+        if head:
+            os.chdir(cwd)
