@@ -230,11 +230,16 @@ class Plot():
         if ymax is None: ymax = self.ymax
 
         for line in self.lines[first:last]:
+            if line['axes'] or line['code']:
+                new_lines.append(line)
+                continue
+
             x = line.pop('x')
             y = line.pop('y')
 
             for group in cut2d(list(zip(x, y)), xmin, xmax, ymin, ymax, join):
                 new_line = line.copy()
+                line['label'] = None
 
                 new_line['x'], new_line['y'] = tuple(zip(*group))
                 new_lines.append(new_line)
