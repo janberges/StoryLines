@@ -125,7 +125,7 @@ def groups(iterable, size=4):
 def csv(options):
     return ', '.join(key.replace('_', ' ')
         + ('' if value is True else '=%s' % value)
-        for key, value in options.items()
+        for key, value in sorted(options.items())
         if value is not False)
 
 pt = 2.54 / 72 # cm
