@@ -505,6 +505,9 @@ class Plot():
                     line['options']['color'] = '%s!%.1f!%s' \
                         % (self.upper, 100 * ratio, self.lower)
 
+                    if 'ball_color' in line['options']:
+                        line['options']['ball_color'] = line['options']['color']
+
                 options = csv(line['options'])
 
                 if line['label'] is not None:
