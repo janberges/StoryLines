@@ -508,13 +508,12 @@ class Plot():
                     if 'ball_color' in line['options']:
                         line['options']['ball_color'] = line['options']['color']
 
-                options = csv(line['options'])
-
                 if line['label'] is not None:
-                    labels.append([options, line['label']])
+                    labels.append([line['options'], line['label']])
 
                 if len(line['x']) and len(line['y']):
-                    file.write('\n\t\\draw [%s] plot coordinates {' % options)
+                    file.write('\n\t\\draw [%s] plot coordinates {'
+                        % csv(line['options']))
 
                     for x, y in ('x', 'y'), ('y', 'x'):
                         xref = line[x + 'ref']
@@ -621,18 +620,35 @@ class Plot():
                             file.write('[%s]' % self.lsep)
 
                 if labels:
-                    file.write('\n\t\t\\begin{tikzpicture}'
-                        '[x=%s, y=%s, mark indices={2}]'
+                    file.write('\n\t\t\\begin{tikzpicture}[x=%s, y=%s]'
                         % (self.llen, self.lbls))
 
                     for line, (options, label) in enumerate(reversed(labels)):
                         file.write('\n\t\t\t\\node [right] at (1, %d) {%s};'
                             % (line, label))
 
-                        file.write('\n\t\t\t\\draw [%s]' % options)
-                        file.write('\n\t\t\t\tplot coordinates '
-                            '{ (0, %(n)d) (0.5, %(n)d) (1, %(n)d) };'
-                            % dict(n=line))
+                        draw  = not options.get('only_marks')
+                        draw &= not options.get('draw') == 'none'
+                        mark = 'mark' in options
+
+                        if draw or mark:
+                            if draw and mark:
+                                options['mark_indices'] = '{2}'
+
+                            file.write('\n\t\t\t\\draw [%s]' % csv(options))
+                            file.write('\n\t\t\t\tplot coordinates ')
+
+                            if draw and mark:
+                                file.write('{ (0, %d) (0.5, %d) (1, %d) };'
+                                    % (line, line, line))
+
+                            elif draw:
+                                file.write('{ (0, %d) (1, %d) };'
+                                    % (line, line))
+
+                            elif mark:
+                                file.write('{ (0.5, %d) };'
+                                    % (line))
 
                     file.write('\n\t\t\\end{tikzpicture}%')
 
