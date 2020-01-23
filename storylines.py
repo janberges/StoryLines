@@ -624,8 +624,9 @@ class Plot():
                         % (self.llen, self.lbls))
 
                     for line, (options, label) in enumerate(reversed(labels)):
-                        file.write('\n\t\t\t\\node [right] at (1, %d) {%s};'
-                            % (line, label))
+                        if label:
+                            file.write('\n\t\t\t\\node [right] at (1, %d) {%s};'
+                                % (line, label))
 
                         draw  = not options.get('only_marks')
                         draw &= not options.get('draw') == 'none'
