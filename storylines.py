@@ -158,14 +158,16 @@ class Plot():
 
         self.label = None
 
-        self.ltop = None
         self.lali = 'center'
-        self.lsep = None
-        self.lpos = 'lt'
-        self.lopt = 'below left'
-        self.llen = '4mm'
         self.lbls = '\\baselineskip'
         self.lbox = False
+        self.lcol = 1
+        self.llen = '4mm'
+        self.lopt = 'below left'
+        self.lpos = 'lt'
+        self.lsep = None
+        self.ltop = None
+        self.lwid = 4.0
 
         self.tick = '0.7mm'
         self.gap = 0.0
@@ -620,13 +622,19 @@ class Plot():
                             file.write('[%s]' % self.lsep)
 
                 if labels:
-                    file.write('\n\t\t\\begin{tikzpicture}[x=%s, y=%s]'
+                    file.write('\n\t\t\\begin{tikzpicture}[x=%s, y=-%s]'
                         % (self.llen, self.lbls))
 
-                    for line, (options, label) in enumerate(reversed(labels)):
+                    lrow = 1 + (len(labels) - 1) // self.lcol
+
+                    for n, (options, label) in enumerate(labels):
+                        col = n // lrow
+                        row = n %  lrow
+
                         if label:
-                            file.write('\n\t\t\t\\node [right] at (1, %d) {%s};'
-                                % (line, label))
+                            file.write('\n\t\t\t\\node '
+                                '[right] at (%.3f, %d) {%s};'
+                                % (col * self.lwid + 1, row, label))
 
                         draw  = not options.get('only_marks')
                         draw &= not options.get('draw') == 'none'
@@ -640,16 +648,19 @@ class Plot():
                             file.write('\n\t\t\t\tplot coordinates ')
 
                             if draw and mark:
-                                file.write('{ (0, %d) (0.5, %d) (1, %d) };'
-                                    % (line, line, line))
-
+                                x = [0.0, 0.5, 1.0]
                             elif draw:
-                                file.write('{ (0, %d) (1, %d) };'
-                                    % (line, line))
-
+                                x = [0.0, 1.0]
                             elif mark:
-                                file.write('{ (0.5, %d) };'
-                                    % (line))
+                                x = [0.5]
+
+                            file.write('{')
+
+                            for m in range(len(x)):
+                                file.write(' (%.3f, %d)'
+                                    % (col * self.lwid + x[m], row))
+
+                            file.write(' };')
 
                     file.write('\n\t\t\\end{tikzpicture}%')
 
