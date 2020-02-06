@@ -165,6 +165,7 @@ class Plot():
         self.llen = '4mm'
         self.lopt = 'below left'
         self.lpos = 'lt'
+        self.lrow = 0
         self.lsep = None
         self.ltop = None
         self.lwid = 4.0
@@ -625,7 +626,7 @@ class Plot():
                     file.write('\n\t\t\\begin{tikzpicture}[x=%s, y=-%s]'
                         % (self.llen, self.lbls))
 
-                    lrow = 1 + (len(labels) - 1) // self.lcol
+                    lrow = self.lrow or 1 + (len(labels) - 1) // self.lcol
 
                     for n, (options, label) in enumerate(labels):
                         col = n // lrow
