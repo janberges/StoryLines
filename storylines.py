@@ -515,14 +515,15 @@ class Plot():
                 5 if extent['y'] < 10 else 6)
 
             for line in self.lines:
-                if line['z'] is not None and 'color' not in line['options']:
+                if line['z'] is not None:
                     ratio = (line['z'] - lower['z']) / (upper['z'] - lower['z'])
 
-                    line['options']['color'] = '%s!%.1f!%s' \
-                        % (self.upper, 100 * ratio, self.lower)
+                    line['options'].setdefault('color',
+                        '%s!%.1f!%s' % (self.upper, 100 * ratio, self.lower))
 
-                    if 'ball_color' in line['options']:
-                        line['options']['ball_color'] = line['options']['color']
+                    if line['options'].get('mark') == 'ball':
+                        line['options'].setdefault('ball_color',
+                            line['options']['color'])
 
                 if line['label'] is not None:
                     labels.append([line['options'], line['label']])
