@@ -283,6 +283,8 @@ class Plot():
                     line[x] = [lower[x], upper[x]]
                     line[y] = [line[y][0]] * 2
 
+                    line['options'].setdefault('line_cap', 'butt')
+
         # determine width or height for proportional plot:
 
         if not self.height:
