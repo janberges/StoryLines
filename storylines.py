@@ -198,7 +198,7 @@ class Plot():
                 self.options[name] = value
 
     def line(self, x=[], y=[], z=None, label=None, omit=True,
-        xref=None, yref=None, code=None, axes=False, **options):
+        xref=None, yref=None, code=None, axes=False, frame=False, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -207,7 +207,8 @@ class Plot():
             y = [y]
 
         self.lines.append(dict(x=x, y=y, z=z, label=label, omit=omit,
-            xref=xref, yref=yref, code=code, axes=axes, options=options))
+            xref=xref, yref=yref, code=code, axes=axes, frame=frame,
+            options=options))
 
     def node(self, x, y, content, **options):
         self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
@@ -233,7 +234,7 @@ class Plot():
         if ymax is None: ymax = self.ymax
 
         for line in self.lines[first:last]:
-            if line['axes'] or line['code']:
+            if line['axes'] or line['frame'] or line['code']:
                 new_lines.append(line)
                 continue
 
@@ -405,6 +406,18 @@ class Plot():
 
                 file.write(']{%s} };' % self.background)
 
+            def draw_frame():
+                if draw_frame.done:
+                    return
+
+                file.write('\n\t\\draw [gray, line cap=butt]'
+                    '\n\t\t(%.3f, 0) -- (%.3f, %.3f) -- (0, %.3f);'
+                    % tuple(extent[x] for x in 'xxyy'))
+
+                draw_frame.done = True
+
+            draw_frame.done = False
+
             def draw_axes():
                 if draw_axes.done:
                     return
@@ -446,9 +459,7 @@ class Plot():
                     # draw coordinate axes
 
                     if self.frame:
-                        file.write('\n\t\\draw [gray, line cap=butt]'
-                            '\n\t\t(%.3f, 0) -- (%.3f, %.3f) -- (0, %.3f);'
-                            % tuple(extent[x] for x in 'xxyy'))
+                        draw_frame()
 
                     file.write('\n\t\\draw [%s, line cap=butt]'
                         % ('->' if colorbar else '<->'))
@@ -558,6 +569,9 @@ class Plot():
 
                 if line['axes']:
                     draw_axes()
+
+                if line['frame']:
+                    draw_frame()
 
             draw_axes()
 
