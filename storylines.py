@@ -254,6 +254,14 @@ class Plot():
         if pdf:
             standalone = True
 
+        # interpret negative as inner dimensions:
+
+        if self.width < 0:
+            self.width = -self.width + self.left + self.right
+
+        if self.height < 0:
+            self.height = -self.height + self.bottom + self.top
+
         # determine extent of the plotting area:
 
         extent = {}
