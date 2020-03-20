@@ -533,6 +533,10 @@ class Plot():
                         line['options'].setdefault('ball_color',
                             line['options']['color'])
 
+                if isinstance(line['options'].get('mark_size'), (float, int)):
+                    line['options']['mark_size'] = ('%scm'
+                        % (line['options']['mark_size'] * scale['x']))
+
                 if line['label'] is not None:
                     labels.append([line['options'], line['label']])
 
