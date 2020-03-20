@@ -131,7 +131,7 @@ def csv(options):
 pt = 2.54 / 72 # cm
 
 class Plot():
-    def __init__(self, width=10.0, height=6.0, margin=1.0, **more):
+    def __init__(self, width=8.0, height=6.0, margin=1.0, **more):
         self.width = width
         self.height = height
 
