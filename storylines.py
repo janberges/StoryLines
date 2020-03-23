@@ -594,15 +594,9 @@ class Plot():
             # add label
 
             if self.label is not None:
-                file.write('\n\t\\node [left')
-
-                if ticks['y']:
-                    file.write('=\\baselineskip')
-
-                file.write('] at (-%s, %.3f)'
-                    % (self.tick, extent['y']))
-
-                file.write('\n\t\t{%s};' % self.label)
+                file.write('\n\t\\node at (current bounding box.north west) '
+                    '[below right] {%s};'
+                    % self.label)
 
             # add legend
 
