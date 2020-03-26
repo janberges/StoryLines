@@ -198,7 +198,8 @@ class Plot():
                 self.options[name] = value
 
     def line(self, x=[], y=[], z=None, label=None, omit=True,
-        xref=None, yref=None, code=None, axes=False, frame=False, **options):
+        xref=None, yref=None, code=None, axes=False, frame=False,
+        zindex=None, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -206,19 +207,24 @@ class Plot():
         if not hasattr(y, '__len__'):
             y = [y]
 
-        self.lines.append(dict(x=x, y=y, z=z, label=label, omit=omit,
+        new_line = dict(x=x, y=y, z=z, label=label, omit=omit,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
-            options=options))
+            options=options)
+
+        if zindex is None:
+            self.lines.append(new_line)
+        else:
+            self.lines.insert(zindex, new_line)
 
     def node(self, x, y, content, **options):
         self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
             % (csv(options), x, y, content))
 
-    def code(self, data):
-        self.line(code=data)
+    def code(self, data, **options):
+        self.line(code=data, **options)
 
-    def axes(self):
-        self.line(axes=True)
+    def axes(self, **options):
+        self.line(axes=True, **options)
 
     def clear(self):
         self.lines = []
