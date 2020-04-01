@@ -240,7 +240,9 @@ class Plot():
         if ymax is None: ymax = self.ymax
 
         for line in self.lines[first:last]:
-            if line['axes'] or line['frame'] or line['code']:
+            if (line['axes'] or line['frame'] or line['code']
+                or not len(line['x']) or not len(line['y'])):
+
                 new_lines.append(line)
                 continue
 
