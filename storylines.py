@@ -150,6 +150,7 @@ class Plot():
             setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
             setattr(self, x + 'max', None)
+            setattr(self, x + 'padding', 0.0)
 
         self.lower = 'blue'
         self.upper = 'red'
@@ -290,6 +291,9 @@ class Plot():
 
             upper[x] = xmax if xmax is not None \
                 else max(max(line[x]) for line in self.lines if len(line[x]))
+
+            lower[x] -= getattr(self, x + 'padding')
+            upper[x] += getattr(self, x + 'padding')
 
         # handle horizontal and vertical lines:
 
