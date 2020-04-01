@@ -607,7 +607,7 @@ class Plot():
 
             if self.label is not None:
                 file.write('\n\t\\node at (current bounding box.north west) '
-                    '[below right] {%s};'
+                    '[inner sep=0pt, below right] {%s};'
                     % self.label)
 
             # add legend
