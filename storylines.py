@@ -145,12 +145,13 @@ class Plot():
         for x in 'x', 'y', 'z':
             setattr(self, x + 'label', None)
             setattr(self, x + 'ticks', None)
-            setattr(self, x + 'format', lambda x: '$%g$' % x)
             setattr(self, x + 'spacing', 1.0)
             setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
             setattr(self, x + 'max', None)
             setattr(self, x + 'padding', 0.0)
+            setattr(self, x + 'format',
+                lambda x: ('%g' % x).replace('-', r'\llap{$-$}'))
 
         self.lower = 'blue'
         self.upper = 'red'
