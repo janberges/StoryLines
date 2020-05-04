@@ -549,7 +549,7 @@ class Plot():
                 for option in 'line_width', 'mark_size':
                     if isinstance(line['options'].get(option), (float, int)):
                         line['options'][option] = ('%scm'
-                            % (line['options'][option] * scale['x']))
+                            % (line['options'][option] * scale['y']))
 
                 if line['label'] is not None:
                     labels.append([line['options'], line['label']])
