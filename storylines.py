@@ -249,6 +249,22 @@ class Plot():
         else:
             self.lines.insert(zindex, new_line)
 
+    def compline(self, x, y, weights, colors, **options):
+        shifts = []
+
+        for parts in weights:
+            shifts.append([0])
+            shift = shifts[-1]
+
+            for part in parts:
+                shift.append(shift[-1] + part)
+
+            for m, part in enumerate(parts):
+                shift[m] -= (shift[-1] - part) / 2
+
+        for weight, shift, color in zip(zip(*weights), zip(*shifts), colors):
+            self.line(x, y, weights=weight, shifts=shift, fill=color, **options)
+
     def node(self, x, y, content, **options):
         self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
             % (csv(options), x, y, content))

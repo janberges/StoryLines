@@ -3,12 +3,17 @@
 import numpy as np
 import storylines
 
-x = np.linspace(-np.pi / 2, np.pi / 2, 101)
-y = x ** 2
-z = 0.5 * np.cos(x) ** 2
+N = 301
 
-plot = storylines.Plot(xyaxes=False, margin=0.1)
+x = np.linspace(-np.pi, np.pi, N)
+y = np.cos(x)
 
-plot.line(x, y, weights=z, shifts=z / 2, draw='none', fill='blue')
+w = np.empty((N, 2))
+w[:, 0] = np.cos(5 * x) ** 2 / 2
+w[:, 1] = np.sin(5 * x) ** 2 / 2
+
+plot = storylines.Plot(xyaxes=False, margin=0.5)
+
+plot.compline(x, y, w, colors=['red', 'green'], draw='none')
 
 plot.save('fatband', standalone=True, pdf=True)
