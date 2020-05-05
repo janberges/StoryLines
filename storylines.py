@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import division
-from math import asin, atan2, ceil, floor, log10, pi, sqrt
+from math import asin, atan2, ceil, cos, floor, log10, pi, sin, sqrt
 import os
 import re
 
@@ -70,6 +70,37 @@ def relevant(points, error=1e-3):
 
                 if included(phi - delta):
                     lower = phi - delta
+
+def fatband(points, weight, shift=None):
+    N = len(points)
+
+    x, y = tuple(zip(*points))
+
+    alpha = [(pi / 2 + atan2(y[n + 1] - y[n], x[n + 1] - x[n]))
+        % (2 * pi) for n in range(N - 1)]
+
+    phi = alpha[:1]
+
+    for n in range(N - 2):
+        phi.append(sum(alpha[n:n + 2]) / 2)
+
+        if max(alpha[n:n + 2]) - min(alpha[n:n + 2]) > pi:
+            phi[-1] += pi
+
+    phi.append(alpha[-1])
+
+    X = []
+    Y = []
+
+    if shift is None:
+        shift = [0 for n in range(N)]
+
+    for sgn in 1, -1:
+        for n in range(N) if sgn == 1 else reversed(range(N)):
+            X.append(x[n] + cos(phi[n]) * (shift[n] + sgn * weight[n] / 2))
+            Y.append(y[n] + sin(phi[n]) * (shift[n] + sgn * weight[n] / 2))
+
+    return list(zip(X, Y))
 
 def cut(points, minimum, maximum, join=False):
     points = [tuple(point) for point in points]
@@ -201,7 +232,7 @@ class Plot():
 
     def line(self, x=[], y=[], z=None, label=None, omit=True,
         xref=None, yref=None, code=None, axes=False, frame=False,
-        zindex=None, **options):
+        zindex=None, weights=None, shifts=None, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -211,7 +242,7 @@ class Plot():
 
         new_line = dict(x=x, y=y, z=z, label=label, omit=omit,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
-            options=options)
+            weights=weights, shifts=shifts, options=options)
 
         if zindex is None:
             self.lines.append(new_line)
@@ -570,6 +601,9 @@ class Plot():
 
                     points = list(zip(*[[scale[x] * (n - lower[x])
                         for n in line[x]] for x in ('x', 'y')]))
+
+                    if line['weights'] is not None:
+                        points = fatband(points, line['weights'], line['shifts'])
 
                     if line['omit']:
                         points = relevant(points)
