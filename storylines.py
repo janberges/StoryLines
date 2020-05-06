@@ -656,7 +656,8 @@ class Plot():
                         points = fatband(points, line['weights'], line['shifts'])
 
                     if line['cut']:
-                        points = next(cut2d(points, 0, extent['x'], 0, extent['y'], join=True))
+                        points = next(cut2d(points,
+                            0, extent['x'], 0, extent['y'], join=True), [])
 
                     if line['omit']:
                         points = relevant(points[::line['sgn']])
