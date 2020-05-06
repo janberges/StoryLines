@@ -71,19 +71,19 @@ def relevant(points, error=1e-3):
                 if included(phi - delta):
                     lower = phi - delta
 
-def islands(values, criterion):
+def islands(N, criterion):
     island = []
 
-    for n, value in enumerate(values):
-        if criterion(value):
+    for n in range(N):
+        if criterion(n):
             island.append(n)
 
         elif island:
-            yield slice(island[0], island[-1])
+            yield slice(island[0], island[-1] + 1)
             island = []
 
     if island:
-        yield slice(island[0], island[-1])
+        yield slice(island[0], island[-1] + 1)
 
 def fatband(points, weights, shifts):
     N = len(points)
@@ -129,7 +129,9 @@ def cut(points, minimum, maximum, join=False):
 
         n += 1
 
-    for island in islands(points, lambda point: minimum <= point[1] <= maximum):
+    for island in islands(len(points),
+        lambda n: minimum <= points[n][1] <= maximum):
+
         yield points[island]
 
 def cut2d(points, xmin, xmax, ymin, ymax, join=False):
@@ -233,7 +235,7 @@ class Plot():
 
     def line(self, x=[], y=[], z=None, label=None, omit=True,
         xref=None, yref=None, code=None, axes=False, frame=False,
-        zindex=None, weights=None, shifts=None, **options):
+        zindex=None, weights=None, shifts=None, sgn=+1, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -243,20 +245,21 @@ class Plot():
 
         new_line = dict(x=x, y=y, z=z, label=label, omit=omit,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
-            weights=weights, shifts=shifts, options=options)
+            weights=weights, shifts=shifts, sgn=sgn, options=options)
 
         if zindex is None:
             self.lines.append(new_line)
         else:
             self.lines.insert(zindex, new_line)
 
-    def fatband(self, x, y, weights, shifts=None, threshold=0, **options):
+    def fatband(self, x, y, weights, shifts=None, **options):
         if shifts is None:
             shifts = [0 for n in range(len(weights))]
 
-        for island in islands(weights, lambda weight: weight > threshold):
-            self.line(x[island], y[island], weights=weights[island],
-                shifts=shifts[island], **options)
+        for island in islands(len(weights), lambda n: any(weights[n-1:n+2])):
+            if len(weights[island]) > 1:
+                self.line(x[island], y[island], weights=weights[island],
+                    shifts=shifts[island], **options)
 
     def compline(self, x, y, weights, colors, **options):
         shifts = []
@@ -273,9 +276,8 @@ class Plot():
 
         sgn = +1
         for weights, shifts, color in zip(zip(*weights), zip(*shifts), colors):
-            self.fatband(x[::sgn], y[::sgn], weights=weights[::sgn],
-                shifts=[sgn * shift for shift in shifts[::sgn]], fill=color,
-                **options)
+            self.fatband(x, y, weights=weights, shifts=shifts, fill=color,
+                sgn=sgn, **options)
             sgn *= -1
 
     def node(self, x, y, content, **options):
@@ -635,7 +637,7 @@ class Plot():
                         points = fatband(points, line['weights'], line['shifts'])
 
                     if line['omit']:
-                        points = relevant(points)
+                        points = relevant(points[::line['sgn']])
 
                     for group in groups(points):
                         file.write('\n\t\t')
