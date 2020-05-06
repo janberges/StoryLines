@@ -162,6 +162,26 @@ def csv(options):
         for key, value in sorted(options.items())
         if value is not False)
 
+def goto(filename):
+    head, tail = os.path.split(filename)
+    stem = os.path.splitext(tail)[0]
+
+    if head:
+        cwd = os.getcwd()
+        os.chdir(head)
+
+    def typeset():
+        os.system('pdflatex --interaction=batchmode %s.tex' % stem)
+
+        for suffix in 'aux', 'log':
+            os.system('rm %s.%s' % (stem, suffix))
+
+    def home():
+        if head:
+            os.chdir(cwd)
+
+    return stem, typeset, home
+
 pt = 2.54 / 72 # cm
 
 class Plot():
@@ -433,12 +453,7 @@ class Plot():
 
         labels = []
 
-        head, tail = os.path.split(filename)
-        stem = os.path.splitext(tail)[0]
-
-        if head:
-            cwd = os.getcwd()
-            os.chdir(head)
+        stem, typeset, home = goto(filename)
 
         with open('%s.tex' % stem, 'w') as file:
             # print premable and open document
@@ -815,10 +830,26 @@ class Plot():
         # typeset document and clean up:
 
         if pdf:
-            os.system('pdflatex --interaction=batchmode %s.tex' % stem)
+            typeset()
 
-            for suffix in 'aux', 'log':
-                os.system('rm %s.%s' % (stem, suffix))
+        home()
 
-        if head:
-            os.chdir(cwd)
+def combine(filename, *pdfs, columns=100, align=0.5, pdf=False):
+    stem, typeset, home = goto(filename)
+
+    with open('%s.tex' % stem, 'w') as tex:
+        tex.write('\\documentclass[varwidth=\maxdimen]{standalone}\n'
+            '\\usepackage{graphicx}\n'
+            '\\begin{document}\n'
+            '\\noindent%\n')
+
+        for n, pdf in enumerate(pdfs, 1):
+            tex.write('\\raisebox{-%g\\height}{\\includegraphics{%s.pdf}}%s\n'
+                % (align, pdf, '%' if n % columns else '\\\\[-\\lineskip]'))
+
+        tex.write('\\end{document}\n')
+
+    if pdf:
+        typeset()
+
+    home()
