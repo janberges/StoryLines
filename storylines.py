@@ -71,19 +71,19 @@ def relevant(points, error=1e-3):
                 if included(phi - delta):
                     lower = phi - delta
 
-def islands(N, criterion):
+def islands(N, criterion, join=False):
     island = []
 
     for n in range(N):
         if criterion(n):
             island.append(n)
 
-        elif island:
-            yield slice(island[0], island[-1] + 1)
+        elif island and not join:
+            yield island
             island = []
 
     if island:
-        yield slice(island[0], island[-1] + 1)
+        yield island
 
 def fatband(points, weights, shifts):
     N = len(points)
@@ -130,9 +130,9 @@ def cut(points, minimum, maximum, join=False):
         n += 1
 
     for island in islands(len(points),
-        lambda n: minimum <= points[n][1] <= maximum):
+        lambda n: minimum <= points[n][1] <= maximum, join):
 
-        yield points[island]
+        yield [points[n] for n in island]
 
 def cut2d(points, xmin, xmax, ymin, ymax, join=False):
     for group in cut(points, ymin, ymax, join):
@@ -257,9 +257,10 @@ class Plot():
             shifts = [0 for n in range(len(weights))]
 
         for island in islands(len(weights), lambda n: any(weights[n-1:n+2])):
-            if len(weights[island]) > 1:
-                self.line(x[island], y[island], weights=weights[island],
-                    shifts=shifts[island], **options)
+            if len(island) > 1:
+                n = slice(island[0], island[-1] + 1)
+                self.line(x[n], y[n], weights=weights[n], shifts=shifts[n],
+                    **options)
 
     def compline(self, x, y, weights, colors, **options):
         shifts = []
