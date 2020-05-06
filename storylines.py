@@ -233,7 +233,7 @@ class Plot():
             else:
                 self.options[name] = value
 
-    def line(self, x=[], y=[], z=None, label=None, omit=True,
+    def line(self, x=[], y=[], z=None, label=None, omit=True, cut=False,
         xref=None, yref=None, code=None, axes=False, frame=False,
         zindex=None, weights=None, shifts=None, sgn=+1, **options):
 
@@ -243,7 +243,7 @@ class Plot():
         if not hasattr(y, '__len__'):
             y = [y]
 
-        new_line = dict(x=x, y=y, z=z, label=label, omit=omit,
+        new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
             weights=weights, shifts=shifts, sgn=sgn, options=options)
 
@@ -636,6 +636,9 @@ class Plot():
 
                     if line['weights'] is not None:
                         points = fatband(points, line['weights'], line['shifts'])
+
+                    if line['cut']:
+                        points = next(cut2d(points, 0, extent['x'], 0, extent['y'], join=True))
 
                     if line['omit']:
                         points = relevant(points[::line['sgn']])

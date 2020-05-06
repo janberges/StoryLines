@@ -12,8 +12,8 @@ w = np.empty((N, 2))
 w[:, 0] = np.maximum(0, np.cos(5 * x) ** 3) / 2
 w[:, 1] = np.maximum(0, np.sin(5 * x) ** 3) / 2
 
-plot = storylines.Plot(xyaxes=False, margin=0.5)
+plot = storylines.Plot(margin=0.5)
 
-plot.compline(x, y, w, colors=['red', 'green'], draw='none')
+plot.compline(x, y, w, colors=['red', 'green'], draw='none', cut=True)
 
 plot.save('fatband', standalone=True, pdf=True)
