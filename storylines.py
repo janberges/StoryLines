@@ -71,7 +71,21 @@ def relevant(points, error=1e-3):
                 if included(phi - delta):
                     lower = phi - delta
 
-def fatband(points, weight, shift=None):
+def islands(values, criterion):
+    island = []
+
+    for n, value in enumerate(values):
+        if criterion(value):
+            island.append(n)
+
+        elif island:
+            yield slice(island[0], island[-1])
+            island = []
+
+    if island:
+        yield slice(island[0], island[-1])
+
+def fatband(points, weights, shifts):
     N = len(points)
 
     x, y = tuple(zip(*points))
@@ -92,13 +106,10 @@ def fatband(points, weight, shift=None):
     X = []
     Y = []
 
-    if shift is None:
-        shift = [0 for n in range(N)]
-
     for sgn in 1, -1:
         for n in range(N) if sgn == 1 else reversed(range(N)):
-            X.append(x[n] + cos(phi[n]) * (shift[n] + sgn * weight[n] / 2))
-            Y.append(y[n] + sin(phi[n]) * (shift[n] + sgn * weight[n] / 2))
+            X.append(x[n] + cos(phi[n]) * (shifts[n] + sgn * weights[n] / 2))
+            Y.append(y[n] + sin(phi[n]) * (shifts[n] + sgn * weights[n] / 2))
 
     return list(zip(X, Y))
 
@@ -118,18 +129,8 @@ def cut(points, minimum, maximum, join=False):
 
         n += 1
 
-    group = []
-
-    for point in points:
-        if minimum <= point[1] <= maximum:
-            group.append(point)
-
-        elif group and not join:
-            yield group
-            group = []
-
-    if group:
-        yield group
+    for island in islands(points, lambda point: minimum <= point[1] <= maximum):
+        yield points[island]
 
 def cut2d(points, xmin, xmax, ymin, ymax, join=False):
     for group in cut(points, ymin, ymax, join):
@@ -249,6 +250,14 @@ class Plot():
         else:
             self.lines.insert(zindex, new_line)
 
+    def fatband(self, x, y, weights, shifts=None, threshold=0, **options):
+        if shifts is None:
+            shifts = [0 for n in range(len(weights))]
+
+        for island in islands(weights, lambda weight: weight > threshold):
+            self.line(x[island], y[island], weights=weights[island],
+                shifts=shifts[island], **options)
+
     def compline(self, x, y, weights, colors, **options):
         shifts = []
 
@@ -263,7 +272,8 @@ class Plot():
                 shift[m] -= (shift[-1] - part) / 2
 
         for weight, shift, color in zip(zip(*weights), zip(*shifts), colors):
-            self.line(x, y, weights=weight, shifts=shift, fill=color, **options)
+            self.fatband(x, y, weights=weight, shifts=shift, fill=color,
+                **options)
 
     def node(self, x, y, content, **options):
         self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
