@@ -235,7 +235,8 @@ class Plot():
 
     def line(self, x=[], y=[], z=None, label=None, omit=True, cut=False,
         xref=None, yref=None, code=None, axes=False, frame=False,
-        zindex=None, weights=None, shifts=None, sgn=+1, **options):
+        zindex=None, weights=None, shifts=None, sgn=+1, protrusion=0,
+        **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -245,7 +246,8 @@ class Plot():
 
         new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
-            weights=weights, shifts=shifts, sgn=sgn, options=options)
+            weights=weights, shifts=shifts, sgn=sgn, protrusion=protrusion,
+            options=options)
 
         if zindex is None:
             self.lines.append(new_line)
@@ -633,6 +635,22 @@ class Plot():
 
                     points = list(zip(*[[scale[x] * (n - lower[x])
                         for n in line[x]] for x in ('x', 'y')]))
+
+                    if line['protrusion']:
+                        for i, j in (1, 0), (-2, -1):
+                            if line['weights'] is not None:
+                                if not line['weights'][j]:
+                                    continue
+
+                            dx = points[j][0] - points[i][0]
+                            dy = points[j][1] - points[i][1]
+                            dr = sqrt(dx * dx + dy * dy)
+                            rescale = 1 + line['protrusion'] / dr
+
+                            points[j] = (
+                                points[i][0] + dx * rescale,
+                                points[i][1] + dy * rescale,
+                                )
 
                     if line['weights'] is not None:
                         points = fatband(points, line['weights'], line['shifts'])
