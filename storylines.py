@@ -271,9 +271,12 @@ class Plot():
             for m, part in enumerate(parts):
                 shift[m] -= (shift[-1] - part) / 2
 
-        for weight, shift, color in zip(zip(*weights), zip(*shifts), colors):
-            self.fatband(x, y, weights=weight, shifts=shift, fill=color,
+        sgn = +1
+        for weights, shifts, color in zip(zip(*weights), zip(*shifts), colors):
+            self.fatband(x[::sgn], y[::sgn], weights=weights[::sgn],
+                shifts=[sgn * shift for shift in shifts[::sgn]], fill=color,
                 **options)
+            sgn *= -1
 
     def node(self, x, y, content, **options):
         self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
