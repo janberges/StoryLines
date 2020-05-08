@@ -116,7 +116,7 @@ def fatband(points, weights, shifts):
 def cut(points, minimum, maximum, join=False):
     points = [tuple(point) for point in points]
 
-    n = 1
+    n = 0 if join else 1
 
     while n < len(points):
         x1, y1 = points[n - 1]
