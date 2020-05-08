@@ -85,13 +85,16 @@ def islands(N, criterion, join=False):
     if island:
         yield island
 
-def fatband(points, weights, shifts):
+def fatband(points, weights, shifts, nib=None):
     N = len(points)
 
     x, y = tuple(zip(*points))
 
-    alpha = [(pi / 2 + atan2(y[n + 1] - y[n], x[n + 1] - x[n]))
-        % (2 * pi) for n in range(N - 1)]
+    if nib is not None:
+        alpha = [nib] * (N - 1)
+    else:
+        alpha = [(pi / 2 + atan2(y[n + 1] - y[n], x[n + 1] - x[n]))
+            % (2 * pi) for n in range(N - 1)]
 
     phi = alpha[:1]
 
@@ -256,7 +259,7 @@ class Plot():
     def line(self, x=[], y=[], z=None, label=None, omit=True, cut=False,
         xref=None, yref=None, code=None, axes=False, frame=False,
         zindex=None, weights=None, shifts=None, sgn=+1, protrusion=0,
-        **options):
+        nib=None, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -267,7 +270,7 @@ class Plot():
         new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
             weights=weights, shifts=shifts, sgn=sgn, protrusion=protrusion,
-            options=options)
+            nib=nib, options=options)
 
         if zindex is None:
             self.lines.append(new_line)
@@ -673,7 +676,8 @@ class Plot():
                                 )
 
                     if line['weights'] is not None:
-                        points = fatband(points, line['weights'], line['shifts'])
+                        points = fatband(points, line['weights'], line['shifts'],
+                            line['nib'])
 
                     if line['cut']:
                         points = next(cut2d(points,
