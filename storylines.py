@@ -843,7 +843,7 @@ class Plot():
 
         home()
 
-def combine(filename, columns=100, align=0.5, pdf=False, *pdfs):
+def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
     stem, typeset, home = goto(filename)
 
     with open('%s.tex' % stem, 'w') as tex:
