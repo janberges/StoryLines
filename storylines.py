@@ -289,7 +289,7 @@ class Plot():
                 self.line(x[n], y[n], weights=weights[n], shifts=shifts[n],
                     **options)
 
-    def compline(self, x, y, weights, colors, threshold=0.0, thickness=0.1,
+    def compline(self, x, y, weights, colors, threshold=0.0, thickness=1.0,
             **options):
 
         weights = [[0 if part < threshold else part * thickness
