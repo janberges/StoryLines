@@ -309,8 +309,7 @@ class Plot():
 
         sgn = +1
         for weights, shifts, color in zip(zip(*weights), zip(*shifts), colors):
-            self.fatband(x, y, weights=weights, shifts=shifts, fill=color,
-                sgn=sgn, **options)
+            self.fatband(x, y, weights, shifts, fill=color, sgn=sgn, **options)
             sgn *= -1
 
     def node(self, x, y, content, **options):
