@@ -184,18 +184,22 @@ def miter_butt(points, width, weights, shifts):
 
     return list(zip(XA + XB[::-1], YA + YB[::-1]))
 
-def shortcut(points, search=300):
+def shortcut(points, search=300, search_rel=0.5):
     N = len(points)
 
     x, y = tuple(zip(*points))
 
     shortcuts = []
 
-    for n1 in range(N - 1):
+    n1 = 0
+    while n1 < N - 1:
         dx1 = x[n1 + 1] - x[n1]
         dy1 = y[n1 + 1] - y[n1]
 
-        for n2 in range(n1 + 2, min(n1 + search, N - 1)):
+        nmax = min(n1 + search, n1 + search_rel * N, N - 1)
+
+        n2 = n1 + 2
+        while n2 < nmax:
             dx2 = x[n2 + 1] - x[n2]
             dy2 = y[n2 + 1] - y[n2]
 
@@ -204,12 +208,17 @@ def shortcut(points, search=300):
             if det:
                 u = (-dy2 * (x[n2] - x[n1]) + dx2 * (y[n2] - y[n1])) / det
 
-                if 0 <= u <= 1:
+                if 0 < u <= 1:
                     v = (-dy1 * (x[n2] - x[n1]) + dx1 * (y[n2] - y[n1])) / det
 
-                    if 0 <= v <= 1:
+                    if 0 <= v < 1:
                         shortcuts.append((n1, n2,
                             x[n1] + u * dx1, y[n1] + u * dy1))
+
+                        n1 = n2
+                        break
+            n2 += 1
+        n1 += 1
 
     x = list(x)
     y = list(y)
