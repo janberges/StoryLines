@@ -281,7 +281,9 @@ class Plot():
         if shifts is None:
             shifts = [0 for n in range(len(weights))]
 
-        for island in islands(len(weights), lambda n: any(weights[n-1:n+2])):
+        for island in islands(len(weights),
+            lambda n: any(weights[max(n - 1, 0):n + 2])):
+
             if len(island) > 1:
                 n = slice(island[0], island[-1] + 1)
                 self.line(x[n], y[n], weights=weights[n], shifts=shifts[n],
