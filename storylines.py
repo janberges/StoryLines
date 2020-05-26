@@ -184,6 +184,42 @@ def miter_butt(points, width, weights, shifts):
 
     return list(zip(XA + XB[::-1], YA + YB[::-1]))
 
+def shortcut(points, search=300):
+    N = len(points)
+
+    x, y = tuple(zip(*points))
+
+    shortcuts = []
+
+    for n1 in range(N - 1):
+        dx1 = x[n1 + 1] - x[n1]
+        dy1 = y[n1 + 1] - y[n1]
+
+        for n2 in range(n1 + 2, min(n1 + search, N - 1)):
+            dx2 = x[n2 + 1] - x[n2]
+            dy2 = y[n2 + 1] - y[n2]
+
+            det = dy1 * dx2 - dx1 * dy2
+
+            if det:
+                u = (-dy2 * (x[n2] - x[n1]) + dx2 * (y[n2] - y[n1])) / det
+
+                if 0 <= u <= 1:
+                    v = (-dy1 * (x[n2] - x[n1]) + dx1 * (y[n2] - y[n1])) / det
+
+                    if 0 <= v <= 1:
+                        shortcuts.append((n1, n2,
+                            x[n1] + u * dx1, y[n1] + u * dy1))
+
+    x = list(x)
+    y = list(y)
+
+    for n1, n2, x0, y0 in reversed(shortcuts):
+        x[n1 + 1:n2 + 1] = [x0]
+        y[n1 + 1:n2 + 1] = [y0]
+
+    return list(zip(x, y))
+
 def cut(points, minimum, maximum, join=False):
     points = [tuple(point) for point in points]
 
@@ -327,7 +363,7 @@ class Plot():
     def line(self, x=[], y=[], z=None, label=None, omit=True, cut=False,
         xref=None, yref=None, code=None, axes=False, frame=False,
         zindex=None, weights=None, shifts=None, sgn=+1, protrusion=0,
-        nib=None, **options):
+        nib=None, shortcut=0, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -338,7 +374,7 @@ class Plot():
         new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
             weights=weights, shifts=shifts, sgn=sgn, protrusion=protrusion,
-            nib=nib, options=options)
+            nib=nib, shortcut=shortcut, options=options)
 
         if zindex is None:
             self.lines.append(new_line)
@@ -748,6 +784,9 @@ class Plot():
                         points = fatband(points, line['weights'], line['shifts'],
                             line['nib'])
                         #points = miter_butt(points, 1, line['weights'], line['shifts'])
+
+                    if line['shortcut']:
+                        points = shortcut(points, line['shortcut'])
 
                     if line['cut']:
                         points = next(cut2d(points,
