@@ -85,7 +85,7 @@ def islands(N, criterion, join=False):
     if island:
         yield island
 
-def fatband(points, weights, shifts, nib=None):
+def fatband(points, width, weights, shifts, nib=None):
     N = len(points)
 
     x, y = tuple(zip(*points))
@@ -111,12 +111,14 @@ def fatband(points, weights, shifts, nib=None):
 
     for sgn in 1, -1:
         for n in range(N) if sgn == 1 else reversed(range(N)):
-            X.append(x[n] + cos(phi[n]) * (shifts[n] + sgn * weights[n] / 2))
-            Y.append(y[n] + sin(phi[n]) * (shifts[n] + sgn * weights[n] / 2))
+            X.append(x[n] + cos(phi[n]) * width
+                * (shifts[n] + sgn * weights[n] / 2))
+            Y.append(y[n] + sin(phi[n]) * width
+                * (shifts[n] + sgn * weights[n] / 2))
 
     return list(zip(X, Y))
 
-def miter_butt(points, width, weights, shifts):
+def miter_butt(points, width, weights, shifts, nib=None):
     N = len(points)
 
     x, y = tuple(zip(*points))
@@ -125,7 +127,10 @@ def miter_butt(points, width, weights, shifts):
     lower = []
 
     for n in range(N - 1):
-        alpha = atan2(y[n + 1] - y[n], x[n + 1] - x[n]) + pi / 2
+        if nib is not None:
+            alpha = nib
+        else:
+            alpha = atan2(y[n + 1] - y[n], x[n + 1] - x[n]) + pi / 2
 
         dx = 0.5 * width * cos(alpha)
         dy = 0.5 * width * sin(alpha)
@@ -370,9 +375,9 @@ class Plot():
                 self.options[name] = value
 
     def line(self, x=[], y=[], z=None, label=None, omit=True, cut=False,
-        xref=None, yref=None, code=None, axes=False, frame=False,
-        zindex=None, weights=None, shifts=None, sgn=+1, protrusion=0,
-        nib=None, shortcut=0, **options):
+        xref=None, yref=None, code=None, axes=False, frame=False, zindex=None,
+        miter=False, thickness=1, weights=None, shifts=None, sgn=+1,
+        protrusion=0, nib=None, shortcut=0, **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -382,8 +387,9 @@ class Plot():
 
         new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
-            weights=weights, shifts=shifts, sgn=sgn, protrusion=protrusion,
-            nib=nib, shortcut=shortcut, options=options)
+            miter=miter, thickness=thickness, weights=weights, shifts=shifts,
+            sgn=sgn, protrusion=protrusion, nib=nib, shortcut=shortcut,
+            options=options)
 
         if zindex is None:
             self.lines.append(new_line)
@@ -402,11 +408,9 @@ class Plot():
                 self.line(x[n], y[n], weights=weights[n], shifts=shifts[n],
                     **options)
 
-    def compline(self, x, y, weights, colors, threshold=0.0, thickness=1.0,
-            **options):
-
-        weights = [[0 if part < threshold else part * thickness
-            for part in parts] for parts in weights]
+    def compline(self, x, y, weights, colors, threshold=0.0, **options):
+        weights = [[0 if part < threshold else part for part in parts]
+            for parts in weights]
 
         shifts = []
 
@@ -790,9 +794,9 @@ class Plot():
                                 )
 
                     if line['weights'] is not None:
-                        points = fatband(points, line['weights'], line['shifts'],
-                            line['nib'])
-                        #points = miter_butt(points, 1, line['weights'], line['shifts'])
+                        points = (miter_butt if line['miter'] else fatband)(
+                            points, line['thickness'], line['weights'],
+                            line['shifts'], line['nib'])
 
                     if line['shortcut']:
                         points = shortcut(points, line['shortcut'])
