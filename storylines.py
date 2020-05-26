@@ -116,6 +116,74 @@ def fatband(points, weights, shifts, nib=None):
 
     return list(zip(X, Y))
 
+def miter_butt(points, width, weights, shifts):
+    N = len(points)
+
+    x, y = tuple(zip(*points))
+
+    upper = []
+    lower = []
+
+    for n in range(N - 1):
+        alpha = atan2(y[n + 1] - y[n], x[n + 1] - x[n]) + pi / 2
+
+        dx = 0.5 * width * cos(alpha)
+        dy = 0.5 * width * sin(alpha)
+
+        lower.append((x[n] - dx, y[n] - dy, x[n + 1] - dx, y[n + 1] - dy))
+        upper.append((x[n] + dx, y[n] + dy, x[n + 1] + dx, y[n + 1] + dy))
+
+    X = []
+    Y = []
+
+    for segs in upper, lower:
+        X.append([segs[0][0]])
+        Y.append([segs[0][1]])
+
+        for n in range(1, N - 1):
+            x1a, y1a, x1b, y1b = segs[n - 1]
+            x2a, y2a, x2b, y2b = segs[n]
+
+            dx1 = x1b - x1a
+            dy1 = y1b - y1a
+
+            dx2 = x2b - x2a
+            dy2 = y2b - y2a
+
+            det = dy1 * dx2 - dx1 * dy2
+
+            if det:
+                X[-1].append((x1a * dy1 * dx2 - y1a * dx1 * dx2
+                    - x2a * dx1 * dy2 + y2a * dx1 * dx2) / det)
+
+                Y[-1].append((x1a * dy1 * dy2 - y1a * dx1 * dy2
+                    - x2a * dy1 * dy2 + y2a * dy1 * dx2) / det)
+            else:
+                X[-1].append(x2a)
+                Y[-1].append(y2a)
+
+        X[-1].append(segs[-1][2])
+        Y[-1].append(segs[-1][3])
+
+    XA = []
+    XB = []
+    YA = []
+    YB = []
+
+    for n in range(N):
+        a1 = 0.5 + shifts[n] - 0.5 * weights[n]
+        a2 = 0.5 - shifts[n] + 0.5 * weights[n]
+        b1 = 0.5 + shifts[n] + 0.5 * weights[n]
+        b2 = 0.5 - shifts[n] - 0.5 * weights[n]
+
+        XA.append(a1 * X[0][n] + a2 * X[1][n])
+        XB.append(b1 * X[0][n] + b2 * X[1][n])
+
+        YA.append(a1 * Y[0][n] + a2 * Y[1][n])
+        YB.append(b1 * Y[0][n] + b2 * Y[1][n])
+
+    return list(zip(XA + XB[::-1], YA + YB[::-1]))
+
 def cut(points, minimum, maximum, join=False):
     points = [tuple(point) for point in points]
 
@@ -679,6 +747,7 @@ class Plot():
                     if line['weights'] is not None:
                         points = fatband(points, line['weights'], line['shifts'],
                             line['nib'])
+                        #points = miter_butt(points, 1, line['weights'], line['shifts'])
 
                     if line['cut']:
                         points = next(cut2d(points,
