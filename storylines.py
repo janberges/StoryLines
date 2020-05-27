@@ -194,36 +194,34 @@ def shortcut(points, search=300, search_rel=0.5):
 
     x, y = tuple(zip(*points))
 
+    search = min(search, search_rel * N)
+
     shortcuts = []
 
-    n1 = 0
-    while n1 < N - 1:
-        dx1 = x[n1 + 1] - x[n1]
-        dy1 = y[n1 + 1] - y[n1]
+    dx = [x[i + 1] - x[i] for i in range(N - 1)]
+    dy = [y[i + 1] - y[i] for i in range(N - 1)]
 
-        nmax = min(n1 + search, n1 + search_rel * N, N - 1)
-
-        n2 = n1 + 2
-        while n2 < nmax:
-            dx2 = x[n2 + 1] - x[n2]
-            dy2 = y[n2 + 1] - y[n2]
-
-            det = dy1 * dx2 - dx1 * dy2
+    i = 0
+    while i < N - 1:
+        for j in range(i + 2, min(i + search, N - 1)):
+            det = dy[i] * dx[j] - dx[i] * dy[j]
 
             if det:
-                u = (-dy2 * (x[n2] - x[n1]) + dx2 * (y[n2] - y[n1])) / det
+                dxij = x[j] - x[i]
+                dyij = y[j] - y[i]
+
+                u = (dx[j] * dyij - dy[j] * dxij) / det
 
                 if 0 < u <= 1:
-                    v = (-dy1 * (x[n2] - x[n1]) + dx1 * (y[n2] - y[n1])) / det
+                    v = (dx[i] * dyij - dy[i] * dxij) / det
 
                     if 0 <= v < 1:
-                        shortcuts.append((n1, n2,
-                            x[n1] + u * dx1, y[n1] + u * dy1))
+                        shortcuts.append((i, j,
+                            x[i] + u * dx[i], y[i] + u * dy[i]))
 
-                        n1 = n2
+                        i = j
                         break
-            n2 += 1
-        n1 += 1
+        i += 1
 
     x = list(x)
     y = list(y)
