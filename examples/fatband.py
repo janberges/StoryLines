@@ -5,15 +5,20 @@ import storylines
 
 N = 301
 
-x = np.linspace(-np.pi, np.pi, N)
-y = np.cos(x)
+phi = np.linspace(-np.pi, np.pi, N)
+x = np.cos(phi)
+y = np.sin(phi)
 
 w = np.empty((N, 2))
-w[:, 0] = np.maximum(0, np.cos(5 * x) ** 3) / 2
-w[:, 1] = np.maximum(0, np.sin(5 * x) ** 3) / 2
+w[:, 0] = np.maximum(0, np.cos(5 * phi) ** 3) / 2
+w[:, 1] = np.maximum(0, np.sin(5 * phi) ** 3) / 2
 
-plot = storylines.Plot(margin=0.5)
+plot = storylines.Plot(height=0, margin=1, ymin=-1, ymax=1)
 
-plot.compline(x, y, w, colors=['red', 'green'], draw='none', cut=True)
+plot.line(1.3 * x, 1.3 * y, draw='none', fill='yellow')
+plot.line(1.4 * x, 1.4 * y, draw='orange', fill='none')
+plot.line(1.5 * x[::N // 50], 1.5 * y[::N // 50], color='red',
+    mark='*', only_marks=True, omit=False)
+plot.compline(phi, x, w, colors=['blue', 'teal'], draw='none')
 
 plot.save('fatband', standalone=True, pdf=True)

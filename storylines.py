@@ -372,7 +372,7 @@ class Plot():
             else:
                 self.options[name] = value
 
-    def line(self, x=[], y=[], z=None, label=None, omit=True, cut=False,
+    def line(self, x=[], y=[], z=None, label=None, omit=True, cut=True, join=None,
         xref=None, yref=None, code=None, axes=False, frame=False, zindex=None,
         miter=False, thickness=1, weights=None, shifts=None, sgn=+1,
         protrusion=0, nib=None, shortcut=0, **options):
@@ -383,7 +383,7 @@ class Plot():
         if not hasattr(y, '__len__'):
             y = [y]
 
-        new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut,
+        new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut, join=join,
             xref=xref, yref=yref, code=code, axes=axes, frame=frame,
             miter=miter, thickness=thickness, weights=weights, shifts=shifts,
             sgn=sgn, protrusion=protrusion, nib=nib, shortcut=shortcut,
@@ -439,35 +439,6 @@ class Plot():
 
     def clear(self):
         self.lines = []
-
-    def cut(self, xmin=None, xmax=None, ymin=None, ymax=None, join=False,
-            first=None, last=None):
-
-        new_lines = []
-
-        if xmin is None: xmin = self.xmin
-        if xmax is None: xmax = self.xmax
-        if ymin is None: ymin = self.ymin
-        if ymax is None: ymax = self.ymax
-
-        for line in self.lines[first:last]:
-            if (line['axes'] or line['frame'] or line['code']
-                or not len(line['x']) or not len(line['y'])):
-
-                new_lines.append(line)
-                continue
-
-            x = line.pop('x')
-            y = line.pop('y')
-
-            for group in cut2d(list(zip(x, y)), xmin, xmax, ymin, ymax, join):
-                new_line = line.copy()
-                line['label'] = None
-
-                new_line['x'], new_line['y'] = tuple(zip(*group))
-                new_lines.append(new_line)
-
-        self.lines[first:last] = new_lines
 
     def save(self, filename, external=False, standalone=False, pdf=False):
         if pdf:
@@ -797,10 +768,21 @@ class Plot():
                         points = shortcut(points, line['shortcut'])
 
                     if line['cut']:
-                        points = next(cut2d(points,
-                            0, extent['x'], 0, extent['y'], join=True), [])
+                        if line['join'] is None:
+                            line['join'] = (line['options'].get('fill')
+                                is not None)
 
-                    if points:
+                        if line['options'].get('only_marks'):
+                            segments = [[(x, y) for x, y in points
+                                if  0 <= x <= extent['x']
+                                and 0 <= y <= extent['y']]]
+                        else:
+                            segments = cut2d(points,
+                                0, extent['x'], 0, extent['y'], line['join'])
+                    else:
+                        segments = [points]
+
+                    for points in segments:
                         if line['omit']:
                             points = relevant(points[::line['sgn']])
 
