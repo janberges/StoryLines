@@ -372,10 +372,31 @@ class Plot():
             else:
                 self.options[name] = value
 
-    def line(self, x=[], y=[], z=None, label=None, omit=True, cut=True, join=None,
-        xref=None, yref=None, code=None, axes=False, frame=False, zindex=None,
-        miter=False, thickness=1, weights=None, shifts=None, sgn=+1,
-        protrusion=0, nib=None, shortcut=0, **options):
+    def line(self,
+            x = [],
+            y = [],
+            z = None,
+
+            axes = False,
+            code = None,
+            cut = True,
+            frame = False,
+            join = None,
+            label = None,
+            miter = False,
+            nib = None,
+            omit = True,
+            protrusion = 0,
+            sgn = +1,
+            shifts = None,
+            shortcut = 0,
+            thickness = 1,
+            weights = None,
+            xref = None,
+            yref = None,
+            zindex = None,
+
+            **options):
 
         if not hasattr(x, '__len__'):
             x = [x]
@@ -383,11 +404,31 @@ class Plot():
         if not hasattr(y, '__len__'):
             y = [y]
 
-        new_line = dict(x=x, y=y, z=z, label=label, omit=omit, cut=cut, join=join,
-            xref=xref, yref=yref, code=code, axes=axes, frame=frame,
-            miter=miter, thickness=thickness, weights=weights, shifts=shifts,
-            sgn=sgn, protrusion=protrusion, nib=nib, shortcut=shortcut,
-            options=options)
+        new_line = dict(
+            x = x,
+            y = y,
+            z = z,
+
+            axes = axes,
+            code = code,
+            cut = cut,
+            frame = frame,
+            join = join,
+            label = label,
+            miter = miter,
+            nib = nib,
+            omit = omit,
+            protrusion = protrusion,
+            sgn = sgn,
+            shifts = shifts,
+            shortcut = shortcut,
+            thickness = thickness,
+            weights = weights,
+            xref = xref,
+            yref = yref,
+
+            options = options,
+            )
 
         if zindex is None:
             self.lines.append(new_line)
