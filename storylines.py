@@ -194,7 +194,7 @@ def shortcut(points, search=300, search_rel=0.5):
 
     x, y = tuple(zip(*points))
 
-    search = min(search, search_rel * N)
+    search = min(search, int(round(search_rel * N)))
 
     shortcuts = []
 
