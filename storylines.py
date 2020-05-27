@@ -759,9 +759,6 @@ class Plot():
                     labels.append([line['options'], line['label']])
 
                 if len(line['x']) and len(line['y']):
-                    file.write('\n\t\\draw [%s] plot coordinates {'
-                        % csv(line['options']))
-
                     for x, y in ('x', 'y'), ('y', 'x'):
                         xref = line[x + 'ref']
 
@@ -803,14 +800,19 @@ class Plot():
                         points = next(cut2d(points,
                             0, extent['x'], 0, extent['y'], join=True), [])
 
-                    if line['omit']:
-                        points = relevant(points[::line['sgn']])
+                    if points:
+                        if line['omit']:
+                            points = relevant(points[::line['sgn']])
 
-                    for group in groups(points):
-                        file.write('\n\t\t')
-                        file.write(' '.join(form % point for point in group))
+                        file.write('\n\t\\draw [%s] plot coordinates {'
+                            % csv(line['options']))
 
-                    file.write(' };')
+                        for group in groups(points):
+                            file.write('\n\t\t')
+                            file.write(' '.join(form % point
+                                for point in group))
+
+                        file.write(' };')
 
                 # insert TikZ code with special coordinates:
 
