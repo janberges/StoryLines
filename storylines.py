@@ -189,21 +189,30 @@ def miter_butt(points, width, weights, shifts, nib=None):
 
     return list(zip(XA + XB[::-1], YA + YB[::-1]))
 
-def shortcut(points, search=300, search_rel=0.5):
-    N = len(points)
-
+def shortcut(points, length=1.0, length_rel=0.5):
     x, y = tuple(zip(*points))
 
-    search = min(search, int(round(search_rel * N)))
+    N = len(x)
 
     shortcuts = []
 
     dx = [x[i + 1] - x[i] for i in range(N - 1)]
     dy = [y[i + 1] - y[i] for i in range(N - 1)]
 
+    dist = [0]
+    for a, b in zip(dx, dy):
+        dist.append(dist[-1] + sqrt(a * a + b * b))
+
+    length = min(length, length_rel * dist[-1])
+
+    end = [d + length for d in dist]
+
     i = 0
     while i < N - 1:
-        for j in range(i + 2, min(i + search, N - 1)):
+        for j in range(i + 2, N - 1):
+            if dist[j] > end[i]:
+                break
+
             det = dy[i] * dx[j] - dx[i] * dy[j]
 
             if det:
@@ -805,9 +814,6 @@ class Plot():
                             points, line['thickness'], line['weights'],
                             line['shifts'], line['nib'])
 
-                    if line['shortcut']:
-                        points = shortcut(points, line['shortcut'])
-
                     if line['cut']:
                         if line['join'] is None:
                             line['join'] = (line['options'].get('fill')
@@ -826,6 +832,9 @@ class Plot():
                     for points in segments:
                         if line['omit']:
                             points = relevant(points[::line['sgn']])
+
+                        if line['shortcut']:
+                            points = shortcut(points, line['shortcut'])
 
                         file.write('\n\t\\draw [%s] plot coordinates {'
                             % csv(line['options']))

@@ -13,7 +13,7 @@ plot = storylines.Plot(margin=1, xyaxes=False)
 
 settings = dict(thickness=1.3, cut=False, thick=True)
 
-for fill, color, shortcut in ('yellow', 'gray', 0), ('none', 'black', 300):
+for fill, color, shortcut in ('yellow', 'gray', 0), ('none', 'black', 1):
     plot.compline(x, y, w.reshape((N, 1)),
         colors=[fill], draw=color, shortcut=shortcut, **settings)
 
