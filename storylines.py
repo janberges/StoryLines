@@ -353,6 +353,7 @@ class Plot():
         self.llen = '4mm'
         self.lopt = 'below left'
         self.lpos = 'lt'
+        self.lput = True
         self.lrow = 0
         self.lsep = None
         self.ltop = None
@@ -883,7 +884,7 @@ class Plot():
 
             # add legend
 
-            if self.ltop is not None or labels:
+            if self.lput and (self.ltop is not None or labels):
                 x = []
                 y = []
 
