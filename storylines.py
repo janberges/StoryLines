@@ -388,7 +388,7 @@ class Plot():
 
             axes = False,
             code = None,
-            cut = True,
+            cut = False,
             frame = False,
             join = None,
             label = None,

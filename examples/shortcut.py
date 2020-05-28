@@ -11,7 +11,7 @@ w = 1 - x ** 2
 
 plot = storylines.Plot(margin=1, xyaxes=False)
 
-settings = dict(thickness=1.3, cut=False, thick=True)
+settings = dict(thickness=1.3, thick=True)
 
 for fill, color, shortcut in ('yellow', 'gray', 0), ('none', 'black', 1):
     plot.compline(x, y, w.reshape((N, 1)),
