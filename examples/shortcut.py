@@ -21,6 +21,16 @@ for fill, miter in ('brown', True), ('yellow', False):
     plot.compline([-0.5, 0, 0.5], [0.8, 1.3, 0.8], [[0.5]] * 3,
         colors=[fill], draw='black', miter=miter, **settings)
 
+plot.line(
+    [-0.2, -0.1, 0.0, 0.1, 0.2, 0.1, 0.0, -0.1, -0.2],
+    [ 0.7,  0.8, 0.7, 0.6, 0.7, 0.8, 0.7,  0.6,  0.7],
+    shortcut=100, shortcut_rel=1)
+
+plot.line(
+    [-0.2, -0.1, 0.0, 0.1, 0.2, 0.1, 0.0, -0.1, -0.2],
+    [ 0.5,  0.6, 0.5, 0.6, 0.5, 0.4, 0.5,  0.4,  0.5],
+    shortcut=100, shortcut_rel=1)
+
 plot.line(x, y, draw='brown', thick=True)
 
 plot.save('shortcut', standalone=True, pdf=True)

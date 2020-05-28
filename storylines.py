@@ -230,7 +230,8 @@ def shortcut(points, length=None, length_rel=1):
                     if 0 <= v < 1:
                         if u == 1 and v == 0 and len(shortcut([(x[k], y[k])
                                 for k in (i, i + 2, j - 1, j + 1)])) == 4:
-                            continue # line touches but does not cross itself
+                            print('Preserve non-crossing intersection')
+                            continue
 
                         shortcuts.append((i, j,
                             x[i] + u * dx[i], y[i] + u * dy[i]))
@@ -411,6 +412,7 @@ class Plot():
             sgn = +1,
             shifts = None,
             shortcut = 0,
+            shortcut_rel = 0.5,
             thickness = 1,
             weights = None,
             xref = None,
@@ -443,6 +445,7 @@ class Plot():
             sgn = sgn,
             shifts = shifts,
             shortcut = shortcut,
+            shortcut_rel = shortcut_rel,
             thickness = thickness,
             weights = weights,
             xref = xref,
@@ -846,7 +849,8 @@ class Plot():
                             points = relevant(points[::line['sgn']])
 
                         if line['shortcut']:
-                            points = shortcut(points, line['shortcut'], 0.5)
+                            points = shortcut(points, line['shortcut'],
+                                line['shortcut_rel'])
 
                         file.write('\n\t\\draw [%s] plot coordinates {'
                             % csv(line['options']))
