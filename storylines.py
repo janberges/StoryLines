@@ -230,13 +230,17 @@ def shortcut(points, length=None, length_rel=1):
                     if 0 <= v < 1:
                         if u == 1 and v == 0 and len(shortcut([(x[k], y[k])
                                 for k in (i, i + 2, j - 1, j + 1)])) == 4:
-                            print('Preserve non-crossing intersection')
+                            print('Preserve non-crossing intersection '
+                                '(%.2g, %.2g)' % (x[j], y[j]))
                             continue
 
                         shortcuts.append((i, j,
                             x[i] + u * dx[i], y[i] + u * dy[i]))
 
-                        looplen = dist[j] - dist[i]
+                        looplen = (
+                            (dist[j + 1] * v + dist[j] * (1 - v)) -
+                            (dist[i + 1] * u + dist[i] * (1 - u)))
+
                         print('Remove loop (%.2gcm, %.2g%%)'
                             % (looplen, looplen / dist[-1] * 100))
 
@@ -247,9 +251,9 @@ def shortcut(points, length=None, length_rel=1):
     x = list(x)
     y = list(y)
 
-    for n1, n2, x0, y0 in reversed(shortcuts):
-        x[n1 + 1:n2 + 1] = [x0]
-        y[n1 + 1:n2 + 1] = [y0]
+    for i, j, x0, y0 in reversed(shortcuts):
+        x[i + 1:j + 1] = [x0]
+        y[i + 1:j + 1] = [y0]
 
     return list(zip(x, y))
 
