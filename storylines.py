@@ -228,6 +228,10 @@ def shortcut(points, length=1.0, length_rel=0.5):
                         shortcuts.append((i, j,
                             x[i] + u * dx[i], y[i] + u * dy[i]))
 
+                        looplen = dist[j] - dist[i]
+                        print('Remove loop (%.2gcm, %.2g%%)'
+                            % (looplen, looplen / dist[-1] * 100))
+
                         i = j
                         break
         i += 1
