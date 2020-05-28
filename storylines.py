@@ -189,7 +189,7 @@ def miter_butt(points, width, weights, shifts, nib=None):
 
     return list(zip(XA + XB[::-1], YA + YB[::-1]))
 
-def shortcut(points, length=1.0, length_rel=0.5):
+def shortcut(points, length=None, length_rel=1):
     x, y = tuple(zip(*points))
 
     N = len(x)
@@ -202,6 +202,9 @@ def shortcut(points, length=1.0, length_rel=0.5):
     dist = [0]
     for a, b in zip(dx, dy):
         dist.append(dist[-1] + sqrt(a * a + b * b))
+
+    if length is None:
+        length = dist[-1]
 
     length = min(length, length_rel * dist[-1])
 
@@ -225,6 +228,10 @@ def shortcut(points, length=1.0, length_rel=0.5):
                     v = (dx[i] * dyij - dy[i] * dxij) / det
 
                     if 0 <= v < 1:
+                        if u == 1 and v == 0 and len(shortcut([(x[k], y[k])
+                                for k in (i, i + 2, j - 1, j + 1)])) == 4:
+                            continue # line touches but does not cross itself
+
                         shortcuts.append((i, j,
                             x[i] + u * dx[i], y[i] + u * dy[i]))
 
@@ -839,7 +846,7 @@ class Plot():
                             points = relevant(points[::line['sgn']])
 
                         if line['shortcut']:
-                            points = shortcut(points, line['shortcut'])
+                            points = shortcut(points, line['shortcut'], 0.5)
 
                         file.write('\n\t\\draw [%s] plot coordinates {'
                             % csv(line['options']))
