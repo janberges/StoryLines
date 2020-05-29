@@ -848,18 +848,26 @@ class Plot():
                     else:
                         segments = [points]
 
-                    for points in segments:
+                    for segment in segments:
                         if line['omit']:
-                            points = relevant(points[::line['sgn']])
+                            segment = relevant(segment[::line['sgn']])
+
+                        elif line['cut'] and line['options'].get('mark') \
+                                and not line['options'].get('only_marks'):
+
+                            line['options']['mark_indices'] \
+                                = '{%s}' % ','.join(str(n)
+                                    for n, point in enumerate(segment, 1)
+                                    if point in points)
 
                         if line['shortcut']:
-                            points = shortcut(points, line['shortcut'],
+                            segment = shortcut(segment, line['shortcut'],
                                 line['shortcut_rel'])
 
                         file.write('\n\t\\draw [%s] plot coordinates {'
                             % csv(line['options']))
 
-                        for group in groups(points):
+                        for group in groups(segment):
                             file.write('\n\t\t')
                             file.write(' '.join(form % point
                                 for point in group))
