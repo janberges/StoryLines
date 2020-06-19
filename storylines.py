@@ -1034,9 +1034,9 @@ def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
             '\\begin{document}\n'
             '\\noindent%\n')
 
-        for n, pdf in enumerate(pdfs, 1):
+        for n in range(len(pdfs)):
             tex.write('\\raisebox{-%g\\height}{\\includegraphics{{%s}.pdf}}%s\n'
-                % (align, pdf, '%' if n % columns else '\\\\[-\\lineskip]'))
+                % (align, pdfs[n], '%' if (n + 1) % columns else '\\\\[-\\lineskip]'))
 
         tex.write('\\end{document}\n')
 
