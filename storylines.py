@@ -496,9 +496,13 @@ class Plot():
             self.fatband(x, y, weights, shifts, fill=color, sgn=sgn, **options)
             sgn *= -1
 
-    def node(self, x, y, content, **options):
-        self.code('\n\t\\node [%s] at (<x=%.3f>, <y=%.3f>) {%s};'
-            % (csv(options), x, y, content))
+    def node(self, x, y, content, name=None, **options):
+        self.code('\n\t\\node %s[%s] at (<x=%.3f>, <y=%.3f>) {%s};'
+            % ('(%s) ' % name if name else '', csv(options), x, y, content))
+
+    def point(self, x, y, name):
+        self.code('\n\t\\coordinate (%s) at (<x=%.3f>, <y=%.3f>);'
+            % (name, x, y))
 
     def code(self, data, **options):
         self.line(code=data, **options)
