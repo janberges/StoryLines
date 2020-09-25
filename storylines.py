@@ -312,6 +312,7 @@ def goto(filename):
 
     if head:
         cwd = os.getcwd()
+        os.system('mkdir -p %s' % head)
         os.chdir(head)
 
     def typeset():
