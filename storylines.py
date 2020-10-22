@@ -697,13 +697,27 @@ class Plot():
                 # paint colorbar
 
                 if colorbar:
-                    file.write('\n\t\\shade [bottom color=%s, top color=%s]'
-                        % (self.lower, self.upper))
+                    if isinstance(colorbar, str):
+                        file.write('\n\t\\node at (%.3f, 0)'
+                            '[anchor=south west, inner sep=0, outer sep=0] '
+                            '{ \includegraphics[' % (extent['x'] + self.gap))
 
-                    file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
-                        % (extent['x'] + self.gap,
-                           extent['x'] + self.tip,
-                           extent['z']))
+                        if self.flexible:
+                            file.write('width=%.3f\\unit, height=%.3f\\unit'
+                                % (self.tip - self.gap, extent['y']))
+                        else:
+                            file.write('width=%.3fcm, height=%.3fcm'
+                                % (self.tip - self.gap, extent['y']))
+
+                        file.write(']{%s} };' % colorbar)
+                    else:
+                        file.write('\n\t\\shade [bottom color=%s, top color=%s]'
+                            % (self.lower, self.upper))
+
+                        file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
+                            % (extent['x'] + self.gap,
+                               extent['x'] + self.tip,
+                               extent['z']))
 
                     for z, label in ticks['z']:
                         file.write('\n\t\\node '
