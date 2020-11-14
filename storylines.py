@@ -477,8 +477,15 @@ class Plot():
                     **options)
 
     def compline(self, x, y, weights, colors, threshold=0.0, **options):
-        weights = [[0 if part < threshold else part for part in parts]
-            for parts in weights]
+        try:
+            weights = [[0 if part < threshold else part for part in parts]
+                for parts in weights]
+        except TypeError:
+            try:
+                weights = [[0 if part < threshold else part]
+                    for part in weights]
+            except TypeError:
+                weights = [[0 if weights < threshold else weights]] * len(x)
 
         shifts = []
 
