@@ -350,7 +350,7 @@ class Plot():
             setattr(self, x + 'max', None)
             setattr(self, x + 'padding', 0.0)
             setattr(self, x + 'format',
-                lambda x: ('%g' % x).replace('-', r'\smash{\llap{$-$}}'))
+                lambda x: ('%g' % x).replace('-', r'\smash{\llap\textminus}'))
 
         self.lower = 'blue'
         self.upper = 'red'
