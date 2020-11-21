@@ -316,10 +316,11 @@ def goto(filename):
         os.chdir(head)
 
     def typeset():
-        os.system('pdflatex --interaction=batchmode %s.tex' % stem)
+        os.system('command -v pdflatex &> /dev/null '
+            '&& pdflatex --interaction=batchmode %s.tex' % stem)
 
         for suffix in 'aux', 'log':
-            os.system('rm %s.%s' % (stem, suffix))
+            os.system('rm -f %s.%s' % (stem, suffix))
 
     def home():
         if head:
