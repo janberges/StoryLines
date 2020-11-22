@@ -308,7 +308,7 @@ def csv(options):
 
 def goto(filename):
     head, tail = os.path.split(filename)
-    stem = os.path.splitext(tail)[0]
+    stem = tail[:-4] if tail.endswith(('.tex', '.pdf')) else tail
 
     if head:
         cwd = os.getcwd()
