@@ -316,7 +316,7 @@ def goto(filename):
         os.chdir(head)
 
     def typeset():
-        os.system('command -v pdflatex &> /dev/null '
+        os.system('command -v pdflatex > /dev/null 2>&1 '
             '&& pdflatex --interaction=batchmode %s.tex' % stem)
 
         for suffix in 'aux', 'log':
