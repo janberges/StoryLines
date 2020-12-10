@@ -1,12 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import division
-from math import asin, atan2, ceil, cos, floor, log10, pi, sin, sqrt
+
+import math
 import os
 import re
 
 def order_of_magnitude(x):
-    return int(floor(log10(abs(x)))) if x else 0
+    return int(math.floor(math.log10(abs(x)))) if x else 0
 
 def power_of_ten(x):
     return 10 ** order_of_magnitude(x)
@@ -18,7 +19,8 @@ def xround_mantissa(x, divisor=1):
     return xround(x, divisor * power_of_ten(x))
 
 def multiples(lower, upper, divisor=1):
-    for n in range(int(ceil(lower / divisor)), int(floor(upper / divisor)) + 1):
+    for n in range(int(math.ceil(lower / divisor)),
+            int(math.floor(upper / divisor)) + 1):
         yield divisor * n
 
 def relevant(points, error=1e-3):
@@ -32,8 +34,8 @@ def relevant(points, error=1e-3):
     def included(angle):
         return upper is None \
             or lower is None \
-            or (angle - lower) % (2 * pi) \
-            <= (upper - lower) % (2 * pi)
+            or (angle - lower) % (2 * math.pi) \
+            <= (upper - lower) % (2 * math.pi)
 
     while True:
         origin = points[i]
@@ -48,8 +50,8 @@ def relevant(points, error=1e-3):
             x = points[i + 1][0] - origin[0]
             y = points[i + 1][1] - origin[1]
 
-            r = sqrt(x ** 2 + y ** 2)
-            phi = atan2(y, x)
+            r = math.sqrt(x ** 2 + y ** 2)
+            phi = math.atan2(y, x)
 
             if r < former or not included(phi):
                 break
@@ -63,7 +65,7 @@ def relevant(points, error=1e-3):
             former = r
 
             if r > error:
-                delta = asin(error / r)
+                delta = math.asin(error / r)
 
                 if included(phi + delta):
                     upper = phi + delta
@@ -93,16 +95,16 @@ def fatband(points, width, weights, shifts, nib=None):
     if nib is not None:
         alpha = [nib] * (N - 1)
     else:
-        alpha = [(pi / 2 + atan2(y[n + 1] - y[n], x[n + 1] - x[n]))
-            % (2 * pi) for n in range(N - 1)]
+        alpha = [(math.pi / 2 + math.atan2(y[n + 1] - y[n], x[n + 1] - x[n]))
+            % (2 * math.pi) for n in range(N - 1)]
 
     phi = alpha[:1]
 
     for n in range(N - 2):
         phi.append(sum(alpha[n:n + 2]) / 2)
 
-        if max(alpha[n:n + 2]) - min(alpha[n:n + 2]) > pi:
-            phi[-1] += pi
+        if max(alpha[n:n + 2]) - min(alpha[n:n + 2]) > math.pi:
+            phi[-1] += math.pi
 
     phi.append(alpha[-1])
 
@@ -111,9 +113,9 @@ def fatband(points, width, weights, shifts, nib=None):
 
     for sgn in 1, -1:
         for n in range(N) if sgn == 1 else reversed(range(N)):
-            X.append(x[n] + cos(phi[n]) * width
+            X.append(x[n] + math.cos(phi[n]) * width
                 * (shifts[n] + sgn * weights[n] / 2))
-            Y.append(y[n] + sin(phi[n]) * width
+            Y.append(y[n] + math.sin(phi[n]) * width
                 * (shifts[n] + sgn * weights[n] / 2))
 
     return list(zip(X, Y))
@@ -130,10 +132,10 @@ def miter_butt(points, width, weights, shifts, nib=None):
         if nib is not None:
             alpha = nib
         else:
-            alpha = atan2(y[n + 1] - y[n], x[n + 1] - x[n]) + pi / 2
+            alpha = math.atan2(y[n + 1] - y[n], x[n + 1] - x[n]) + math.pi / 2
 
-        dx = 0.5 * width * cos(alpha)
-        dy = 0.5 * width * sin(alpha)
+        dx = 0.5 * width * math.cos(alpha)
+        dy = 0.5 * width * math.sin(alpha)
 
         lower.append((x[n] - dx, y[n] - dy, x[n + 1] - dx, y[n + 1] - dy))
         upper.append((x[n] + dx, y[n] + dy, x[n + 1] + dx, y[n + 1] + dy))
@@ -201,7 +203,7 @@ def shortcut(points, length=None, length_rel=1):
 
     dist = [0]
     for a, b in zip(dx, dy):
-        dist.append(dist[-1] + sqrt(a * a + b * b))
+        dist.append(dist[-1] + math.sqrt(a * a + b * b))
 
     if length is None:
         length = dist[-1]
@@ -847,7 +849,7 @@ class Plot():
 
                             dx = points[j][0] - points[i][0]
                             dy = points[j][1] - points[i][1]
-                            dr = sqrt(dx * dx + dy * dy)
+                            dr = math.sqrt(dx * dx + dy * dy)
                             rescale = 1 + line['protrusion'] / dr
 
                             points[j] = (
