@@ -1,6 +1,6 @@
-S t o r y L i n e s
+# StoryLines
 
 Line plots with Python and TikZ
 
-$ python example.py
-$ pdflatex example.tex
+    python example.py
+    pdflatex example.tex
