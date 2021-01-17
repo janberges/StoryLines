@@ -6,4 +6,4 @@
 *.pdf
 *.pyc
 *.tex
-!README.tex
+!storylines.tex
