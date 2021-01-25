@@ -2,6 +2,7 @@
 !.gitignore
 
 *.aux
+*.egg-info
 *.log
 *.pdf
 *.pyc
