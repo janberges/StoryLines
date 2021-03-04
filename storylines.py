@@ -1073,3 +1073,95 @@ def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
         typeset()
 
     home()
+
+def dot(A, B):
+    return sum(a * b for a, b in zip(A, B))
+
+def cross(A, B):
+    return [
+        A[1] * B[2] - A[2] * B[1],
+        A[2] * B[0] - A[0] * B[2],
+        A[0] * B[1] - A[1] * B[0],
+        ]
+
+def projection(
+        r=[0.0,  0.0, 0.0], # object
+        R=[0.0, -1.0, 0.0], # observer
+        T=[0.0,  0.0, 0.0], # target
+        U=[0.0,  0.0, 1.0], # up
+        ):
+
+    # viewing direction:
+    Z = T - R
+    norm = math.sqrt(dot(Z, Z))
+    Z = [z / norm for z in Z]
+
+    # horizontal screen direction:
+    X = cross(Z, U)
+    norm = math.sqrt(dot(X, X))
+    X = [x / norm for x in X]
+
+    # vertical screen direction:
+    Y = cross(X, Z)
+
+    # observer-object distance vector:
+    D = [r2 - r1 for r1, r2 in zip(R, r)]
+
+    # observer-object distance (hypotenuse):
+    hyp = math.sqrt(dot(D, D))
+
+    # projection onto viewing direction (adjacent leg):
+    adj = dot(D, Z)
+
+    # secans of angle of object w.r.t. viewing direction:
+    sec = hyp / adj
+
+    # horizontal screen coordinate:
+    x = dot(X, D) / adj
+
+    # vertical screen coordinate:
+    y = dot(Y, D) / adj
+
+    # magnification factor ("zoom", "z-index"):
+    z = sec / adj
+
+    return [x, y, z]
+
+def project(objects, *args, **kwargs):
+    objects = [([projection(coordinate, *args, **kwargs)
+        for coordinate in coordinates], style.copy())
+        for coordinates, style in objects]
+
+    distances = [sum(coordinate[2]
+        for coordinate in coordinates) / len(coordinates)
+        for coordinates, style in objects]
+
+    for n, (coordinates, style) in enumerate(objects):
+        for option in 'line_width', 'mark_size':
+            if isinstance(style.get(option), (float, int)):
+                style[option] *= distances[n]
+
+    order = sorted(range(len(distances)), key=lambda n: distances[n])
+
+    return [objects[n] for n in order]
+
+def bonds(R1, R2, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
+    bonds = []
+
+    oneway = R1 is R2
+
+    for n, r1 in enumerate(R1):
+        for m, r2 in enumerate(R2):
+            if oneway and m <= n:
+                continue
+
+            dr = r2 - r1
+            d = math.sqrt(dot(dr, dr))
+
+            if dmin < d < dmax:
+                s1 = d1 / d
+                s2 = d2 / d
+
+                bonds.append([(1 - s1) * r1 + s1 * r2, s2 * r1 + (1 - s2) * r2])
+
+    return bonds
