@@ -2,7 +2,7 @@
 
 Line plots with Python and TikZ
 
-    python example.py
+    python3 example.py
     pdflatex example.tex
 
 ## Installation
