@@ -1138,22 +1138,21 @@ def project(objects, *args, **kwargs):
         for coordinate in coordinates], style.copy())
         for coordinates, style in objects]
 
-    distances = [sum(coordinate[2]
+    zoom = [sum(coordinate[2]
         for coordinate in coordinates) / len(coordinates)
         for coordinates, style in objects]
 
     for n, (coordinates, style) in enumerate(objects):
         for option in 'line_width', 'mark_size':
             if isinstance(style.get(option), (float, int)):
-                style[option] *= distances[n]
+                style[option] *= zoom[n]
 
         for option in style:
             if isinstance(style[option], str):
-                style[option] = re.sub('(?<=<)([\d.]+)(?=>)',
-                    lambda match: '%.3f' % (float(match.group(1))
-                        * distances[n]), style[option])
+                style[option] = re.sub('(?<=<)([\d.]+)(?=>)', lambda match:
+                    '%.3f' % (float(match.group(1)) * zoom[n]), style[option])
 
-    order = sorted(range(len(distances)), key=lambda n: distances[n])
+    order = sorted(range(len(zoom)), key=lambda n: zoom[n])
 
     return [objects[n] for n in order]
 
