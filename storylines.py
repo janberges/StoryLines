@@ -1092,7 +1092,7 @@ def projection(
         ):
 
     # viewing direction:
-    Z = T - R
+    Z = [b - a for a, b in zip(R, T)]
     norm = math.sqrt(dot(Z, Z))
     Z = [z / norm for z in Z]
 
@@ -1105,7 +1105,7 @@ def projection(
     Y = cross(X, Z)
 
     # observer-object distance vector:
-    D = [r2 - r1 for r1, r2 in zip(R, r)]
+    D = [b - a for a, b in zip(R, r)]
 
     # observer-object distance (hypotenuse):
     hyp = math.sqrt(dot(D, D))
@@ -1155,13 +1155,16 @@ def bonds(R1, R2, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
             if oneway and m <= n:
                 continue
 
-            dr = r2 - r1
+            dr = [b - a for a, b in zip(r1, r2)]
             d = math.sqrt(dot(dr, dr))
 
             if dmin < d < dmax:
                 s1 = d1 / d
                 s2 = d2 / d
 
-                bonds.append([(1 - s1) * r1 + s1 * r2, s2 * r1 + (1 - s2) * r2])
+                bonds.append([
+                    [(1 - s1) * a + s1 * b for a, b in zip(r1, r2)],
+                    [s2 * a + (1 - s2) * b for a, b in zip(r1, r2)],
+                    ])
 
     return bonds
