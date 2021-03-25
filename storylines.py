@@ -824,6 +824,12 @@ class Plot():
                         line['options'][option] = ('%scm'
                             % (line['options'][option] * scale['y']))
 
+                for option in line['options']:
+                    if isinstance(line['options'][option], str):
+                        line['options'][option] = re.sub('<([\d.]+)>',
+                            lambda match: '%.3f' % (float(match.group(1))
+                                * scale['y']), line['options'][option])
+
                 if line['label'] is not None:
                     labels.append([line['options'], line['label']])
 
@@ -1140,6 +1146,12 @@ def project(objects, *args, **kwargs):
         for option in 'line_width', 'mark_size':
             if isinstance(style.get(option), (float, int)):
                 style[option] *= distances[n]
+
+        for option in style:
+            if isinstance(style[option], str):
+                style[option] = re.sub('(?<=<)([\d.]+)(?=>)',
+                    lambda match: '%.3f' % (float(match.group(1))
+                        * distances[n]), style[option])
 
     order = sorted(range(len(distances)), key=lambda n: distances[n])
 
