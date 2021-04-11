@@ -1,4 +1,4 @@
-# StoryLines
+![StoryLines logo](logo/logo.svg)
 
 Line plots with Python and TikZ
 

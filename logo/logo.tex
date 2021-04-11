@@ -1,0 +1,18 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[line width=8mm, color=red]
+    \useasboundingbox (0, 0) rectangle (32, 17);
+    \draw (1,2) to[controls={(10,5) and (-5,6)}] (4,9);
+    \draw (5,9) to[controls={(5,5) and (4,3)}] (7,4) (4,7)--(7,8);
+    \draw (7,6) to[controls={(7,8) and (10,9)}] (10,7) to[controls={(10,5) and (7,4)}] cycle;
+    \draw (11,5) to[controls={(11,8) and (11,8)}] (12,9)--(14,7);
+    \draw (13,4)--(15,10);
+    \draw (16,13)--(16,7)--(19,8);
+    \draw (19,12) to[controls={(19,9) and (19,9)}] (21,9);
+    \fill (19,13) circle (5mm);
+    \draw (22,9)--(21,12) to[controls={(24,13) and (22,9)}] (25,10);
+    \draw (26,12) to[controls={(30,14) and (25,16)}] (25,12) to[controls={(25,11) and (25,10)}] (28,11);
+    \draw (1,1)--(28,10) to[controls={(34,12) and (25,14)}] (31,16);
+\end{tikzpicture}
+\end{document}

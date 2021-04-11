@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<svg xmlns='http://www.w3.org/2000/svg' width='320' height='170' viewBox='0 0 32 17'>
+<g stroke='red' stroke-width='0.8' fill='none'>
+<path d='M1,15 C10,12,-5,11,4,8'/>
+<path d='M5,8 C5,12,4,14,7,13 M4,10 L7,9'/>
+<path d='M7,11 C7,9,10,8,10,10 C10,12,7,13,7,11'/>
+<path d='M11,12 C11,9,11,9,12,8 L14,10'/>
+<path d='M13,13 L15,7'/>
+<path d='M16,4 L16,10 L19,9'/>
+<path d='M19,5 C19,8,19,8,21,8'/>
+<path d='M22,8 L21,5 C24,4,22,8,25,7'/>
+<path d='M26,5 C30,3,25,1,25,5 C25,6,25,7,28,6'/>
+<path d='M1,16 L28,7 C34,5,25,3,31,1'/>
+</g>
+<circle fill='red' cx='19' cy='4' r='0.4'/>
+</svg>

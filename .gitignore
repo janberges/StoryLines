@@ -7,4 +7,5 @@
 *.pdf
 *.pyc
 *.tex
+!logo.tex
 !storylines.tex
