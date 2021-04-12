@@ -5,6 +5,7 @@
 *.egg-info
 *.log
 *.pdf
+*.png
 *.pyc
 *.tex
 !logo.tex
