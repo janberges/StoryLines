@@ -1,7 +1,7 @@
 \documentclass{standalone}
 \usepackage{tikz}
 \begin{document}
-\begin{tikzpicture}[line width=8mm, color=red]
+\begin{tikzpicture}[line width=8mm, line join=miter, line cap=butt, color=red]
     \useasboundingbox (0, 0) rectangle (32, 17);
     \draw (1,2) to[controls={(10,5) and (-5,6)}] (4,9);
     \draw (5,9) to[controls={(5,5) and (4,3)}] (7,4) (4,7)--(7,8);

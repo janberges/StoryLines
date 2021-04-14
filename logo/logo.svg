@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <svg xmlns='http://www.w3.org/2000/svg' width='320' height='170' viewBox='0 0 32 17'>
-<g stroke='red' stroke-width='0.8' fill='none'>
+<g stroke='red' stroke-width='0.8' stroke-linejoin='miter' stroke-linecap='butt' fill='none'>
 <path d='M1,15 C10,12,-5,11,4,8'/>
 <path d='M5,8 C5,12,4,14,7,13 M4,10 L7,9'/>
 <path d='M7,11 C7,9,10,8,10,10 C10,12,7,13,7,11'/>
