@@ -7,15 +7,70 @@ import os
 import re
 
 def order_of_magnitude(x):
+    """Calculate the decimal order of magnitude.
+
+    Parameters
+    ----------
+    x : float
+        Number of which to calculate the decimal order of magnitude.
+
+    Returns
+    -------
+    int
+        Order of magnitude of `x`.
+    """
     return int(math.floor(math.log10(abs(x)))) if x else 0
 
 def power_of_ten(x):
+    """Calculate the power of ten of the same order of magnitude.
+
+    Parameters
+    ----------
+    x : float
+        Number of which to calculate the power of ten of the same order of
+        magnitude.
+
+    Returns
+    -------
+    float
+        Power of ten of the same order of magnitude as `x`.
+    """
     return 10 ** order_of_magnitude(x)
 
 def xround(x, divisor=1):
+    """Round to multiple of given number.
+
+    Parameters
+    ----------
+    x : float
+        Number to round.
+    divisor : float
+        Number the result shall be a multiple of.
+
+    Returns
+    -------
+    float
+        `x` rounded to the closest multiple of `divisor`.
+    """
     return divisor * round(x / divisor)
 
 def xround_mantissa(x, divisor=1):
+    """Round mantissa to multiple of given number.
+
+    The mantissa is the part before the power of ten in scientific notation.
+
+    Parameters
+    ----------
+    x : float
+        Number the mantissa of which to round.
+    divisor : float
+        Number the rounded mantissa shall be a multiple of.
+
+    Returns
+    -------
+    float
+        `x` with the mantissa rounded to the closest multiple of `divisor`.
+    """
     return xround(x, divisor * power_of_ten(x))
 
 def multiples(lower, upper, divisor=1):
@@ -333,6 +388,78 @@ def goto(filename):
 pt = 2.54 / 72 # cm
 
 class Plot():
+    r"""Plot object.
+
+    Parameters
+    ----------
+    width : float, default 10.0
+         Figure width.
+    height : float, default 6.0
+         Figure height.
+    margin : float, default 1.0
+        Default margin.
+
+    Attributes
+    ----------
+    left : float, default 1.0
+        Left margin.
+    right : float, default 1.0
+        Right margin.
+    bottom : float, default 1.0
+        Bottom margin.
+    top : float, default 1.0
+        Top margin.
+    xlabel : str, default None
+        Axis label.
+    xticks : list of (float or tuple of float and str), default None
+        List of ticks, e.g., ``[0, (0.5, '$\frac12$'), 1]``.
+    xformat : function
+        Tick formatter. Takes tick position as argument.
+    xspacing : float, default 1.0
+        Approximate tick spacing in cm.
+    xstep : float, default None
+        Exact tick increment.
+    xmax : float, default None
+        Upper axis limit.
+    xmin : float, default None
+        Lower axis limit.
+    upper : str, default 'red'
+        Upper color of bar.
+    lower : str, default 'blue'
+        Lower color of bar.
+    label : str, default None
+        Subfigure label, e.g., ``'(a)'``.
+    ltop : str, default None
+        Legend title.
+    lpos : str, default 'lt'
+        Legend position, a combination of ``lcrbmtLCRBMT``.
+    lopt : str, default 'below left'
+        Legend options, e.g., for orientation.
+    llen : str, default '4mm'
+        Length of example lines next to labels.
+    lbox : bool, default False
+        Draw box around legend?.
+    tick : str, default '0.7mm'
+        Length of tick marks.
+    gap : float, default 0.0
+        Gap between plot area and colorbar.
+    tip : float, default 0.1
+        Overlap of axis tips.
+    axes : bool, default True
+        Draw axes and their labels?
+    colorbar : bool, default True
+        Draw colorbar?
+    outline : bool, default False
+        Draw figure outline?
+    background : str, default None
+        Path to background image.
+    preamble : str, default None
+        Definitions for standalone figures.
+    fontsize : int, default 10
+        Font size for standalone figures.
+    flexible : bool, default False
+        Scale plot to fill whole line?
+    """
     def __init__(self, width=8.0, height=6.0, margin=1.0, **more):
         self.width = width
         self.height = height
