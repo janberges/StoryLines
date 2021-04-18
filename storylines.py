@@ -510,7 +510,7 @@ class Plot():
 
         self.xaxis = xyaxes
         self.yaxis = xyaxes
-        self.frame = True
+        self.frame = xyaxes
         self.colorbar = True
         self.outline = False
 
