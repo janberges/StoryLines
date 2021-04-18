@@ -398,6 +398,8 @@ class Plot():
          Figure height.
     margin : float, default 1.0
         Default margin.
+    xyaxes : bool, default True
+        Draw x and y axes?
 
     Attributes
     ----------
@@ -460,7 +462,7 @@ class Plot():
     flexible : bool, default False
         Scale plot to fill whole line?
     """
-    def __init__(self, width=8.0, height=6.0, margin=1.0, **more):
+    def __init__(self, width=8.0, height=6.0, margin=1.0, xyaxes=True, **more):
         self.width = width
         self.height = height
 
@@ -506,7 +508,8 @@ class Plot():
         self.gap = 0.0
         self.tip = 0.1
 
-        self.xyaxes = True
+        self.xaxis = xyaxes
+        self.yaxis = xyaxes
         self.frame = True
         self.colorbar = True
         self.outline = False
@@ -819,9 +822,18 @@ class Plot():
                 if draw_frame.done:
                     return
 
-                file.write('\n\t\\draw [gray, line cap=butt]'
-                    '\n\t\t(%.3f, 0) -- (%.3f, %.3f) -- (0, %.3f);'
-                    % tuple(extent[x] for x in 'xxyy'))
+                file.write('\n\t\\draw [gray, line cap=rect]\n\t\t')
+
+                if not self.xaxis:
+                    file.write('(0, 0) -- ')
+
+                file.write('(%.3f, 0) -- (%.3f, %.3f) -- (0, %.3f)'
+                        % tuple(extent[x] for x in 'xxyy'))
+
+                if not self.yaxis:
+                    file.write(' -- (0, 0)')
+
+                file.write(';')
 
                 draw_frame.done = True
 
@@ -861,34 +873,44 @@ class Plot():
                             '[rotate=90, below] at (%.3f, %.3f) {%s};'
                             % (extent['x'] + self.tip, z, label))
 
-                if self.xyaxes:
+                if self.frame:
+                    draw_frame()
+
+                if self.xaxis or self.yaxis:
                     # draw tick marks and labels
 
-                    if ticks['x'] or ticks['y']:
+                    if self.xaxis and ticks['x'] or self.yaxis and ticks['y']:
                         file.write('\n\t\\draw [line cap=butt]')
 
-                        for x, label in ticks['x']:
-                            file.write('\n\t\t(%.3f, 0) -- +(0, -%s) '
-                                'node [below] {%s}'
-                                % (x, self.tick, label))
+                        if self.xaxis:
+                            for x, label in ticks['x']:
+                                file.write('\n\t\t(%.3f, 0) -- +(0, -%s) '
+                                    'node [below] {%s}'
+                                    % (x, self.tick, label))
 
-                        for y, label in ticks['y']:
-                            file.write('\n\t\t(0, %.3f) -- +(-%s, 0) '
-                                'node [rotate=90, above] {%s}'
-                                % (y, self.tick, label))
+                        if self.yaxis:
+                            for y, label in ticks['y']:
+                                file.write('\n\t\t(0, %.3f) -- +(-%s, 0) '
+                                    'node [rotate=90, above] {%s}'
+                                    % (y, self.tick, label))
 
                         file.write(';')
 
                     # draw coordinate axes
 
-                    if self.frame:
-                        draw_frame()
+                    file.write('\n\t\\draw [%s-%s, line cap=rect]\n\t\t'
+                        % ('<' * (self.xaxis and not colorbar),
+                            '>' * self.yaxis))
 
-                    file.write('\n\t\\draw [%s, line cap=butt]'
-                        % ('->' if colorbar else '<->'))
+                    if self.xaxis:
+                        file.write('(%.3f, 0) -- ' % (extent['x'] + self.tip))
 
-                    file.write('\n\t\t(%.3f, 0) -- (0, 0) -- (0, %.3f);'
-                        % (extent['x'] + self.tip, extent['y'] + self.tip))
+                    file.write('(0, 0)')
+
+                    if self.yaxis:
+                        file.write(' -- (0, %.3f)' % (extent['y'] + self.tip))
+
+                    file.write(';')
 
                 # label coordinate axes
 
