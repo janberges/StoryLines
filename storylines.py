@@ -344,6 +344,26 @@ def cut2d(points, xmin, xmax, ymin, ymax, join=False):
 
             yield group
 
+def jump(points, distance=1.0):
+    points = [tuple(point) for point in points]
+
+    group = []
+
+    for n in range(len(points)):
+        if group:
+            x1, y1 = points[n - 1]
+            x2, y2 = points[n]
+
+            if (x2 - x1) ** 2 + (y2 - y1) ** 2 > distance ** 2:
+                yield group
+                group = [points[n]]
+                continue
+
+        group.append(points[n])
+
+    if group:
+        yield group
+
 def groups(iterable, size=4):
     group = []
 
@@ -542,6 +562,7 @@ class Plot():
             cut = False,
             frame = False,
             join = None,
+            jump = 0,
             label = None,
             miter = False,
             nib = None,
@@ -575,6 +596,7 @@ class Plot():
             cut = cut,
             frame = frame,
             join = join,
+            jump = jump,
             label = label,
             miter = miter,
             nib = nib,
@@ -1012,10 +1034,15 @@ class Plot():
                                 points[i][1] + dy * rescale,
                                 )
 
+                    if line['jump']:
+                        segments = jump(points, distance=line['jump'])
+                    else:
+                        segments = [points]
+
                     if line['weights'] is not None:
-                        points = (miter_butt if line['miter'] else fatband)(
-                            points, line['thickness'], line['weights'],
-                            line['shifts'], line['nib'])
+                        segments = [(miter_butt if line['miter'] else fatband)(
+                            segment, line['thickness'], line['weights'],
+                            line['shifts'], line['nib']) for segment in segments]
 
                     if line['cut']:
                         if line['join'] is None:
@@ -1023,14 +1050,17 @@ class Plot():
                                 is not None)
 
                         if line['options'].get('only_marks'):
-                            segments = [[(x, y) for x, y in points
+                            segments = [[(x, y)
+                                for segment in segments
+                                for x, y in segment
                                 if  0 <= x <= extent['x']
                                 and 0 <= y <= extent['y']]]
                         else:
-                            segments = cut2d(points,
-                                0, extent['x'], 0, extent['y'], line['join'])
-                    else:
-                        segments = [points]
+                            segments = [segment
+                                for segment in segments
+                                for segment in cut2d(segment,
+                                    0, extent['x'], 0, extent['y'],
+                                        line['join'])]
 
                     for segment in segments:
                         if line['omit']:
