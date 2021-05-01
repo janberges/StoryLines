@@ -74,11 +74,39 @@ def xround_mantissa(x, divisor=1):
     return xround(x, divisor * power_of_ten(x))
 
 def multiples(lower, upper, divisor=1):
+    """Iterate over all integer multiples of given number on closed interval.
+
+    Parameters
+    ----------
+    lower, upper : float
+        Bounds of closed interval.
+    divisor : float
+        Number the results shall be multiples of.
+
+    Returns
+    -------
+    generator
+        Generator of all multiples of `divisor` between `lower` and `upper`.
+    """
     for n in range(int(math.ceil(lower / divisor)),
             int(math.floor(upper / divisor)) + 1):
         yield divisor * n
 
 def relevant(points, error=1e-3):
+    """Remove irrelevant vertices of linear spline.
+
+    Parameters
+    ----------
+    points : list of 2-tuples
+        Vertices of linear spline.
+    error : float, optional
+        Tolerated deviation from original spline.
+
+    Returns
+    -------
+    generator
+        Generator of thinned out vertices.
+    """
     if len(points) < 3:
         for point in points:
             yield point
@@ -129,6 +157,22 @@ def relevant(points, error=1e-3):
                     lower = phi - delta
 
 def islands(N, criterion, join=False):
+    """Select subranges of interger range.
+
+    Parameters
+    ----------
+    N : integer
+        Length of original range.
+    criterion : function
+        Selection criterion for range members.
+    join : bool
+        Concatenate all subranges?
+
+    Returns
+    -------
+    generator
+        Generator of subrange lists.
+    """
     island = []
 
     for n in range(N):
@@ -143,6 +187,32 @@ def islands(N, criterion, join=False):
         yield island
 
 def fatband(points, width, weights, shifts, nib=None):
+    """Represent weighted data points via varying linewidth.
+
+    Parameters
+    ----------
+    points : list of 2-tuples
+        Vertices of linear spline.
+    width : float
+        Overall linewidth scaling factor.
+    weights : list of float
+        Weights of `points`.
+    shifts : list of float
+        Displacements in weight direction.
+    nib : float
+        Angle of broad pen nib. If ``None``, the nib is held perpendicular to
+        the direction of the line. The direction is always the average of the
+        directions of adjacent line segments.
+
+    Returns
+    -------
+    list of 2-tuples
+        Fatband outline.
+
+    See Also
+    --------
+    miter_butt : Equivalent routine with miter line join.
+    """
     N = len(points)
 
     x, y = tuple(zip(*points))
@@ -176,6 +246,32 @@ def fatband(points, width, weights, shifts, nib=None):
     return list(zip(X, Y))
 
 def miter_butt(points, width, weights, shifts, nib=None):
+    """Represent weighted data points via varying linewidth.
+
+    Parameters
+    ----------
+    points : list of 2-tuples
+        Vertices of linear spline.
+    width : float
+        Overall linewidth scaling factor.
+    weights : list of float
+        Weights of `points`.
+    shifts : list of float
+        Displacements in weight direction.
+    nib : float
+        Angle of broad pen nib. If ``None``, the nib is held perpendicular to
+        the direction of the current line segment. Line segments are connected
+        using the miter joint.
+
+    Returns
+    -------
+    list of 2-tuples
+        Fatband outline.
+
+    See Also
+    --------
+    fatband : Equivalent routine without miter line join.
+    """
     N = len(points)
 
     x, y = tuple(zip(*points))
@@ -632,6 +728,24 @@ class Plot():
                     **options)
 
     def compline(self, x, y, weights, colors, threshold=0.0, **options):
+        """Represent points of multiple weights as composite fatband.
+
+        Parameters
+        ----------
+        x, y : list of float
+            Coordinates of line vertices.
+        weights : list of tuple of float, list of float, or float
+            Weights of vertices. The corresponding linewidth is always measured
+            perpendicular to the direction of the line; This ensures that lines
+            of the same weight have the same thickness regardless of direction.
+        colors : list of str
+            Colors of different components. Any objects whose representations
+            as a string are valid LaTeX colors can be used.
+        threshold : float
+            Minimum displayed weight.
+        **options
+            Further line options.
+        """
         try:
             weights = [[0 if part < threshold else part for part in parts]
                 for parts in weights]

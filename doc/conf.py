@@ -9,3 +9,5 @@ author = 'Jan Berges'
 extensions = ['sphinx.ext.autodoc', 'numpydoc', 'm2r2']
 
 html_theme = 'alabaster'
+
+numpydoc_show_class_members = False
