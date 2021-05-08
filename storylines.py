@@ -625,7 +625,9 @@ class Plot():
     -----
 
     In all textual attributes and parameters, numbers in angle brackets are
-    interpreted as values in y data units, e.g., `line_width='<0.1>'`.
+    interpreted as values in y data units, e.g., ``line_width='<0.1>'``. For
+    the parameters `line_width` and `mark_size` this is also the case if an
+    integer or float is passed instead of a string.
 
     Parameters
     ----------
@@ -1632,6 +1634,22 @@ class Plot():
         home()
 
 def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
+    """Arrange multiple PDFs in single file.
+
+    Parameters
+    ----------
+    filename : str
+        Name of combined file.
+    pdfs : list of str
+        Names of PDFs to be combined.
+    columns : int, default 100
+        Number of PDFs to be arranged side by side.
+    align : float, default 0.5
+        Vertical alignment of PDFs, where 0, 0.5, and 1 stand for the bottom,
+        center, and top of the individual figures.
+    pdf : bool, default False
+        Convert resulting TeX file to PDF?
+    """
     stem, typeset, home = goto(filename)
 
     with open('%s.tex' % stem, 'w') as tex:
@@ -1652,9 +1670,33 @@ def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
     home()
 
 def dot(A, B):
+    """Calculate dot product of two vectors.
+
+    Parameters
+    ----------
+    A, B : list of float
+        Vectors to be multiplied.
+
+    Returns
+    -------
+    float
+        Dot product of `A` and `B`.
+    """
     return sum(a * b for a, b in zip(A, B))
 
 def cross(A, B):
+    """Calculate cross product of two vectors.
+
+    Parameters
+    ----------
+    A, B : list of float
+        Vectors to be multiplied.
+
+    Returns
+    -------
+    float
+        Cross product of `A` and `B`.
+    """
     return [
         A[1] * B[2] - A[2] * B[1],
         A[2] * B[0] - A[0] * B[2],
@@ -1667,7 +1709,24 @@ def projection(
         T=[0.0,  0.0, 0.0], # target
         U=[0.0,  0.0, 1.0], # up
         ):
+    """Project 3D point onto 2D screen.
 
+    Parameters
+    ----------
+    T : list of float
+        Object position.
+    R : list of float
+        Observer position.
+    T : list of float
+        Viewing direction (from observer).
+    U : list of float
+        Vertical direction.
+
+    Returns
+    -------
+    list of float
+        x and y position as well as proximity factor z.
+    """
     # viewing direction:
     Z = [b - a for a, b in zip(R, T)]
     norm = math.sqrt(dot(Z, Z))
@@ -1705,6 +1764,27 @@ def projection(
     return [x, y, z]
 
 def project(objects, *args, **kwargs):
+    """Project list of 3D objects onto 2D screen.
+
+    Line width, mark sizes, and length in angle brackets are scaled according
+    to the distance from the observer. The objects are sorted by distance so
+    that close object overlay remote objects.
+
+    Parameters
+    ----------
+    objects : list of tuple
+        List of objects. Each object is represented by a tuple, which consists
+        of a list of three-tuples ``(x, y, z)`` and a style dictionary.
+
+    *args, **kwargs
+        Arguments passed to `projection`.
+
+    Returns
+    -------
+    list of tuple
+        Objects is same format, but sorted with transformed coordinates and
+        adjusted styles.
+    """
     objects = [([projection(coordinate, *args, **kwargs)
         for coordinate in coordinates], style.copy())
         for coordinates, style in objects]
@@ -1728,6 +1808,22 @@ def project(objects, *args, **kwargs):
     return [objects[n] for n in order]
 
 def bonds(R1, R2, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
+    """Find lines that connect two sets of points.
+
+    Parameters
+    ----------
+    R1, R2 : list of tuple
+        Two (ordered) sets of points.
+    d1, d2 : float
+        Shortening on the two line ends.
+    dmin, dmax : float
+        Minimum and maximum line length.
+
+    Returns
+    -------
+    list of list of tuple
+        Connecting lines.
+    """
     bonds = []
 
     oneway = R1 is R2
