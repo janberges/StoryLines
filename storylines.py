@@ -157,7 +157,7 @@ def relevant(points, error=1e-3):
                     lower = phi - delta
 
 def islands(N, criterion, join=False):
-    """Select subranges of interger range.
+    """Select subranges of integer range.
 
     Parameters
     ----------
@@ -343,6 +343,23 @@ def miter_butt(points, width, weights, shifts, nib=None):
     return list(zip(XA + XB[::-1], YA + YB[::-1]))
 
 def shortcut(points, length=None, length_rel=1):
+    """Cut off loops at self-intersection points.
+
+    Parameters
+    ----------
+    points : list of 2-tuples
+        Vertices of linear spline.
+    length : float
+        Maximum length of loop to be cut off.
+    length_rel : float
+        Maximum length of loop to be cut off relative to the total length of
+        the curve.
+
+    Returns
+    -------
+    list of 2-tuples
+        Linear spline with self-intersection loops removed.
+    """
     x, y = tuple(zip(*points))
 
     N = len(x)
@@ -411,6 +428,26 @@ def shortcut(points, length=None, length_rel=1):
     return list(zip(x, y))
 
 def cut(points, minimum, maximum, join=False):
+    """Cut off curve segments beyond y interval.
+
+    Parameters
+    ----------
+    points : list of 2-tuples
+        Vertices of linear spline.
+    minimum, maximum : float
+        Lower and upper bound of y interval.
+    join : bool
+        Concatenate remaining curve segments?
+
+    Returns
+    -------
+    generator
+        Generator of remaining curve segments.
+
+    See Also
+    --------
+    cut : Similar function for 2D case.
+    """
     points = [tuple(point) for point in points]
 
     n = 0 if join else 1
@@ -432,6 +469,28 @@ def cut(points, minimum, maximum, join=False):
         yield [points[n] for n in island]
 
 def cut2d(points, xmin, xmax, ymin, ymax, join=False):
+    """Cut off curve segments beyond x and y intervals.
+
+    Parameters
+    ----------
+    points : list of 2-tuples
+        Vertices of linear spline.
+    xmin, xmax : float
+        Lower and upper bound of x interval.
+    ymin, ymax : float
+        Lower and upper bound of y interval.
+    join : bool
+        Concatenate remaining curve segments?
+
+    Returns
+    -------
+    generator
+        Generator of remaining curve segments.
+
+    See Also
+    --------
+    cut : Similar function for 1D case.
+    """
     for group in cut(points, ymin, ymax, join):
         group = [(y, x) for x, y in group]
 
@@ -441,6 +500,20 @@ def cut2d(points, xmin, xmax, ymin, ymax, join=False):
             yield group
 
 def jump(points, distance=1.0):
+    """Interpret long line segments as discontinuities and omit them.
+
+    Parameters
+    ----------
+    points : list of 2-tuples
+        Vertices of linear spline.
+    distance : float
+        Shortest line segment to be omitted.
+
+    Returns
+    -------
+    generator
+        Generator of separated curve segments.
+    """
     points = [tuple(point) for point in points]
 
     group = []
@@ -461,6 +534,20 @@ def jump(points, distance=1.0):
         yield group
 
 def groups(iterable, size=4):
+    """Group sequence of objects into chunks of given size.
+
+    Parameters
+    ----------
+    iterable : iterable
+        Iterable sequence of objects.
+    size : int
+        Group size.
+
+    Returns
+    -------
+    generator
+        Interator over groups of objects.
+    """
     group = []
 
     for item in iterable:
@@ -474,12 +561,40 @@ def groups(iterable, size=4):
         yield group
 
 def csv(options):
+    """Format TikZ options.
+
+    Parameters
+    ----------
+    options : dict
+        TikZ options, where spaces in keys are represented by underscores.
+
+    Returns
+    -------
+    str
+        Comma-separated key-value pairs in TikZ format.
+    """
     return ', '.join(key.replace('_', ' ')
         + ('' if value is True else '=%s' % value)
         for key, value in sorted(options.items())
         if value is not False)
 
 def goto(filename):
+    """Go to output directory for plot typesetting.
+
+    Parameters
+    ----------
+    filename : str
+        LaTeX file name including possible path.
+
+    Returns
+    -------
+    stem : str
+        File name without path and extension.
+    typeset : function
+        Function to run ``pdflatex`` and remove ``.aux`` and ``.log`` files.
+    home : function
+        Function to return to previous working directory.
+    """
     head, tail = os.path.split(filename)
     stem = tail[:-4] if tail.endswith(('.tex', '.pdf')) else tail
 
