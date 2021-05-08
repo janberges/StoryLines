@@ -829,7 +829,66 @@ class Plot():
             zindex = None,
 
             **options):
+        """Add line/curve.
 
+        Parameters
+        ----------
+        x, y : list or float
+            Coordinates of data points.
+        z : float, default None
+            z value for entire line, represented by color.
+        axes : bool, default False
+            Draw axes at current z index? By default, the axes are drawn on top
+            of all data.
+        code : str, default None
+            Literal TikZ code to be inserted at current position.
+        cut : bool, default False
+            Cut off line segments beyond plotting range?
+        frame : bool, default False
+            Draw frame at current z index? By default, the frame is drawn just
+            below the axes.
+        join : bool, default None
+            Join cut-up line segments along edge of plotting range? By default,
+            this is ``True`` if any ``fill`` is specified, ``False`` otherwise.
+        jump : float, default 0
+            Shortest distance between consecutive data points that is
+            considered as a discontinuity.
+        label : str, default None
+            Label for legend entry.
+        miter : bool, default False
+            Draw fatbands using `miter_butt` function? If ``False``, the
+            `fatband` function is used.
+        nib : float, default None
+            Angle of broad pen nib. If ``None``, the nib is held perpendicular
+            to the direction of the current line segment.
+        omit : bool, default True
+            Remove irrelevant vertices of linear spline?
+        protrusion : float, default 0
+            Extend curve linearly at both ends? This may improve the appearance
+            of fatbands ending at the edge of the plotting range.
+        sgn : integer, default +1
+            Direction of fatband outline. Coinciding outlines should be drawn
+            in the same direction if `omit` is ``True``.
+        shifts : list of float
+            Displacements in weight direction of fatband.
+        shortcut : float, default 0
+            Maximum length of loop to be cut off.
+        shortcut_rel : float, default 0.5
+            Maximum length of loop to be cut off relative to the total length
+            of the curve. This is only used if `shortcut` is nonzero.
+        thickness : float, default 1
+            Overall fatband linewidth scaling factor.
+        weights : list of float
+            Fatband weights.
+        xref, yref : float, default None
+            Reference values for filled curves. This is useful to visualize
+            integrands such as a density of states.
+        zindes : int, default None
+            Index of list of lines where new line is inserted. By default, the
+            new line is appended to the list, i.e., has the highest `zindex`.
+        **options
+            Local TikZ options.
+        """
         if not hasattr(x, '__len__'):
             x = [x]
 
@@ -870,6 +929,19 @@ class Plot():
             self.lines.insert(zindex, new_line)
 
     def fatband(self, x, y, weights, shifts=None, **options):
+        """Draw fatband.
+
+        Parameters
+        ----------
+        x, y : list
+            Vertices of linear spline.
+        weights : list of float
+            Weights of `x` and `y`.
+        shifts : list of float
+            Displacements in weight direction.
+        **options
+            Options passed to `line` function.
+        """
         if shifts is None:
             shifts = [0 for n in range(len(weights))]
 
@@ -928,23 +1000,75 @@ class Plot():
             sgn *= -1
 
     def node(self, x, y, content, name=None, **options):
+        """Draw (text) node at given position.
+
+        Parameters
+        ----------
+        x, y : float
+            Node position in data coordinates.
+        content : str
+            Node content.
+        name : str
+            Name/label to refer back to the node.
+        **options
+            TikZ options of the node, e.g., ``above left=True``.
+        """
         self.code('\n\t\\node %s[%s] at (<x=%.3f>, <y=%.3f>) {%s};'
             % ('(%s) ' % name if name else '', csv(options), x, y, content))
 
     def point(self, x, y, name):
+        """Define point.
+
+        Parameters
+        ----------
+        x, y : float
+            Point position in data coordinates.
+        name : str
+            Name/label to refer back to the point.
+        """
         self.code('\n\t\\coordinate (%s) at (<x=%.3f>, <y=%.3f>);'
             % (name, x, y))
 
     def code(self, data, **options):
+        """Insert literal TikZ code.
+
+        Parameters
+        ----------
+        data : str
+            TikZ code. Positions and distances in data coordinates and units
+            can be specified using angle brackets, e.g., ``(<x=1>, <y=2>)`` or
+            ``+(<dx=1>, <dy=2)``.
+        **options
+            Options passed to `line`.
+        """
         self.line(code=data, **options)
 
     def axes(self, **options):
+        """Draw axes at current position."""
+
         self.line(axes=True, **options)
 
     def clear(self):
+        """Remove all lines from plot."""
+
         self.lines = []
 
     def save(self, filename, external=False, standalone=False, pdf=False):
+        r"""Save plot to file.
+
+        Parameters
+        ----------
+        filename : str
+            File name. If no period is contained, the ``.tex`` extension
+            may be omitted.
+        external : bool, default False
+            Provide file name to TikZ library ``external``.
+        standalone : bool, default False
+            Create file that can be typeset with ``pdflatex``, i.e., include
+            document header etc.?
+        pdf : bool, default False
+            Typeset TeX file via ``pdflatex``? This implied `standalone`.
+        """
         if pdf:
             standalone = True
 
