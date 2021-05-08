@@ -621,69 +621,104 @@ pt = 2.54 / 72 # cm
 class Plot():
     r"""Plot object.
 
+    Notes
+    -----
+
+    In all textual attributes and parameters, numbers in angle brackets are
+    interpreted as values in y data units, e.g., `line_width='<0.1>'`.
+
     Parameters
     ----------
-    width : float, default 10.0
-         Figure width.
+    width : float, default 8.0
+         Figure width in cm. A negative value is interpreted as the inner width
+         (without left and right margins). If zero, the x-axis scale is set
+         equal to the y-axis scale and the width is inferred from the height.
     height : float, default 6.0
-         Figure height.
+         Figure height in cm. A negative value is interpreted as the innter
+         height (without bottom and top margins). If zero, the y-axis scale is
+         set equal to the x-axis scale and the height is inferred from the
+         width.
     margin : float, default 1.0
-        Default margin.
+        Default margin in cm.
     xyaxes : bool, default True
         Draw x and y axes?
+    **more
+        Global TikZ options.
 
     Attributes
     ----------
-    left : float, default 1.0
-        Left margin.
-    right : float, default 1.0
-        Right margin.
-    bottom : float, default 1.0
-        Bottom margin.
-    top : float, default 1.0
-        Top margin.
-    xlabel : str, default None
-        Axis label.
-    xticks : list of (float or tuple of float and str), default None
+    left : float, default `margin`
+        Left margin in cm.
+    right : float, default `margin`
+        Right margin in cm.
+    bottom : float, default `margin`
+        Bottom margin in cm.
+    top : float, default `margin`
+        Top margin in cm.
+    xlabel, ylabel, zlabel : str, default None
+        Axis labels.
+    xticks, yticks, zticks : list, default None
         List of ticks, e.g., ``[0, (0.5, '$\frac12$'), 1]``.
-    xformat : function
-        Tick formatter. Takes tick position as argument.
-    xspacing : float, default 1.0
+    xspacing, yspacing, zspacing : float, default 1.0
         Approximate tick spacing in cm.
-    xstep : float, default None
+    xstep, ystep, zstep : float, default None
         Exact tick increment.
-    xmax : float, default None
-        Upper axis limit.
-    xmin : float, default None
+    xmin, ymin, zmin : float, default None
         Lower axis limit.
-    upper : str, default 'red'
-        Upper color of bar.
+    xmax, ymax, zmax : float, default None
+        Upper axis limit.
+    xpadding, ypadding, zpadding : float, default 0.0
+        Padding between data and axes in data units.
+    xformat, yformat, zformat : function
+        Tick formatter. Takes tick position as argument.
     lower : str, default 'blue'
-        Lower color of bar.
+        Lower color of colorbar.
+    upper : str, default 'red'
+        Upper color of colorbar.
+    title : str, default None
+        Plot title.
     label : str, default None
         Subfigure label, e.g., ``'(a)'``.
-    ltop : str, default None
-        Legend title.
-    lpos : str, default 'lt'
-        Legend position, a combination of ``lcrbmtLCRBMT``.
-    lopt : str, default 'below left'
-        Legend options, e.g., for orientation.
+    lali : str, default 'center'
+        Alignment of legend entries.
+    lbls : str, default '\baselineskip'
+        Line height of legend entries.
+    lbox : bool, default False
+        Draw box around legend?
+    lcol : int, default 1
+        Number of columns in legend.
     llen : str, default '4mm'
         Length of example lines next to labels.
-    lbox : bool, default False
-        Draw box around legend?.
+    lopt : str, default 'below left'
+        Legend options, e.g., for orientation.
+    lpos : str, default 'lt'
+        Legend position, a combination of ``lcrbmtLCRBMT``.
+    lput : bool, default True
+        Draw legend?
+    lrow : int, default 0
+        Number of rows in legend.
+    lsep : str, default None
+        Space between legend title and entries, e.g., ``'6pt'``.
+    ltop : str, default None
+        Legend title.
+    lwid : float, default 4.0
+        Width of legend columns in cm.
     tick : str, default '0.7mm'
         Length of tick marks.
     gap : float, default 0.0
-        Gap between plot area and colorbar.
+        Gap between plot area and colorbar in cm.
     tip : float, default 0.1
-        Overlap of axis tips.
-    axes : bool, default True
-        Draw axes and their labels?
+        Overlap of axis tips in cm.
+    xaxis : bool, default `xyaxes`
+        Draw x axis?
+    yaxis : bool, default `xyaxes`
+        Draw y axis?
+    frame : bool, default `xyaxes`
+        Draw frame around plot area?
     colorbar : bool, default True
-        Draw colorbar?
+        Draw possible colorbar?
     outline : bool, default False
-        Draw figure outline?
+        Draw dashed figure outline?
     background : str, default None
         Path to background image.
     preamble : str, default None
@@ -692,12 +727,14 @@ class Plot():
         Font size for standalone figures.
     flexible : bool, default False
         Scale plot to fill whole line?
+    lines : list
+        List of all line objects.
+    options : dict
+        Global TikZ options.
     """
     def __init__(self, width=8.0, height=6.0, margin=1.0, xyaxes=True, **more):
         self.width = width
         self.height = height
-
-        self.flexible = False
 
         self.left = margin
         self.right = margin
@@ -749,6 +786,8 @@ class Plot():
 
         self.preamble = None
         self.fontsize = 10
+
+        self.flexible = False
 
         self.lines = []
 
