@@ -1314,7 +1314,7 @@ class Plot():
 
                     # draw coordinate axes
 
-                    file.write('\n\t\\draw [%s-%s, line cap=rect]\n\t\t'
+                    file.write('\n\t\\draw [%s-%s, line cap=butt]\n\t\t'
                         % ('<' * (self.xaxis and not colorbar),
                             '>' * self.yaxis))
 
