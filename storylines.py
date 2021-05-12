@@ -727,8 +727,12 @@ class Plot():
         Draw dashed figure outline?
     background : str, default None
         Path to background image.
-    preamble : str, default None
+    preamble : str, default ''
         Definitions for standalone figures.
+    inputenc : str, default None
+        Text endocing, e.g., ``'utf8'``.
+    fontenc : str
+        Font endocing, e.g., ``'T1'``.
     fontsize : int, default 10
         Font size for standalone figures in pt.
     flexible : bool, default False
@@ -792,7 +796,9 @@ class Plot():
 
         self.background = None
 
-        self.preamble = None
+        self.preamble = ''
+        self.inputenc = None
+        self.fontenc = None
         self.fontsize = 10
 
         self.flexible = False
@@ -1196,8 +1202,14 @@ class Plot():
                         self.fontsize))
                 file.write('\\usepackage{tikz}\n')
 
+                if self.inputenc and 'inputenc' not in self.preamble:
+                    file.write('\\usepackage[%s]{inputenc}\n' % self.inputenc)
+
+                if self.fontenc and 'fontenc' not in self.preamble:
+                    file.write('\\usepackage[%s]{fontenc}\n' % self.fontenc)
+
                 if self.preamble:
-                    file.write('%s\n' % self.preamble)
+                    file.write('%s\n' % self.preamble.strip())
 
                 file.write('\\begin{document}\n\\noindent\n' )
 
