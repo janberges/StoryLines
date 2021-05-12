@@ -1136,6 +1136,9 @@ class Plot():
             lower['z'] = self.zmin if self.zmin is not None else min(z)
             upper['z'] = self.zmax if self.zmax is not None else max(z)
 
+            lower[x] -= self.zpadding
+            upper[x] += self.zpadding
+
         # handle horizontal and vertical lines:
 
         for x, y in ('x', 'y'), ('y', 'x'):
