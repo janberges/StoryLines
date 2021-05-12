@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as README:
 
 setuptools.setup(
     name = 'StoryLines',
-    version = '0.1',
+    version = '0.2',
     author = 'Jan Berges',
     author_email = '',
     description = 'Line plots with Python and TikZ',
