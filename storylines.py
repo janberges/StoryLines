@@ -732,7 +732,12 @@ class Plot():
     inputenc : str, default None
         Text endocing, e.g., ``'utf8'``.
     fontenc : str
-        Font endocing, e.g., ``'T1'``.
+        Font endocing. The default is``'T1'`` if `font` is specified, ``None``
+        otherwise.
+    font : str, default None
+        Prefined font selection. Imitates well-known fonts. Possible values are
+        ``'Gill Sans'``, ``'Helvetica'``, ``'Iwona'``, ``'Latin Modern'``, and
+        ``'Times'``.
     fontsize : int, default 10
         Font size for standalone figures in pt.
     flexible : bool, default False
@@ -799,6 +804,7 @@ class Plot():
         self.preamble = ''
         self.inputenc = None
         self.fontenc = None
+        self.font = None
         self.fontsize = 10
 
         self.flexible = False
@@ -1204,6 +1210,28 @@ class Plot():
 
                 if self.inputenc and 'inputenc' not in self.preamble:
                     file.write('\\usepackage[%s]{inputenc}\n' % self.inputenc)
+
+                if self.font is not None:
+                    file.write({
+                        'Gill Sans':
+                            '\\usepackage[math]{iwona}\n'
+                            '\\usepackage[sfdefault]{cabin}\n'
+                            '\\usepackage[italic]{mathastext}\n',
+                        'Helvetica':
+                            '\\usepackage{sansmathfonts}\n'
+                            '\\usepackage[scaled]{helvet}\n'
+                            '\\let\\familydefault\sfdefault\n'
+                            '\\usepackage[italic]{mathastext}\n',
+                        'Iwona':
+                            '\\usepackage[math]{iwona}\n',
+                        'Latin Modern':
+                            '\\usepackage{lmodern}\n',
+                        'Times':
+                            '\\usepackage{newtxtext, newtxmath}\n',
+                        }[self.font])
+
+                    if self.fontenc is None:
+                        self.fontenc = 'T1'
 
                 if self.fontenc and 'fontenc' not in self.preamble:
                     file.write('\\usepackage[%s]{fontenc}\n' % self.fontenc)
