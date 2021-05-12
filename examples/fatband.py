@@ -21,4 +21,4 @@ plot.line(1.5 * x[::N // 50], 1.5 * y[::N // 50], color='red', cut=True,
     mark='*', only_marks=True, omit=False)
 plot.compline(phi, x, w, colors=['blue', 'teal'], draw='none', cut=True)
 
-plot.save('fatband', standalone=True, pdf=True)
+plot.save('fatband', pdf=True)

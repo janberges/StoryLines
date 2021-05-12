@@ -33,4 +33,4 @@ plot.line(
 
 plot.line(x, y, draw='brown', thick=True)
 
-plot.save('shortcut', standalone=True, pdf=True)
+plot.save('shortcut', pdf=True)
