@@ -1108,20 +1108,6 @@ class Plot():
         if pdf:
             standalone = True
 
-        # interpret negative as inner dimensions:
-
-        if self.width < 0:
-            self.width = -self.width + self.left + self.right
-
-        if self.height < 0:
-            self.height = -self.height + self.bottom + self.top
-
-        # determine extent of the plotting area:
-
-        extent = {}
-        extent['x'] = self.width - self.left - self.right
-        extent['y'] = self.height - self.bottom - self.top
-
         # determine data limits (x, y):
 
         lower = {}
@@ -1140,6 +1126,16 @@ class Plot():
             lower[x] -= getattr(self, x + 'padding')
             upper[x] += getattr(self, x + 'padding')
 
+        # determine data limits (z):
+
+        z = [line['z'] for line in self.lines if line['z'] is not None]
+
+        zaxis = bool(z) or self.zmin is not None and self.zmax is not None
+
+        if zaxis:
+            lower['z'] = self.zmin if self.zmin is not None else min(z)
+            upper['z'] = self.zmax if self.zmax is not None else max(z)
+
         # handle horizontal and vertical lines:
 
         for x, y in ('x', 'y'), ('y', 'x'):
@@ -1149,6 +1145,20 @@ class Plot():
                     line[y] = [line[y][0]] * 2
 
                     line['options'].setdefault('line_cap', 'butt')
+
+        # interpret negative as inner dimensions:
+
+        if self.width < 0:
+            self.width = -self.width + self.left + self.right
+
+        if self.height < 0:
+            self.height = -self.height + self.bottom + self.top
+
+        # determine extent of the plotting area:
+
+        extent = {}
+        extent['x'] = self.width - self.left - self.right
+        extent['y'] = self.height - self.bottom - self.top
 
         # determine width or height for proportional plot:
 
@@ -1162,16 +1172,10 @@ class Plot():
                         / (upper['y'] - lower['y'])
             self.width = extent['x'] + self.left + self.right
 
-        # determine data limits (z):
+        # set z-axis specific values:
 
-        z = [line['z'] for line in self.lines if line['z'] is not None]
-
-        if z or self.zmin is not None and self.zmax is not None:
+        if zaxis:
             extent['z'] = extent['y']
-
-            lower['z'] = self.zmin if self.zmin is not None else min(z)
-            upper['z'] = self.zmax if self.zmax is not None else max(z)
-
             colorbar = self.colorbar
         else:
             colorbar = False
