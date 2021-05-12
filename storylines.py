@@ -726,7 +726,7 @@ class Plot():
     preamble : str, default None
         Definitions for standalone figures.
     fontsize : int, default 10
-        Font size for standalone figures.
+        Font size for standalone figures in pt.
     flexible : bool, default False
         Scale plot to fill whole line?
     lines : list
@@ -1184,8 +1184,10 @@ class Plot():
             # print premable and open document
 
             if standalone:
-                file.write('\\documentclass[%dpt, varwidth=\\maxdimen]{standalone}\n'
-                    % self.fontsize)
+                file.write('\\documentclass[class=%s, %dpt, '
+                    'varwidth=\\maxdimen]{standalone}\n'
+                    % ('article' if 10 <= self.fontsize <= 12 else 'scrartcl',
+                        self.fontsize))
                 file.write('\\usepackage{tikz}\n')
 
                 if self.preamble:
