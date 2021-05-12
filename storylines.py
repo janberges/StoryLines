@@ -619,7 +619,7 @@ def goto(filename):
 pt = 2.54 / 72.27 # cm
 
 class Plot():
-    r"""Plot object.
+    """Plot object.
 
     Notes
     -----
@@ -664,7 +664,7 @@ class Plot():
     xlabel, ylabel, zlabel : str, default None
         Axis labels.
     xticks, yticks, zticks : list, default None
-        List of ticks, e.g., ``[0, (0.5, '$\frac12$'), 1]``.
+        List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``.
     xspacing, yspacing, zspacing : float, default 1.0
         Approximate tick spacing in cm.
     xstep, ystep, zstep : float, default None
@@ -691,7 +691,7 @@ class Plot():
         Formatter for subfigure label. Takes `label` as argument.
     lali : str, default 'center'
         Alignment of legend entries.
-    lbls : str, default '\baselineskip'
+    lbls : str, default '\\\\\\\\baselineskip'
         Line height of legend entries.
     lbox : bool, default False
         Draw box around legend?
@@ -771,7 +771,7 @@ class Plot():
             setattr(self, x + 'max', None)
             setattr(self, x + 'padding', 0.0)
             setattr(self, x + 'format',
-                lambda x: ('%g' % x).replace('-', r'\smash{\llap\textminus}'))
+                lambda x: ('%g' % x).replace('-', '\\smash{\\llap\\textminus}'))
 
         self.lower = 'blue'
         self.upper = 'red'
@@ -827,11 +827,11 @@ class Plot():
                 self.font = 'Helvetica'
                 self.fontsize = 7
                 self.labelsize = 8
-                self.labelformat = lambda x: r'\bfseries %s' % x
+                self.labelformat = lambda x: '\\bfseries %s' % x
 
             elif style == 'APS':
                 self.font = 'Times'
-                self.labelformat = lambda x: r'(%s)' % x
+                self.labelformat = lambda x: '(%s)' % x
 
         for name, value in more.items():
             if hasattr(self, name):
@@ -1091,7 +1091,7 @@ class Plot():
         self.lines = []
 
     def save(self, filename, external=False, standalone=False, pdf=False):
-        r"""Save plot to file.
+        """Save plot to file.
 
         Parameters
         ----------
