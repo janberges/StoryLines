@@ -644,6 +644,9 @@ class Plot():
         Default margin in cm.
     xyaxes : bool, default True
         Draw x and y axes?
+    style : str, default None
+        Predefined style. Possible values are ``'Nature'`` and ``'APS'``. This
+        changes some of the below default values.
     **more
         Global TikZ options.
 
@@ -747,7 +750,9 @@ class Plot():
     options : dict
         Global TikZ options.
     """
-    def __init__(self, width=8.0, height=6.0, margin=1.0, xyaxes=True, **more):
+    def __init__(self, width=8.0, height=6.0, margin=1.0, xyaxes=True,
+            style=None, **more):
+
         self.width = width
         self.height = height
 
@@ -815,6 +820,17 @@ class Plot():
             line_cap='round',
             line_join='round',
             mark_size='0.05cm')
+
+        if style is not None:
+            if style == 'Nature':
+                self.font = 'Helvetica'
+                self.fontsize = 7
+                self.labelsize = 8
+                self.labelformat = lambda x: r'\bfseries %s' % x
+
+            elif style == 'APS':
+                self.font = 'Times'
+                self.labelformat = lambda x: r'(%s)' % x
 
         for name, value in more.items():
             if hasattr(self, name):
