@@ -640,8 +640,9 @@ class Plot():
          height (without bottom and top margins). If zero, the y-axis scale is
          set equal to the x-axis scale and the height is inferred from the
          width.
-    margin : float, default 1.0
-        Default margin in cm.
+    margin : float, default None
+        Default margin in cm. If ``None``, margins are set automatically. This
+        is not always the best option.
     xyaxes : bool, default True
         Draw x and y axes?
     style : str, default None
@@ -712,8 +713,8 @@ class Plot():
         Legend title.
     lwid : float, default 4.0
         Width of legend columns in cm.
-    tick : str, default '0.7mm'
-        Length of tick marks.
+    tick : str, default 0.07
+        Length of tick marks in cm.
     gap : float, default 0.0
         Gap between plot area and colorbar in cm.
     tip : float, default 0.1
@@ -750,7 +751,7 @@ class Plot():
     options : dict
         Global TikZ options.
     """
-    def __init__(self, width=8.0, height=6.0, margin=1.0, xyaxes=True,
+    def __init__(self, width=8.0, height=6.0, margin=None, xyaxes=True,
             style=None, **more):
 
         self.width = width
@@ -794,7 +795,7 @@ class Plot():
         self.ltop = None
         self.lwid = 4.0
 
-        self.tick = '0.7mm'
+        self.tick = 0.07
         self.gap = 0.0
         self.tip = 0.1
 
@@ -1139,6 +1140,10 @@ class Plot():
             lower[x] -= self.zpadding
             upper[x] += self.zpadding
 
+            colorbar = self.colorbar
+        else:
+            colorbar = False
+
         # handle horizontal and vertical lines:
 
         for x, y in ('x', 'y'), ('y', 'x'):
@@ -1148,6 +1153,56 @@ class Plot():
                     line[y] = [line[y][0]] * 2
 
                     line['options'].setdefault('line_cap', 'butt')
+
+        # choose automatic margins:
+
+        baselineskip = (1.0 - self.tick) / 2
+        baselineskip *= self.fontsize / 10
+        minimum = 0.2
+
+        if self.bottom is None:
+            self.bottom = 0.0
+
+            if self.xticks is None or self.xticks:
+                self.bottom += self.tick + baselineskip
+
+            if self.xlabel:
+                self.bottom += baselineskip
+
+            self.bottom = max(minimum, self.bottom)
+
+        if self.left is None:
+            self.left = 0.0
+
+            if self.yticks is None or self.yticks:
+                self.left += self.tick + baselineskip
+
+            if self.ylabel:
+                self.left += baselineskip
+
+            self.left = max(minimum, self.left)
+
+        if self.right is None:
+            self.right = 0.0
+
+            if colorbar:
+                self.right += self.tip
+
+                if self.zlabel:
+                    self.right += baselineskip
+
+                if self.zticks is None or self.zticks:
+                    self.right += baselineskip
+
+            self.right = max(minimum, self.right)
+
+        if self.top is None:
+            self.top = 0.0
+
+            if self.title:
+                self.top += baselineskip
+
+            self.top = max(minimum, self.top)
 
         # interpret negative as inner dimensions:
 
@@ -1175,13 +1230,10 @@ class Plot():
                         / (upper['y'] - lower['y'])
             self.width = extent['x'] + self.left + self.right
 
-        # set z-axis specific values:
+        # take care of z-axis:
 
         if zaxis:
             extent['z'] = extent['y']
-            colorbar = self.colorbar
-        else:
-            colorbar = False
 
         # determine scale and tick positions
 
@@ -1377,15 +1429,15 @@ class Plot():
 
                         if self.xaxis:
                             for x, label in ticks['x']:
-                                file.write('\n\t\t(%.3f, 0) -- +(0, -%s) '
+                                file.write('\n\t\t(%.3f, 0) -- +(0, %.3f) '
                                     'node [below] {%s}'
-                                    % (x, self.tick, label))
+                                    % (x, -self.tick, label))
 
                         if self.yaxis:
                             for y, label in ticks['y']:
-                                file.write('\n\t\t(0, %.3f) -- +(-%s, 0) '
+                                file.write('\n\t\t(0, %.3f) -- +(%.3f, 0) '
                                     'node [rotate=90, above] {%s}'
-                                    % (y, self.tick, label))
+                                    % (y, -self.tick, label))
 
                         file.write(';')
 
@@ -1413,8 +1465,8 @@ class Plot():
                     if ticks['x']:
                         file.write('=\\baselineskip')
 
-                    file.write('] at (%.3f, -%s)'
-                        % (extent['x'] / 2, self.tick))
+                    file.write('] at (%.3f, %.3f)'
+                        % (extent['x'] / 2, -self.tick))
 
                     file.write('\n\t\t{%s};' % self.xlabel)
 
@@ -1424,8 +1476,8 @@ class Plot():
                     if ticks['y']:
                         file.write('=\\baselineskip')
 
-                    file.write('] at (-%s, %.3f)'
-                        % (self.tick, extent['y'] / 2))
+                    file.write('] at (%.3f, %.3f)'
+                        % (-self.tick, extent['y'] / 2))
 
                     file.write('\n\t\t{%s};' % self.ylabel)
 
