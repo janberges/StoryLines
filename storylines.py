@@ -1255,6 +1255,12 @@ class Plot():
                 if self.preamble:
                     file.write('%s\n' % self.preamble.strip())
 
+                for line in self.lines:
+                    if ('mark' in line['options'] and line['options']['mark']
+                            not in ['*', '+', 'x', 'ball']):
+                        file.write('\\usetikzlibrary{plotmarks}\n')
+                        break
+
                 file.write('\\begin{document}\n\\noindent\n' )
 
             # set filename for externalization
