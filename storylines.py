@@ -681,6 +681,10 @@ class Plot():
         Plot title.
     label : str, default None
         Subfigure label, e.g., ``'(a)'``.
+    labelsize : int, default None
+        Different font size for subfigure label in pt.
+    labelformat : function, default None
+        Formatter for subfigure label. Takes `label` as argument.
     lali : str, default 'center'
         Alignment of legend entries.
     lbls : str, default '\baselineskip'
@@ -760,6 +764,8 @@ class Plot():
         self.title = None
 
         self.label = None
+        self.labelsize = None
+        self.labelformat = None
 
         self.lali = 'center'
         self.lbls = '\\baselineskip'
@@ -1511,6 +1517,13 @@ class Plot():
             # add label
 
             if self.label is not None:
+                if self.labelformat is not None:
+                    self.label = self.labelformat(self.label)
+
+                if self.labelsize is not None:
+                    self.label = ('\\fontsize{%d}{%d}\\selectfont %s' %
+                        (self.labelsize, self.labelsize, self.label))
+
                 file.write('\n\t\\node at (current bounding box.north west) '
                     '[inner sep=0pt, below right] {%s};'
                     % self.label)
