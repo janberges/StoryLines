@@ -616,7 +616,7 @@ def goto(filename):
 
     return stem, typeset, home
 
-pt = 2.54 / 72 # cm
+pt = 2.54 / 72.27 # cm
 
 class Plot():
     r"""Plot object.
@@ -1156,12 +1156,11 @@ class Plot():
 
         # choose automatic margins:
 
-        baselineskip = (1.0 - self.tick) / 2
-        baselineskip *= self.fontsize / 10
+        baselineskip = 1.2 * self.fontsize * pt
         minimum = 0.2
 
         if self.bottom is None:
-            self.bottom = 0.0
+            self.bottom = minimum
 
             if self.xticks is None or self.xticks:
                 self.bottom += self.tick + baselineskip
@@ -1169,10 +1168,8 @@ class Plot():
             if self.xlabel:
                 self.bottom += baselineskip
 
-            self.bottom = max(minimum, self.bottom)
-
         if self.left is None:
-            self.left = 0.0
+            self.left = minimum
 
             if self.yticks is None or self.yticks:
                 self.left += self.tick + baselineskip
@@ -1180,10 +1177,8 @@ class Plot():
             if self.ylabel:
                 self.left += baselineskip
 
-            self.left = max(minimum, self.left)
-
         if self.right is None:
-            self.right = 0.0
+            self.right = minimum
 
             if colorbar:
                 self.right += self.tip
@@ -1194,15 +1189,11 @@ class Plot():
                 if self.zticks is None or self.zticks:
                     self.right += baselineskip
 
-            self.right = max(minimum, self.right)
-
         if self.top is None:
-            self.top = 0.0
+            self.top = minimum
 
             if self.title:
                 self.top += baselineskip
-
-            self.top = max(minimum, self.top)
 
         # interpret negative as inner dimensions:
 
