@@ -1046,7 +1046,7 @@ class Plot():
         **options
             TikZ options of the node, e.g., ``above left=True``.
         """
-        self.code('\n\t\\node %s[%s] at (<x=%.3f>, <y=%.3f>) {%s};'
+        self.code('\n\t\\node %s[%s] at (<x=%.14g>, <y=%.14g>) {%s};'
             % ('(%s) ' % name if name else '', csv(options), x, y, content))
 
     def point(self, x, y, name):
@@ -1059,7 +1059,7 @@ class Plot():
         name : str
             Name/label to refer back to the point.
         """
-        self.code('\n\t\\coordinate (%s) at (<x=%.3f>, <y=%.3f>);'
+        self.code('\n\t\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);'
             % (name, x, y))
 
     def code(self, data, **options):
@@ -1479,7 +1479,7 @@ class Plot():
 
                 for option in 'line_width', 'mark_size':
                     if isinstance(line['options'].get(option), (float, int)):
-                        line['options'][option] = ('%scm'
+                        line['options'][option] = ('%.3fcm'
                             % (line['options'][option] * scale['y']))
 
                 for option in line['options']:
