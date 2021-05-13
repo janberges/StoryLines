@@ -1114,11 +1114,11 @@ class Plot():
             xmin = getattr(self, x + 'min')
             xmax = getattr(self, x + 'max')
 
-            lower[x] = xmin if xmin is not None \
-                else min(min(line[x]) for line in self.lines if len(line[x]))
+            if xmin is None or xmax is None:
+                X = [value for line in self.lines for value in line[x]]
 
-            upper[x] = xmax if xmax is not None \
-                else max(max(line[x]) for line in self.lines if len(line[x]))
+            lower[x] = xmin if xmin is not None else min(X) if X else 0
+            upper[x] = xmax if xmax is not None else max(X) if X else 0
 
             lower[x] -= getattr(self, x + 'padding')
             upper[x] += getattr(self, x + 'padding')
