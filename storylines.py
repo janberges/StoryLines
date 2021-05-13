@@ -744,8 +744,6 @@ class Plot():
         ``'Times'``.
     fontsize : int, default 10
         Font size for standalone figures in pt.
-    flexible : bool, default False
-        Scale plot to fill whole line?
     lines : list
         List of all line objects.
     options : dict
@@ -812,8 +810,6 @@ class Plot():
         self.fontenc = None
         self.font = None
         self.fontsize = 10
-
-        self.flexible = False
 
         self.lines = []
 
@@ -1320,15 +1316,7 @@ class Plot():
 
             # open TikZ environment
 
-            if self.flexible:
-                file.write('\\begingroup%%'
-                    '\n\\let\\unit\\relax%%'
-                    '\n\\newlength\\unit%%'
-                    '\n\\setlength\\unit{%g\\linewidth}%%'
-                    '\n\\begin{tikzpicture}[x=\\unit, y=\\unit, %s]'
-                    % (1.0 / self.width, csv(self.options)))
-            else:
-                file.write('\\begin{tikzpicture}[%s]' % csv(self.options))
+            file.write('\\begin{tikzpicture}[%s]' % csv(self.options))
 
             # set bounding box
 
@@ -1343,16 +1331,8 @@ class Plot():
             if self.background is not None:
                 file.write('\n\t\\node '
                     '[anchor=south west, inner sep=0, outer sep=0] '
-                    '{ \includegraphics[')
-
-                if self.flexible:
-                    file.write('width=%.3f\\unit, height=%.3f\\unit'
-                        % (extent['x'], extent['y']))
-                else:
-                    file.write('width=%.3fcm, height=%.3fcm'
-                        % (extent['x'], extent['y']))
-
-                file.write(']{%s} };' % self.background)
+                    '{\includegraphics[width=%.3fcm, height=%.3fcm]{%s}};'
+                    % (extent['x'], extent['y'], self.background))
 
             def draw_frame():
                 if draw_frame.done:
@@ -1383,18 +1363,11 @@ class Plot():
 
                 if colorbar:
                     if isinstance(colorbar, str):
-                        file.write('\n\t\\node at (%.3f, 0)'
+                        file.write('\n\t\\node at (%.3f, 0) '
                             '[anchor=south west, inner sep=0, outer sep=0] '
-                            '{ \includegraphics[' % (extent['x'] + self.gap))
-
-                        if self.flexible:
-                            file.write('width=%.3f\\unit, height=%.3f\\unit'
-                                % (self.tip - self.gap, extent['y']))
-                        else:
-                            file.write('width=%.3fcm, height=%.3fcm'
-                                % (self.tip - self.gap, extent['y']))
-
-                        file.write(']{%s} };' % colorbar)
+                            '{\includegraphics[width=%.3fcm, height=%.3fcm]'
+                            '{%s}};' % (extent['x'] + self.gap,
+                                self.tip - self.gap, extent['y'], colorbar))
                     else:
                         file.write('\n\t\\shade [bottom color=%s, top color=%s]'
                             % (self.lower, self.upper))
@@ -1742,9 +1715,6 @@ class Plot():
             # close TikZ environment
 
             file.write('\n\\end{tikzpicture}%')
-
-            if self.flexible:
-                file.write('\n\\endgroup%')
 
             # close document
 
