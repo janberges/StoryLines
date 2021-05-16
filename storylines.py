@@ -646,8 +646,8 @@ class Plot():
     xyaxes : bool, default True
         Draw x and y axes?
     style : str, default None
-        Predefined style. Possible values are ``'Nature'`` and ``'APS'``. This
-        changes some of the below default values.
+        Predefined style. Possible values are ``'Nature'``, ``'NatCommun'``,
+        and ``'APS'``. This changes some of the below default values.
     **more
         Global TikZ options.
 
@@ -823,11 +823,23 @@ class Plot():
                 self.font = 'Helvetica'
                 self.fontsize = 7
                 self.labelsize = 8
-                self.labelformat = lambda x: '\\bfseries %s' % x
+                self.labelformat = lambda x: '\\textbf{%s}' % x
+                self.single = 8.9
+                self.double = 18.3
+
+            if style == 'NatCommun':
+                self.font = 'Helvetica'
+                self.fontsize = 8
+                self.labelsize = 9
+                self.labelformat = lambda x: '\\textbf{%s}' % x
+                self.single = 8.8
+                self.double = 18.0
 
             elif style == 'APS':
                 self.font = 'Times'
                 self.labelformat = lambda x: '(%s)' % x
+                self.single = 8.6
+                self.double = 17.8
 
         for name, value in more.items():
             if hasattr(self, name):
