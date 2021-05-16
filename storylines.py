@@ -427,14 +427,14 @@ def shortcut(points, length=None, length_rel=1):
 
     return list(zip(x, y))
 
-def cut(points, minimum, maximum, join=False):
+def cut(points, minimum=None, maximum=None, join=False):
     """Cut off curve segments beyond y interval.
 
     Parameters
     ----------
     points : list of 2-tuples
         Vertices of linear spline.
-    minimum, maximum : float
+    minimum, maximum : float, default None
         Lower and upper bound of y interval.
     join : bool
         Concatenate remaining curve segments?
@@ -450,21 +450,25 @@ def cut(points, minimum, maximum, join=False):
     """
     points = [tuple(point) for point in points]
 
-    n = 0 if join else 1
+    for y in minimum, maximum:
+        if y is None:
+            continue
 
-    while n < len(points):
-        x1, y1 = points[n - 1]
-        x2, y2 = points[n]
+        n = 0 if join else 1
 
-        for y in maximum, minimum:
+        while n < len(points):
+            x1, y1 = points[n - 1]
+            x2, y2 = points[n]
+
             if y1 < y < y2 or y1 > y > y2:
                 x = (x1 * (y2 - y) + x2 * (y - y1)) / (y2 - y1)
                 points.insert(n, (x, y))
 
-        n += 1
+            n += 1
 
-    for island in islands(len(points),
-        lambda n: minimum <= points[n][1] <= maximum, join):
+    for island in islands(len(points), lambda n:
+            (minimum is None or points[n][1] >= minimum) and
+            (maximum is None or points[n][1] <= maximum), join):
 
         yield [points[n] for n in island]
 
