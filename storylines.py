@@ -679,6 +679,8 @@ class Plot():
         Upper axis limit.
     xpadding, ypadding, zpadding : float, default 0.0
         Padding between data and axes in data units.
+    xclose, yclose, zclose : bool, default False
+        Place axis labels in space reserved for tick labels.
     xformat, yformat, zformat : function
         Tick formatter. Takes tick position as argument.
     lower : str, default 'blue'
@@ -772,6 +774,7 @@ class Plot():
             setattr(self, x + 'min', None)
             setattr(self, x + 'max', None)
             setattr(self, x + 'padding', 0.0)
+            setattr(self, x + 'close', False)
             setattr(self, x + 'format',
                 lambda x: ('%g' % x).replace('-', '\\smash{\\llap\\textminus}'))
 
@@ -1177,7 +1180,7 @@ class Plot():
             if self.xticks is None or self.xticks:
                 self.bottom += self.tick + baselineskip
 
-            if self.xlabel:
+            if self.xlabel and not self.xclose:
                 self.bottom += baselineskip
 
         if self.left is None:
@@ -1186,7 +1189,7 @@ class Plot():
             if self.yticks is None or self.yticks:
                 self.left += self.tick + baselineskip
 
-            if self.ylabel:
+            if self.ylabel and not self.yclose:
                 self.left += baselineskip
 
         if self.right is None:
@@ -1195,7 +1198,7 @@ class Plot():
             if colorbar:
                 self.right += self.tip
 
-                if self.zlabel:
+                if self.zlabel and not self.zclose:
                     self.right += baselineskip
 
                 if self.zticks is None or self.zticks:
@@ -1442,7 +1445,7 @@ class Plot():
                 if self.xlabel:
                     file.write('\n\t\\node [below')
 
-                    if ticks['x']:
+                    if ticks['x'] and not self.xclose:
                         file.write('=\\baselineskip')
 
                     file.write('] at (%.3f, %.3f)'
@@ -1453,7 +1456,7 @@ class Plot():
                 if self.ylabel:
                     file.write('\n\t\\node [rotate=90, above')
 
-                    if ticks['y']:
+                    if ticks['y'] and not self.yclose:
                         file.write('=\\baselineskip')
 
                     file.write('] at (%.3f, %.3f)'
@@ -1464,7 +1467,7 @@ class Plot():
                 if self.zlabel and colorbar:
                     file.write('\n\t\\node [rotate=90, below')
 
-                    if ticks['z']:
+                    if ticks['z'] and not self.zclose:
                         file.write('=\\baselineskip')
 
                     file.write('] at (%.3f, %.3f)'
