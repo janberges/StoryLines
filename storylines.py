@@ -665,6 +665,8 @@ class Plot():
         Bottom margin in cm.
     top : float, default `margin`
         Top margin in cm.
+    margmin : float, default 0.15
+        Minimum automatic margin in cm.
     xlabel, ylabel, zlabel : str, default None
         Axis labels.
     xticks, yticks, zticks : list, default None
@@ -765,6 +767,8 @@ class Plot():
         self.right = margin
         self.bottom = margin
         self.top = margin
+
+        self.margmin = 0.15
 
         for x in 'x', 'y', 'z':
             setattr(self, x + 'label', None)
@@ -1172,10 +1176,9 @@ class Plot():
         # choose automatic margins:
 
         baselineskip = 1.2 * self.fontsize * pt
-        minimum = 0.2
 
         if self.bottom is None:
-            self.bottom = minimum
+            self.bottom = self.margmin
 
             if self.xticks is None or self.xticks:
                 self.bottom += self.tick + baselineskip
@@ -1184,7 +1187,7 @@ class Plot():
                 self.bottom += baselineskip
 
         if self.left is None:
-            self.left = minimum
+            self.left = self.margmin
 
             if self.yticks is None or self.yticks:
                 self.left += self.tick + baselineskip
@@ -1193,7 +1196,7 @@ class Plot():
                 self.left += baselineskip
 
         if self.right is None:
-            self.right = minimum
+            self.right = self.margmin
 
             if colorbar:
                 self.right += self.tip
@@ -1205,7 +1208,7 @@ class Plot():
                     self.right += baselineskip
 
         if self.top is None:
-            self.top = minimum
+            self.top = self.margmin
 
             if self.title:
                 self.top += baselineskip
