@@ -720,7 +720,7 @@ class Plot():
     ltop : str, default None
         Legend title.
     lwid : float, default 4.0
-        Width of legend columns in cm.
+        Width of legend columns in units of `llen`.
     tick : str, default 0.07
         Length of tick marks in cm.
     gap : float, default 0.0
