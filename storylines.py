@@ -1173,20 +1173,26 @@ class Plot():
         if self.bottom is None:
             self.bottom = self.margmin
 
-            if self.xticks is None or self.xticks:
-                self.bottom += self.tick + baselineskip
+            if self.xaxis:
+                xticks = self.xticks is None or bool(self.xticks)
 
-            if self.xlabel and not self.xclose:
-                self.bottom += baselineskip
+                if self.xlabel or xticks:
+                    self.bottom += self.tick + baselineskip
+
+                if self.xlabel and xticks and not self.xclose:
+                    self.bottom += baselineskip
 
         if self.left is None:
             self.left = self.margmin
 
-            if self.yticks is None or self.yticks:
-                self.left += self.tick + baselineskip
+            if self.yaxis:
+                yticks = self.yticks is None or bool(self.yticks)
 
-            if self.ylabel and not self.yclose:
-                self.left += baselineskip
+                if self.ylabel or yticks:
+                    self.left += self.tick + baselineskip
+
+                if self.ylabel and yticks and not self.yclose:
+                    self.left += baselineskip
 
         if self.right is None:
             self.right = self.margmin
@@ -1194,10 +1200,12 @@ class Plot():
             if self.colorbar:
                 self.right += self.tip
 
-                if self.zlabel and not self.zclose:
+                zticks = self.zticks is None or bool(self.zticks)
+
+                if self.zlabel or zticks:
                     self.right += baselineskip
 
-                if self.zticks is None or self.zticks:
+                if self.zlabel and zticks and not self.zclose:
                     self.right += baselineskip
 
         if self.top is None:
@@ -1438,7 +1446,7 @@ class Plot():
 
                 # label coordinate axes
 
-                if self.xlabel:
+                if self.xaxis and self.xlabel:
                     file.write('\n\t\\node [below')
 
                     if ticks['x'] and not self.xclose:
@@ -1449,7 +1457,7 @@ class Plot():
 
                     file.write('\n\t\t{%s};' % self.xlabel)
 
-                if self.ylabel:
+                if self.yaxis and self.ylabel:
                     file.write('\n\t\\node [rotate=90, above')
 
                     if ticks['y'] and not self.yclose:
@@ -1460,7 +1468,7 @@ class Plot():
 
                     file.write('\n\t\t{%s};' % self.ylabel)
 
-                if self.zlabel and self.colorbar:
+                if self.colorbar and self.zlabel:
                     file.write('\n\t\\node [rotate=90, below')
 
                     if ticks['z'] and not self.zclose:
