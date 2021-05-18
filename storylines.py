@@ -770,7 +770,7 @@ class Plot():
 
         self.margmin = 0.15
 
-        for x in 'x', 'y', 'z':
+        for x in 'xyz':
             setattr(self, x + 'label', None)
             setattr(self, x + 'ticks', None)
             setattr(self, x + 'spacing', 1.0)
@@ -1133,7 +1133,7 @@ class Plot():
         lower = {}
         upper = {}
 
-        for x in 'x', 'y':
+        for x in 'xy':
             xmin = getattr(self, x + 'min')
             xmax = getattr(self, x + 'max')
 
@@ -1165,7 +1165,7 @@ class Plot():
 
         # handle horizontal and vertical lines:
 
-        for x, y in ('x', 'y'), ('y', 'x'):
+        for x, y in 'xy', 'yx':
             for line in self.lines:
                 if not len(line[x]) and len(line[y]) == 1:
                     line[x] = [lower[x], upper[x]]
@@ -1514,7 +1514,7 @@ class Plot():
                     labels.append([line['options'], line['label']])
 
                 if len(line['x']) and len(line['y']):
-                    for x, y in ('x', 'y'), ('y', 'x'):
+                    for x, y in 'xy', 'yx':
                         xref = line[x + 'ref']
 
                         if xref is not None:
@@ -1525,7 +1525,7 @@ class Plot():
                             line[y] = line[y][:1] + line[y] + line[y][-1:]
 
                     points = list(zip(*[[scale[x] * (n - lower[x])
-                        for n in line[x]] for x in ('x', 'y')]))
+                        for n in line[x]] for x in 'xy']))
 
                     if line['protrusion']:
                         for i, j in (1, 0), (-2, -1):
@@ -1602,7 +1602,7 @@ class Plot():
                 if line['code']:
                     code = line['code']
 
-                    for x in 'x', 'y':
+                    for x in 'xy':
                         code = re.sub('<%s=(.*?)>' % x, lambda match: '%.3f'
                             % (scale[x] * (float(match.group(1)) - lower[x])),
                             code)
