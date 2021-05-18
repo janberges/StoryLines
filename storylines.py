@@ -733,8 +733,11 @@ class Plot():
         Draw y axis?
     frame : bool, default `xyaxes`
         Draw frame around plot area?
-    colorbar : bool, default True
-        Draw possible colorbar?
+    colorbar : bool or str, default None
+        Draw colorbar? If ``None``, the colobar is drawn if any line is given a
+        z value or if both `zmin` and `zmax` are given. Alternatively, the path
+        to an image with a color gradient can be specified. Here, an image
+        width of one pixel is sufficient.
     outline : bool, default False
         Draw dashed figure outline?
     background : str, default None
@@ -811,7 +814,7 @@ class Plot():
         self.xaxis = xyaxes
         self.yaxis = xyaxes
         self.frame = xyaxes
-        self.colorbar = True
+        self.colorbar = None
         self.outline = False
 
         self.background = None
@@ -1128,40 +1131,30 @@ class Plot():
         if pdf:
             standalone = True
 
-        # determine data limits (x, y):
+        # determine data limits:
 
         lower = {}
         upper = {}
 
-        for x in 'xy':
+        for x in 'xyz':
             xmin = getattr(self, x + 'min')
             xmax = getattr(self, x + 'max')
 
             if xmin is None or xmax is None:
-                X = [value for line in self.lines for value in line[x]]
+                if x == 'z':
+                    X = [line[x] for line in self.lines if line[x] is not None]
 
-            lower[x] = xmin if xmin is not None else min(X) if X else 0
-            upper[x] = xmax if xmax is not None else max(X) if X else 0
+                else:
+                    X = [value for line in self.lines for value in line[x]]
+
+            if x == 'z' and self.colorbar is None:
+                self.colorbar = xmin is not None and xmax is not None or bool(X)
+
+            lower[x] = xmin if xmin is not None else min(X) if X else 0.0
+            upper[x] = xmax if xmax is not None else max(X) if X else 0.0
 
             lower[x] -= getattr(self, x + 'padding')
             upper[x] += getattr(self, x + 'padding')
-
-        # determine data limits (z):
-
-        z = [line['z'] for line in self.lines if line['z'] is not None]
-
-        zaxis = bool(z) or self.zmin is not None and self.zmax is not None
-
-        if zaxis:
-            lower['z'] = self.zmin if self.zmin is not None else min(z)
-            upper['z'] = self.zmax if self.zmax is not None else max(z)
-
-            lower[x] -= self.zpadding
-            upper[x] += self.zpadding
-
-            colorbar = self.colorbar
-        else:
-            colorbar = False
 
         # handle horizontal and vertical lines:
 
@@ -1198,7 +1191,7 @@ class Plot():
         if self.right is None:
             self.right = self.margmin
 
-            if colorbar:
+            if self.colorbar:
                 self.right += self.tip
 
                 if self.zlabel and not self.zclose:
@@ -1241,8 +1234,7 @@ class Plot():
 
         # take care of z-axis:
 
-        if zaxis:
-            extent['z'] = extent['y']
+        extent['z'] = extent['y']
 
         # determine scale and tick positions
 
@@ -1383,13 +1375,14 @@ class Plot():
 
                 # paint colorbar
 
-                if colorbar:
-                    if isinstance(colorbar, str):
+                if self.colorbar:
+                    if isinstance(self.colorbar, str):
                         file.write('\n\t\\node at (%.3f, 0) '
                             '[anchor=south west, inner sep=0, outer sep=0] '
                             '{\includegraphics[width=%.3fcm, height=%.3fcm]'
                             '{%s}};' % (extent['x'] + self.gap,
-                                self.tip - self.gap, extent['y'], colorbar))
+                                self.tip - self.gap, extent['y'],
+                                self.colorbar))
                     else:
                         file.write('\n\t\\shade [bottom color=%s, top color=%s]'
                             % (self.lower, self.upper))
@@ -1430,7 +1423,7 @@ class Plot():
                     # draw coordinate axes
 
                     file.write('\n\t\\draw [%s-%s, line cap=butt]\n\t\t'
-                        % ('<' * (self.xaxis and not colorbar),
+                        % ('<' * (self.xaxis and not self.colorbar),
                             '>' * self.yaxis))
 
                     if self.xaxis:
@@ -1467,7 +1460,7 @@ class Plot():
 
                     file.write('\n\t\t{%s};' % self.ylabel)
 
-                if self.zlabel and colorbar:
+                if self.zlabel and self.colorbar:
                     file.write('\n\t\\node [rotate=90, below')
 
                     if ticks['z'] and not self.zclose:
