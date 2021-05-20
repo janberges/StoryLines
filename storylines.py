@@ -2,6 +2,8 @@
 
 from __future__ import division
 
+__version__ = '0.3'
+
 import math
 import os
 import re
