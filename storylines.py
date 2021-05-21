@@ -694,7 +694,7 @@ class Plot():
     title : str, default None
         Plot title.
     label : str, default None
-        Subfigure label, e.g., ``'(a)'``.
+        Subfigure label, e.g., ``'a'``.
     labelsize : int, default None
         Different font size for subfigure label in pt.
     labelformat : function, default None
@@ -749,7 +749,7 @@ class Plot():
     inputenc : str, default None
         Text endocing, e.g., ``'utf8'``.
     fontenc : str
-        Font endocing. The default is``'T1'`` if `font` is specified, ``None``
+        Font endocing. The default is ``'T1'`` if `font` is specified, ``None``
         otherwise.
     font : str, default None
         Prefined font selection. Imitates well-known fonts. Possible values are
@@ -1098,7 +1098,7 @@ class Plot():
         data : str
             TikZ code. Positions and distances in data coordinates and units
             can be specified using angle brackets, e.g., ``(<x=1>, <y=2>)`` or
-            ``+(<dx=1>, <dy=2)``.
+            ``+(<dx=1>, <dy=2>)``.
         **options
             Options passed to `line`.
         """
@@ -1128,7 +1128,7 @@ class Plot():
             Create file that can be typeset with ``pdflatex``, i.e., include
             document header etc.?
         pdf : bool, default False
-            Typeset TeX file via ``pdflatex``? This implied `standalone`.
+            Typeset TeX file via ``pdflatex``? This implies `standalone`.
         """
         if pdf:
             standalone = True
