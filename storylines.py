@@ -85,10 +85,10 @@ def multiples(lower, upper, divisor=1):
     divisor : float
         Number the results shall be multiples of.
 
-    Returns
-    -------
-    generator
-        Generator of all multiples of `divisor` between `lower` and `upper`.
+    Yields
+    ------
+    float
+        Multiple of `divisor` between `lower` and `upper`.
     """
     for n in range(int(math.ceil(lower / divisor)),
             int(math.floor(upper / divisor)) + 1):
@@ -99,15 +99,15 @@ def relevant(points, error=1e-3):
 
     Parameters
     ----------
-    points : list of 2-tuples
+    points : list of 2-tuple
         Vertices of linear spline.
     error : float, optional
         Tolerated deviation from original spline.
 
-    Returns
-    -------
-    generator
-        Generator of thinned out vertices.
+    Yields
+    ------
+    2-tuple
+        Relevant vertex.
     """
     if len(points) < 3:
         for point in points:
@@ -170,10 +170,10 @@ def islands(N, criterion, join=False):
     join : bool
         Concatenate all subranges?
 
-    Returns
-    -------
-    generator
-        Generator of subrange lists.
+    Yields
+    ------
+    list of int
+        Elements of subrange.
     """
     island = []
 
@@ -193,7 +193,7 @@ def fatband(points, width, weights, shifts, nib=None):
 
     Parameters
     ----------
-    points : list of 2-tuples
+    points : list of 2-tuple
         Vertices of linear spline.
     width : float
         Overall linewidth scaling factor.
@@ -208,7 +208,7 @@ def fatband(points, width, weights, shifts, nib=None):
 
     Returns
     -------
-    list of 2-tuples
+    list of 2-tuple
         Fatband outline.
 
     See Also
@@ -252,7 +252,7 @@ def miter_butt(points, width, weights, shifts, nib=None):
 
     Parameters
     ----------
-    points : list of 2-tuples
+    points : list of 2-tuple
         Vertices of linear spline.
     width : float
         Overall linewidth scaling factor.
@@ -267,7 +267,7 @@ def miter_butt(points, width, weights, shifts, nib=None):
 
     Returns
     -------
-    list of 2-tuples
+    list of 2-tuple
         Fatband outline.
 
     See Also
@@ -349,7 +349,7 @@ def shortcut(points, length=None, length_rel=1):
 
     Parameters
     ----------
-    points : list of 2-tuples
+    points : list of 2-tuple
         Vertices of linear spline.
     length : float
         Maximum length of loop to be cut off.
@@ -359,7 +359,7 @@ def shortcut(points, length=None, length_rel=1):
 
     Returns
     -------
-    list of 2-tuples
+    list of 2-tuple
         Linear spline with self-intersection loops removed.
     """
     x, y = tuple(zip(*points))
@@ -434,17 +434,17 @@ def cut(points, minimum=None, maximum=None, join=False):
 
     Parameters
     ----------
-    points : list of 2-tuples
+    points : list of 2-tuple
         Vertices of linear spline.
     minimum, maximum : float, default None
         Lower and upper bound of y interval.
     join : bool
         Concatenate remaining curve segments?
 
-    Returns
-    -------
-    generator
-        Generator of remaining curve segments.
+    Yields
+    ------
+    list of 2-tuple
+        Remaining curve segment.
 
     See Also
     --------
@@ -479,7 +479,7 @@ def cut2d(points, xmin, xmax, ymin, ymax, join=False):
 
     Parameters
     ----------
-    points : list of 2-tuples
+    points : list of 2-tuple
         Vertices of linear spline.
     xmin, xmax : float
         Lower and upper bound of x interval.
@@ -488,10 +488,10 @@ def cut2d(points, xmin, xmax, ymin, ymax, join=False):
     join : bool
         Concatenate remaining curve segments?
 
-    Returns
-    -------
-    generator
-        Generator of remaining curve segments.
+    Yields
+    ------
+    list of 2-tuple
+        Remaining curve segment.
 
     See Also
     --------
@@ -510,15 +510,15 @@ def jump(points, distance=1.0):
 
     Parameters
     ----------
-    points : list of 2-tuples
+    points : list of 2-tuple
         Vertices of linear spline.
     distance : float
         Shortest line segment to be omitted.
 
-    Returns
-    -------
-    generator
-        Generator of separated curve segments.
+    Yields
+    ------
+    list of 2-tuple
+        Separated curve segment.
     """
     points = [tuple(point) for point in points]
 
@@ -549,10 +549,10 @@ def groups(iterable, size=4):
     size : int
         Group size.
 
-    Returns
-    -------
-    generator
-        Interator over groups of objects.
+    Yields
+    ------
+    list
+        Group of objects.
     """
     group = []
 
