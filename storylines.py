@@ -1077,6 +1077,20 @@ class Plot():
         self.code('\n\t\\node %s[%s] at (<x=%.14g>, <y=%.14g>) {%s};'
             % ('(%s) ' % name if name else '', csv(options), x, y, content))
 
+    def cut(self, x=0.0, y=0.0):
+        """Indicate broken axis.
+
+        Parameters
+        ----------
+        x, y : float
+            Position of the break symbol.
+        """
+        self.axes()
+        for cmd, color, to in ('fill', 'white', '--'), ('draw', 'black', '  '):
+            self.code('\n\t\\%s [%s, xshift=<x=%.14g>cm, yshift=<y=%.14g>cm] '
+                '(-0.1, -0.15) -- (0.1, 0.05) %s (0.1, 0.15) -- (-0.1, -0.05);'
+                % (cmd, color, x, y, to))
+
     def point(self, x, y, name):
         """Define point.
 
