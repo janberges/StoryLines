@@ -7,6 +7,7 @@ __version__ = '0.3'
 import math
 import os
 import re
+import subprocess
 
 def order_of_magnitude(x):
     """Calculate the decimal order of magnitude.
@@ -606,15 +607,19 @@ def goto(filename):
 
     if head:
         cwd = os.getcwd()
-        os.system('mkdir -p %s' % head)
+        subprocess.call(['mkdir' '-p', head])
         os.chdir(head)
 
     def typeset():
-        os.system('command -v pdflatex > /dev/null 2>&1 '
-            '&& pdflatex --interaction=batchmode %s.tex' % stem)
+        try:
+            subprocess.call(['pdflatex', '--interaction=batchmode',
+                '%s.tex' % stem])
 
-        for suffix in 'aux', 'log':
-            os.system('rm -f %s.%s' % (stem, suffix))
+            for suffix in 'aux', 'log':
+                os.remove('%s.%s' % (stem, suffix))
+
+        except OSError:
+            print('pdflatex not found')
 
     def home():
         if head:
