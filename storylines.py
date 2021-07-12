@@ -717,7 +717,8 @@ class Plot():
     lopt : str, default 'below left'
         Legend options, e.g., for orientation.
     lpos : str, default 'lt'
-        Legend position, a combination of ``lcrbmtLCRBMT``.
+        Legend position, a combination of ``lcrbmtLCRBMT`` or a tuple of data
+        coordinates.
     lput : bool, default True
         Draw legend?
     lrow : int, default 0
@@ -1660,30 +1661,35 @@ class Plot():
             # add legend
 
             if self.lput and (self.ltop is not None or labels):
-                x = []
-                y = []
+                if isinstance(self.lpos, str):
+                    x = []
+                    y = []
 
-                positions = dict(
-                    L = (x, -self.left),
-                    B = (y, -self.bottom),
-                    l = (x, 0.0),
-                    b = (y, 0.0),
-                    r = (x, extent['x']),
-                    t = (y, extent['y']),
-                    R = (x, extent['x'] + self.right),
-                    T = (y, extent['y'] + self.top),
-                    )
+                    positions = dict(
+                        L = (x, -self.left),
+                        B = (y, -self.bottom),
+                        l = (x, 0.0),
+                        b = (y, 0.0),
+                        r = (x, extent['x']),
+                        t = (y, extent['y']),
+                        R = (x, extent['x'] + self.right),
+                        T = (y, extent['y'] + self.top),
+                        )
 
-                abbreviations = dict(c='lr', C='LR', m='bt', M='BT')
+                    abbreviations = dict(c='lr', C='LR', m='bt', M='BT')
 
-                for abbreviation in abbreviations.items():
-                    self.lpos = self.lpos.replace(*abbreviation)
+                    for abbreviation in abbreviations.items():
+                        self.lpos = self.lpos.replace(*abbreviation)
 
-                for char in self.lpos:
-                    positions[char][0].append(positions[char][1])
+                    for char in self.lpos:
+                        positions[char][0].append(positions[char][1])
 
-                x = sum(x) / len(x)
-                y = sum(y) / len(y)
+                    x = sum(x) / len(x)
+                    y = sum(y) / len(y)
+                else:
+                    x, y = self.lpos
+                    x = scale['x'] * (x - lower['x'])
+                    y = scale['y'] * (y - lower['y'])
 
                 file.write('\n\t\\node [align=%s' % self.lali)
 
