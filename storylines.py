@@ -607,7 +607,7 @@ def goto(filename):
 
     if head:
         cwd = os.getcwd()
-        subprocess.call(['mkdir' '-p', head])
+        subprocess.call(['mkdir', '-p', head])
         os.chdir(head)
 
     def typeset():
