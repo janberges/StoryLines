@@ -583,7 +583,7 @@ def csv(options):
     return ', '.join(key.replace('_', ' ')
         + ('' if value is True else '=%s' % value)
         for key, value in sorted(options.items())
-        if value is not False)
+        if value is not False and value is not None)
 
 def goto(filename):
     """Go to output directory for plot typesetting.
