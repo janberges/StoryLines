@@ -1028,14 +1028,15 @@ class Plot():
         ----------
         x, y : list of float
             Coordinates of line vertices.
-        weights : list of tuple of float, list of float, or float
+        weights : list of tuple of float, list of float, or float, default 1.0
             Weights of vertices. The corresponding linewidth is always measured
             perpendicular to the direction of the line; This ensures that lines
             of the same weight have the same thickness regardless of direction.
-        colors : list of str
+        colors : list of str or str, default True
             Colors of different components. Any objects whose representations
-            as a string are valid LaTeX colors can be used.
-        threshold : float
+            as a string are valid LaTeX colors can be used. If ``True``, the
+            fill color is the same as the stroke color.
+        threshold : float, default 0.0
             Minimum displayed weight.
         **options
             Further line options.
