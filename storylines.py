@@ -714,9 +714,9 @@ class Plot():
         Number of columns in legend.
     llen : str, default '4mm'
         Length of example lines next to labels.
-    lopt : str, default 'below left'
+    lopt : str, default None
         Legend options, e.g., for orientation.
-    lpos : str, default 'lt'
+    lpos : str, default 'cm'
         Legend position, a combination of ``lcrbmtLCRBMT`` or a tuple of data
         coordinates.
     lput : bool, default True
@@ -807,8 +807,8 @@ class Plot():
         self.lbox = False
         self.lcol = 1
         self.llen = '4mm'
-        self.lopt = 'below left'
-        self.lpos = 'lt'
+        self.lopt = None
+        self.lpos = 'cm'
         self.lput = True
         self.lrow = 0
         self.lsep = None
@@ -1693,7 +1693,7 @@ class Plot():
 
                 file.write('\n\t\\node [align=%s' % self.lali)
 
-                if self.lopt:
+                if self.lopt is not None:
                     file.write(', %s' % self.lopt)
 
                 if self.lbox:
