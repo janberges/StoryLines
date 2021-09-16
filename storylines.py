@@ -995,22 +995,28 @@ class Plot():
         else:
             self.lines.insert(zindex, new_line)
 
-    def fatband(self, x, y, weights, shifts=None, **options):
+    def fatband(self, x, y, weights=1.0, shifts=0.0, **options):
         """Draw fatband.
 
         Parameters
         ----------
         x, y : list
             Vertices of linear spline.
-        weights : list of float
+        weights : list of float or float
             Weights of `x` and `y`.
-        shifts : list of float
+        shifts : list of float or float
             Displacements in weight direction.
         **options
             Options passed to `line` function.
         """
-        if shifts is None:
-            shifts = [0 for n in range(len(weights))]
+        try:
+            iter(weights)
+        except TypeError:
+            weights = [weights] * len(x)
+        try:
+            iter(shifts)
+        except TypeError:
+            shifts = [shifts] * len(x)
 
         for island in islands(len(weights),
             lambda n: any(weights[max(n - 1, 0):n + 2])):
