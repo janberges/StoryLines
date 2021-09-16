@@ -1020,7 +1020,8 @@ class Plot():
                 self.line(x[n], y[n], weights=weights[n], shifts=shifts[n],
                     **options)
 
-    def compline(self, x, y, weights, colors, threshold=0.0, **options):
+    def compline(self, x, y, weights=1.0, colors=True, threshold=0.0,
+            **options):
         """Represent points of multiple weights as composite fatband.
 
         Parameters
@@ -1048,6 +1049,11 @@ class Plot():
                     for part in weights]
             except TypeError:
                 weights = [[0 if weights < threshold else weights]] * len(x)
+
+        try:
+            iter(colors)
+        except TypeError:
+            colors = [colors] * len(x)
 
         shifts = []
 
