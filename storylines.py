@@ -2,7 +2,7 @@
 
 from __future__ import division
 
-__version__ = '0.3'
+__version__ = '0.4'
 
 import math
 import os
