@@ -678,6 +678,8 @@ class Plot():
         Axis labels.
     xticks, yticks, zticks : list, default None
         List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``.
+    xmarks, ymarks, zmarks : bool, default True
+        Show tick marks and labels?
     xspacing, yspacing, zspacing : float, default 1.0
         Approximate tick spacing in cm.
     xstep, ystep, zstep : float, default None
@@ -741,6 +743,8 @@ class Plot():
         Draw y axis?
     frame : bool, default `xyaxes`
         Draw frame around plot area?
+    grid : bool, default False
+        Add grid lines (at tick positions) to frame?
     colorbar : bool or str, default None
         Draw colorbar? If ``None``, the colobar is drawn if any line is given a
         z value or if both `zmin` and `zmax` are given. Alternatively, the path
@@ -784,6 +788,7 @@ class Plot():
         for x in 'xyz':
             setattr(self, x + 'label', None)
             setattr(self, x + 'ticks', None)
+            setattr(self, x + 'marks', True)
             setattr(self, x + 'spacing', 1.0)
             setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
@@ -822,6 +827,7 @@ class Plot():
         self.xaxis = xyaxes
         self.yaxis = xyaxes
         self.frame = xyaxes
+        self.grid = False
         self.colorbar = None
         self.outline = False
 
@@ -1209,7 +1215,8 @@ class Plot():
             self.bottom = self.margmin
 
             if self.xaxis:
-                xticks = self.xticks is None or bool(self.xticks)
+                xticks = ((self.xticks is None or bool(self.xticks))
+                    and self.xmarks)
 
                 if self.xlabel or xticks:
                     self.bottom += self.tick + baselineskip
@@ -1221,7 +1228,8 @@ class Plot():
             self.left = self.margmin
 
             if self.yaxis:
-                yticks = self.yticks is None or bool(self.yticks)
+                yticks = ((self.yticks is None or bool(self.yticks))
+                    and self.ymarks)
 
                 if self.ylabel or yticks:
                     self.left += self.tick + baselineskip
@@ -1235,7 +1243,8 @@ class Plot():
             if self.colorbar:
                 self.right += self.tip
 
-                zticks = self.zticks is None or bool(self.zticks)
+                zticks = ((self.zticks is None or bool(self.zticks))
+                    and self.zmarks)
 
                 if self.zlabel or zticks:
                     self.right += baselineskip
@@ -1395,6 +1404,21 @@ class Plot():
                 if draw_frame.done:
                     return
 
+                if self.grid:
+                    file.write('\n\t\\draw [lightgray, line cap=rect]')
+
+                    for x, label in ticks['x']:
+                        if x != extent['x']:
+                            file.write('\n\t\t(%.3f, 0) -- +(0, %.3f)'
+                                % (x, extent['y']))
+
+                    for y, label in ticks['y']:
+                        if y != extent['y']:
+                            file.write('\n\t\t(0, %.3f) -- +( %.3f, 0)'
+                                % (y, extent['x']))
+
+                    file.write(';')
+
                 file.write('\n\t\\draw [gray, line cap=rect]\n\t\t')
 
                 if not self.xaxis:
@@ -1435,10 +1459,11 @@ class Plot():
                                extent['x'] + self.tip,
                                extent['z']))
 
-                    for z, label in ticks['z']:
-                        file.write('\n\t\\node '
-                            '[rotate=90, below] at (%.3f, %.3f) {%s};'
-                            % (extent['x'] + self.tip, z, label))
+                    if self.zmarks:
+                        for z, label in ticks['z']:
+                            file.write('\n\t\\node '
+                                '[rotate=90, below] at (%.3f, %.3f) {%s};'
+                                % (extent['x'] + self.tip, z, label))
 
                 if self.frame:
                     draw_frame()
@@ -1449,13 +1474,13 @@ class Plot():
                     if self.xaxis and ticks['x'] or self.yaxis and ticks['y']:
                         file.write('\n\t\\draw [line cap=butt]')
 
-                        if self.xaxis:
+                        if self.xaxis and self.xmarks:
                             for x, label in ticks['x']:
                                 file.write('\n\t\t(%.3f, 0) -- +(0, %.3f) '
                                     'node [below] {%s}'
                                     % (x, -self.tick, label))
 
-                        if self.yaxis:
+                        if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
                                 file.write('\n\t\t(0, %.3f) -- +(%.3f, 0) '
                                     'node [rotate=90, above] {%s}'
