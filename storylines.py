@@ -1197,15 +1197,13 @@ class Plot():
             lower[x] -= getattr(self, x + 'padding')
             upper[x] += getattr(self, x + 'padding')
 
-        # handle horizontal and vertical lines:
+            # embed zero- and one-dimensional data:
 
-        for x, y in 'xy', 'yx':
-            for line in self.lines:
-                if not len(line[x]) and len(line[y]) == 1:
-                    line[x] = [lower[x], upper[x]]
-                    line[y] = [line[y][0]] * 2
+            if lower[x] == upper[x]:
+                padding = power_of_ten(lower[x])
 
-                    line['options'].setdefault('line_cap', 'butt')
+                lower[x] -= padding
+                upper[x] += padding
 
         # choose automatic margins:
 
@@ -1294,14 +1292,6 @@ class Plot():
         ticks = {}
 
         for x in extent.keys():
-            # embed zero- and one-dimensional data
-
-            if lower[x] == upper[x]:
-                padding = power_of_ten(lower[x])
-
-                lower[x] -= padding
-                upper[x] += padding
-
             # how many centimeters correspond to one unit of the axis?
 
             scale[x] = extent[x] / (upper[x] - lower[x])
@@ -1319,6 +1309,16 @@ class Plot():
                     for n in multiples(lower[x], upper[x],
                         getattr(self, x + 'step') or xround_mantissa(
                         getattr(self, x + 'spacing') / scale[x]))]
+
+        # handle horizontal and vertical lines:
+
+        for x, y in 'xy', 'yx':
+            for line in self.lines:
+                if not len(line[x]) and len(line[y]) == 1:
+                    line[x] = [lower[x], upper[x]]
+                    line[y] = [line[y][0]] * 2
+
+                    line['options'].setdefault('line_cap', 'butt')
 
         # build LaTeX file
 
