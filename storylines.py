@@ -688,6 +688,8 @@ class Plot():
         Lower axis limit.
     xmax, ymax, zmax : float, default None
         Upper axis limit.
+    dleft, dright, dbottom, dtop : float, default 0.0
+        Protrusion of x- and y-axis limits into margins in cm.
     xpadding, ypadding, zpadding : float, default 0.0
         Padding between data and axes in data units.
     xclose, yclose, zclose : bool, default False
@@ -782,6 +784,11 @@ class Plot():
         self.right = margin
         self.bottom = margin
         self.top = margin
+
+        self.dleft = 0.0
+        self.dright = 0.0
+        self.dbottom = 0.0
+        self.dtop = 0.0
 
         self.margmin = 0.15
 
@@ -1264,6 +1271,13 @@ class Plot():
         if self.height < 0:
             self.height = -self.height + self.bottom + self.top
 
+        # temporarily subtract protrusions from margins:
+
+        self.left -= self.dleft
+        self.right -= self.dright
+        self.bottom -= self.dbottom
+        self.top -= self.dtop
+
         # determine extent of the plotting area:
 
         extent = {}
@@ -1282,20 +1296,40 @@ class Plot():
                         / (upper['y'] - lower['y'])
             self.width = extent['x'] + self.left + self.right
 
-        # take care of z-axis:
-
-        extent['z'] = extent['y']
-
-        # determine scale and tick positions
+        # determine scale:
 
         scale = {}
-        ticks = {}
 
         for x in extent.keys():
             # how many centimeters correspond to one unit of the axis?
 
             scale[x] = extent[x] / (upper[x] - lower[x])
 
+        # add protrusions back to margins:
+
+        self.left += self.dleft
+        self.right += self.dright
+        self.bottom += self.dbottom
+        self.top += self.dtop
+
+        lower['x'] += self.dleft / scale['x']
+        upper['x'] -= self.dright / scale['x']
+        lower['y'] += self.dbottom / scale['y']
+        upper['y'] -= self.dtop / scale['y']
+
+        extent['x'] -= self.dleft + self.dright
+        extent['y'] -= self.dbottom + self.dtop
+
+        # take care of z-axis:
+
+        extent['z'] = extent['y']
+        scale['z'] = extent['z'] / (upper['z'] - lower['z'])
+
+        # determine tick positions:
+
+        ticks = {}
+
+        for x in extent.keys():
             # use ticks or choose ticks with a spacing close to the given one
 
             xformat = getattr(self, x + 'format')
@@ -1309,6 +1343,7 @@ class Plot():
                     for n in multiples(lower[x], upper[x],
                         getattr(self, x + 'step') or xround_mantissa(
                         getattr(self, x + 'spacing') / scale[x]))]
+
 
         # handle horizontal and vertical lines:
 
