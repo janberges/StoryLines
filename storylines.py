@@ -1871,7 +1871,7 @@ class Plot():
 
         home()
 
-def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
+def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False):
     """Arrange multiple PDFs in single file.
 
     Parameters
@@ -1885,6 +1885,9 @@ def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
     align : float, default 0.5
         Vertical alignment of PDFs, where 0, 0.5, and 1 stand for the bottom,
         center, and top of the individual figures.
+    halign : str, default 'left'
+        Horizontal alignment of PDFs. Possible values are ``'left'``,
+        ``'center'`` and ``'right'``.
     pdf : bool, default False
         Convert resulting TeX file to PDF?
     """
@@ -1896,9 +1899,15 @@ def combine(filename, pdfs, columns=100, align=0.5, pdf=False):
             '\\begin{document}\n'
             '\\noindent%\n')
 
+        if halign == 'center':
+            tex.write('\\centering%\n')
+        elif halign == 'right':
+            tex.write('\\raggedleft%\n')
+
         for n in range(len(pdfs)):
+            nobreak = (n + 1) % columns or n + 1 == len(pdfs)
             tex.write('\\raisebox{-%g\\height}{\\includegraphics{{%s}.pdf}}%s\n'
-                % (align, pdfs[n], '%' if (n + 1) % columns else '\\\\[-\\lineskip]'))
+                % (align, pdfs[n], '%' if nobreak else '\\\\[-\\lineskip]'))
 
         tex.write('\\end{document}\n')
 
