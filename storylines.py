@@ -1808,6 +1808,8 @@ class Plot():
 
                     lrow = self.lrow or 1 + (len(labels) - 1) // self.lcol
 
+                    spacer = True
+
                     for n, (options, label) in enumerate(labels):
                         col = n // lrow
                         row = n %  lrow
@@ -1830,8 +1832,10 @@ class Plot():
 
                             if draw and mark:
                                 x = [0.0, 0.5, 1.0]
+                                spacer = False
                             elif draw:
                                 x = [0.0, 1.0]
+                                spacer = False
                             elif mark:
                                 x = [0.5]
 
@@ -1842,6 +1846,9 @@ class Plot():
                                     % (col * self.lwid + x[m], row))
 
                             file.write(' };')
+
+                    if spacer:
+                        file.write('\n\t\t\t\\useasboundingbox (0, 0);')
 
                     file.write('\n\t\t\\end{tikzpicture}%')
 
