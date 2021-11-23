@@ -746,7 +746,7 @@ class Plot():
     frame : bool, default `xyaxes`
         Draw frame around plot area?
     grid : bool, default False
-        Add grid lines (at tick positions) to frame?
+        Add grid lines (at tick positions)?
     colorbar : bool or str, default None
         Draw colorbar? If ``None``, the colobar is drawn if any line is given a
         z value or if both `zmin` and `zmax` are given. Alternatively, the path
@@ -891,6 +891,7 @@ class Plot():
             code = None,
             cut = False,
             frame = False,
+            grid = False,
             join = None,
             jump = 0,
             label = None,
@@ -927,6 +928,9 @@ class Plot():
         frame : bool, default False
             Draw frame at current z index? By default, the frame is drawn just
             below the axes.
+        grid : bool, default False
+            Add grid lines (at tick positions) at current z index? By default,
+            the grid is drawn just below the frame.
         join : bool, default None
             Join cut-up line segments along edge of plotting range? By default,
             this is ``True`` if any ``fill`` is specified, ``False`` otherwise.
@@ -984,6 +988,7 @@ class Plot():
             code = code,
             cut = cut,
             frame = frame,
+            grid = grid,
             join = join,
             jump = jump,
             label = label,
@@ -1151,7 +1156,7 @@ class Plot():
         self.line(code=data, **options)
 
     def axes(self, **options):
-        """Draw axes at current position."""
+        """Draw axes at current z index."""
 
         self.line(axes=True, **options)
 
@@ -1435,24 +1440,31 @@ class Plot():
                     '{\includegraphics[width=%.3fcm, height=%.3fcm]{%s}};'
                     % (extent['x'], extent['y'], self.background))
 
+            def draw_grid():
+                if draw_grid.done:
+                    return
+
+                file.write('\n\t\\draw [lightgray, line cap=rect]')
+
+                for x, label in ticks['x']:
+                    if x != extent['x']:
+                        file.write('\n\t\t(%.3f, 0) -- +(0, %.3f)'
+                            % (x, extent['y']))
+
+                for y, label in ticks['y']:
+                    if y != extent['y']:
+                        file.write('\n\t\t(0, %.3f) -- +( %.3f, 0)'
+                            % (y, extent['x']))
+
+                file.write(';')
+
+                draw_grid.done = True
+
+            draw_grid.done = False
+
             def draw_frame():
                 if draw_frame.done:
                     return
-
-                if self.grid:
-                    file.write('\n\t\\draw [lightgray, line cap=rect]')
-
-                    for x, label in ticks['x']:
-                        if x != extent['x']:
-                            file.write('\n\t\t(%.3f, 0) -- +(0, %.3f)'
-                                % (x, extent['y']))
-
-                    for y, label in ticks['y']:
-                        if y != extent['y']:
-                            file.write('\n\t\t(0, %.3f) -- +( %.3f, 0)'
-                                % (y, extent['x']))
-
-                    file.write(';')
 
                 file.write('\n\t\\draw [gray, line cap=rect]\n\t\t')
 
@@ -1499,6 +1511,9 @@ class Plot():
                             file.write('\n\t\\node '
                                 '[rotate=90, below] at (%.3f, %.3f) {%s};'
                                 % (extent['x'] + self.tip, z, label))
+
+                if self.grid:
+                    draw_grid()
 
                 if self.frame:
                     draw_frame()
@@ -1709,11 +1724,14 @@ class Plot():
 
                     file.write(code)
 
-                if line['axes']:
-                    draw_axes()
+                if line['grid']:
+                    draw_grid()
 
                 if line['frame']:
                     draw_frame()
+
+                if line['axes']:
+                    draw_axes()
 
             draw_axes()
 
