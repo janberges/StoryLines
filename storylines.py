@@ -883,31 +883,31 @@ class Plot():
                 self.options[name] = value
 
     def line(self,
-            x = [],
-            y = [],
-            z = None,
+            x=[],
+            y=[],
+            z=None,
 
-            axes = False,
-            code = None,
-            cut = False,
-            frame = False,
-            grid = False,
-            join = None,
-            jump = 0,
-            label = None,
-            miter = False,
-            nib = None,
-            omit = True,
-            protrusion = 0,
-            sgn = +1,
-            shifts = None,
-            shortcut = 0,
-            shortcut_rel = 0.5,
-            thickness = 1,
-            weights = None,
-            xref = None,
-            yref = None,
-            zindex = None,
+            axes=False,
+            code=None,
+            cut=False,
+            frame=False,
+            grid=False,
+            join=None,
+            jump=0,
+            label=None,
+            miter=False,
+            nib=None,
+            omit=True,
+            protrusion=0,
+            sgn=+1,
+            shifts=None,
+            shortcut=0,
+            shortcut_rel=0.5,
+            thickness=1,
+            weights=None,
+            xref=None,
+            yref=None,
+            zindex=None,
 
             **options):
         """Add line/curve.
@@ -980,32 +980,32 @@ class Plot():
             y = [y]
 
         new_line = dict(
-            x = x,
-            y = y,
-            z = z,
+            x=x,
+            y=y,
+            z=z,
 
-            axes = axes,
-            code = code,
-            cut = cut,
-            frame = frame,
-            grid = grid,
-            join = join,
-            jump = jump,
-            label = label,
-            miter = miter,
-            nib = nib,
-            omit = omit,
-            protrusion = protrusion,
-            sgn = sgn,
-            shifts = shifts,
-            shortcut = shortcut,
-            shortcut_rel = shortcut_rel,
-            thickness = thickness,
-            weights = weights,
-            xref = xref,
-            yref = yref,
+            axes=axes,
+            code=code,
+            cut=cut,
+            frame=frame,
+            grid=grid,
+            join=join,
+            jump=jump,
+            label=label,
+            miter=miter,
+            nib=nib,
+            omit=omit,
+            protrusion=protrusion,
+            sgn=sgn,
+            shifts=shifts,
+            shortcut=shortcut,
+            shortcut_rel=shortcut_rel,
+            thickness=thickness,
+            weights=weights,
+            xref=xref,
+            yref=yref,
 
-            options = options,
+            options=options,
             )
 
         if zindex is None:
@@ -1349,7 +1349,6 @@ class Plot():
                         getattr(self, x + 'step') or xround_mantissa(
                         getattr(self, x + 'spacing') / scale[x]))]
 
-
         # handle horizontal and vertical lines:
 
         for x, y in 'xy', 'yx':
@@ -1413,7 +1412,7 @@ class Plot():
                         file.write('\\usetikzlibrary{plotmarks}\n')
                         break
 
-                file.write('\\begin{document}\n\\noindent\n' )
+                file.write('\\begin{document}\n\\noindent\n')
 
             # set filename for externalization
 
@@ -1632,7 +1631,7 @@ class Plot():
                             line[x] = list(line[x])
                             line[y] = list(line[y])
 
-                            line[x] =      [xref] + line[x] + [xref]
+                            line[x] = [xref] + line[x] + [xref]
                             line[y] = line[y][:1] + line[y] + line[y][-1:]
 
                     points = list(zip(*[[scale[x] * (n - lower[x])
@@ -1662,7 +1661,8 @@ class Plot():
                     if line['weights'] is not None:
                         segments = [(miter_butt if line['miter'] else fatband)(
                             segment, line['thickness'], line['weights'],
-                            line['shifts'], line['nib']) for segment in segments]
+                            line['shifts'], line['nib'])
+                            for segment in segments]
 
                     if line['cut']:
                         if line['join'] is None:
@@ -1673,7 +1673,7 @@ class Plot():
                             segments = [[(x, y)
                                 for segment in segments
                                 for x, y in segment
-                                if  0 <= x <= extent['x']
+                                if 0 <= x <= extent['x']
                                 and 0 <= y <= extent['y']]]
                         else:
                             segments = [segment
@@ -1757,14 +1757,14 @@ class Plot():
                     y = []
 
                     positions = dict(
-                        L = (x, -self.left),
-                        B = (y, -self.bottom),
-                        l = (x, 0.0),
-                        b = (y, 0.0),
-                        r = (x, extent['x']),
-                        t = (y, extent['y']),
-                        R = (x, extent['x'] + self.right),
-                        T = (y, extent['y'] + self.top),
+                        L=(x, -self.left),
+                        B=(y, -self.bottom),
+                        l=(x, 0.0),
+                        b=(y, 0.0),
+                        r=(x, extent['x']),
+                        t=(y, extent['y']),
+                        R=(x, extent['x'] + self.right),
+                        T=(y, extent['y'] + self.top),
                         )
 
                     abbreviations = dict(c='lr', C='LR', m='bt', M='BT')
@@ -1812,14 +1812,14 @@ class Plot():
 
                     for n, (options, label) in enumerate(labels):
                         col = n // lrow
-                        row = n %  lrow
+                        row = n % lrow
 
                         if label:
                             file.write('\n\t\t\t\\node '
                                 '[right] at (%.3f, %d) {%s};'
                                 % (col * self.lwid + 1, row, label))
 
-                        draw  = not options.get('only_marks')
+                        draw = not options.get('only_marks')
                         draw &= not options.get('draw') == 'none'
                         mark = 'mark' in options
 
@@ -1958,10 +1958,10 @@ def cross(A, B):
         ]
 
 def projection(
-        r=[0.0,  0.0, 0.0], # object
+        r=[0.0, 0.0, 0.0], # object
         R=[0.0, -1.0, 0.0], # observer
-        T=[0.0,  0.0, 0.0], # target
-        U=[0.0,  0.0, 1.0], # up
+        T=[0.0, 0.0, 0.0], # target
+        U=[0.0, 0.0, 1.0], # up
         ):
     """Project 3D point onto 2D screen.
 
