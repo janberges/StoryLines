@@ -1384,7 +1384,7 @@ class Plot():
                         'Gill Sans':
                             '\\usepackage[math]{iwona}\n'
                             '\\usepackage[sfdefault]{cabin}\n'
-                            '\\usepackage[italic]{mathastext}\n',
+                            '\\usepackage[italic, noplusnominus]{mathastext}\n',
                         'Helvetica':
                             '\\usepackage{sansmathfonts}\n'
                             '\\usepackage[scaled]{helvet}\n'
