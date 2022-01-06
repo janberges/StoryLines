@@ -1387,7 +1387,7 @@ class Plot():
                         'Helvetica':
                             '\\usepackage{sansmathfonts}\n'
                             '\\usepackage[scaled]{helvet}\n'
-                            '\\let\\familydefault\sfdefault\n'
+                            '\\let\\familydefault\\sfdefault\n'
                             '\\usepackage[italic]{mathastext}\n',
                         'Iwona':
                             '\\usepackage[math]{iwona}\n',
