@@ -9,7 +9,7 @@ plot.axes()
 t = np.linspace(-1.0, 1.0, 100)
 
 for omega in np.linspace(0.0, np.pi, 10):
-    plot.line(t, np.sin(omega * t), omega, mark='*')
+    plot.line(t, np.sin(omega * t), omega, mark='*', omit=True)
 
 plot.title = 'StoryLines'
 plot.xlabel = '$t / \mathrm s$'

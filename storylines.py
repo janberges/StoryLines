@@ -763,8 +763,8 @@ class Plot():
         Definitions for standalone figures.
     inputenc : str, default None
         Text endocing, e.g., ``'utf8'``.
-    fontenc : str
-        Font endocing. The default is ``'T1'`` if `font` is specified, ``None``
+    fontenc : str, default None
+        Font endocing. The default is ``'T1'`` if `font` is specified, none
         otherwise.
     font : str, default None
         Prefined font selection. Imitates well-known fonts. Possible values are
@@ -900,7 +900,7 @@ class Plot():
             label=None,
             miter=False,
             nib=None,
-            omit=True,
+            omit=None,
             protrusion=0,
             sgn=+1,
             shifts=None,
@@ -948,8 +948,9 @@ class Plot():
         nib : float, default None
             Angle of broad pen nib. If ``None``, the nib is held perpendicular
             to the direction of the current line segment.
-        omit : bool, default True
-            Remove irrelevant vertices of linear spline?
+        omit : bool, default None
+            Remove irrelevant vertices of linear spline? The default is
+            ``False`` if the TikZ option ``mark`` is set, ``True`` otherwise.
         protrusion : float, default 0
             Extend curve linearly at both ends? This may improve the appearance
             of fatbands ending at the edge of the plotting range.
@@ -1690,6 +1691,9 @@ class Plot():
                                 for segment in cut2d(segment,
                                     0, extent['x'], 0, extent['y'],
                                         line['join'])]
+
+                    if line['omit'] is None:
+                        line['omit'] = 'mark' not in line['options']
 
                     for segment in segments:
                         if line['omit']:
