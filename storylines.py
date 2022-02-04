@@ -1624,7 +1624,13 @@ class Plot():
                                 * scale['y']), line['options'][option])
 
                 if line['label'] is not None:
-                    labels.append([line['options'], line['label']])
+                    label = [line['options'], line['label']]
+
+                    for previous in labels:
+                        if label[1] and previous == label:
+                            break
+                    else:
+                        labels.append(label)
 
                 if len(line['x']) and len(line['y']):
                     for x, y in 'xy', 'yx':
