@@ -650,7 +650,7 @@ class Plot():
          (without left and right margins). If zero, the x-axis scale is set
          equal to the y-axis scale and the width is inferred from the height.
     height : float, default 6.0
-         Figure height in cm. A negative value is interpreted as the innter
+         Figure height in cm. A negative value is interpreted as the inner
          height (without bottom and top margins). If zero, the y-axis scale is
          set equal to the x-axis scale and the height is inferred from the
          width.
@@ -751,10 +751,10 @@ class Plot():
     grid : bool, default False
         Add grid lines (at tick positions)?
     colorbar : bool or str, default None
-        Draw colorbar? If ``None``, the colobar is drawn if any line is given a
+        Draw colorbar? If ``None``, the colorbar is drawn if any line is given a
         z value or if both `zmin` and `zmax` are given. Alternatively, the path
-        to an image with a color gradient can be specified. Here, an image
-        width of one pixel is sufficient.
+        to an image with a color gradient can be specified. Here, an image width
+        of one pixel is sufficient.
     outline : bool, default False
         Draw dashed figure outline?
     background : str, default None
@@ -762,14 +762,14 @@ class Plot():
     preamble : str, default ''
         Definitions for standalone figures.
     inputenc : str, default None
-        Text endocing, e.g., ``'utf8'``.
+        Text encoding, e.g., ``'utf8'``.
     fontenc : str, default None
-        Font endocing. The default is ``'T1'`` if `font` is specified, none
+        Font encoding. The default is ``'T1'`` if `font` is specified, none
         otherwise.
     font : str, default None
-        Prefined font selection. Imitates well-known fonts. Possible values are
-        ``'Gill Sans'``, ``'Helvetica'``, ``'Iwona'``, ``'Latin Modern'``, and
-        ``'Times'``.
+        Predefined font selection. Imitates well-known fonts. Possible values
+        are ``'Gill Sans'``, ``'Helvetica'``, ``'Iwona'``, ``'Latin Modern'``,
+        and ``'Times'``.
     fontsize : int, default 10
         Font size for standalone figures in pt.
     lines : list
@@ -971,7 +971,7 @@ class Plot():
         xref, yref : float, default None
             Reference values for filled curves. This is useful to visualize
             integrands such as a density of states.
-        zindes : int, default None
+        zindex : int, default None
             Index of list of lines where new line is inserted. By default, the
             new line is appended to the list, i.e., has the highest `zindex`.
         **options
@@ -2016,7 +2016,7 @@ def projection(
     # projection onto viewing direction (adjacent leg):
     adj = dot(D, Z)
 
-    # secans of angle of object w.r.t. viewing direction:
+    # secant of angle of object w.r.t. viewing direction:
     sec = hyp / adj
 
     # horizontal screen coordinate:
