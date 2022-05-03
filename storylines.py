@@ -570,23 +570,30 @@ def groups(iterable, size=4):
     if group:
         yield group
 
-def csv(options):
+def csv(options, context=' [%s]'):
     """Format TikZ options.
 
     Parameters
     ----------
     options : dict
         TikZ options, where spaces in keys are represented by underscores.
+    context : str
+        Format string with context applied to results of nonzero length only.
 
     Returns
     -------
     str
-        Comma-separated key-value pairs in TikZ format.
+        Comma-separated key-value pairs in TikZ format (with `context`).
     """
-    return ', '.join(key.replace('_', ' ')
+    result = ', '.join(key.replace('_', ' ')
         + ('' if value is True else '=%s' % value)
         for key, value in sorted(options.items())
         if value is not False and value is not None)
+
+    if context and result:
+        return context % result
+    else:
+        return result
 
 def goto(filename):
     """Go to output directory for plot typesetting.
@@ -1115,8 +1122,8 @@ class Plot():
         **options
             TikZ options of the node, e.g., ``above left=True``.
         """
-        self.code('\n\t\\node %s[%s] at (<x=%.14g>, <y=%.14g>) {%s};'
-            % ('(%s) ' % name if name else '', csv(options), x, y, content))
+        self.code('\n\t\\node%s%s at (<x=%.14g>, <y=%.14g>) {%s};'
+            % (' (%s)' % name if name else '', csv(options), x, y, content))
 
     def cut(self, x=0.0, y=0.0):
         """Indicate broken axis.
@@ -1425,7 +1432,7 @@ class Plot():
 
             # open TikZ environment
 
-            file.write('\\begin{tikzpicture}[%s]' % csv(self.options))
+            file.write('\\begin{tikzpicture}%s' % csv(self.options, '[%s]'))
 
             # set bounding box
 
@@ -1711,7 +1718,7 @@ class Plot():
                             segment = shortcut(segment, line['shortcut'],
                                 line['shortcut_rel'])
 
-                        file.write('\n\t\\draw [%s] plot coordinates {'
+                        file.write('\n\t\\draw%s plot coordinates {'
                             % csv(line['options']))
 
                         for group in groups(segment):
@@ -1840,7 +1847,7 @@ class Plot():
                             if draw and mark:
                                 options['mark_indices'] = '{2}'
 
-                            file.write('\n\t\t\t\\draw [%s]' % csv(options))
+                            file.write('\n\t\t\t\\draw%s' % csv(options))
                             file.write('\n\t\t\t\tplot coordinates ')
 
                             if draw and mark:
