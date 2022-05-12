@@ -12,24 +12,25 @@ def moebius(t, u, r=1.0):
 
     return zip(x, y, z)
 
-T = np.linspace(-1.0, 1.0, 101)
-U = np.linspace(0.0, np.pi, 400)
-
-style = dict(very_thick=True, color='magenta')
+T = np.linspace(-1.0, 1.0, 10)
+U = np.linspace(0.0, np.pi, 40)
 
 objects = []
 
-for u in U[::10]:
-    objects.append((moebius(T, u), style))
-
-for t in T[::10]:
-    objects.append((moebius(t, U), style))
+for u in range(1, len(U)):
+    for t in range(1, len(T)):
+        objects.append((moebius(
+            T[[t, t, t - 1, t - 1, t]],
+            U[[u, u - 1, u - 1, u, u]]),
+                dict(draw='black', fill=True)))
 
 objects = storylines.project(objects, R=[2.0, 2.0, 2.0])
 
-plot = storylines.Plot(xyaxes=False, height=False, margin=0.5)
+plot = storylines.Plot(xyaxes=False, height=False, margin=0.5,
+    canvas='cyan', upper='magenta', lower='yellow', colorbar=False)
 
 for R, style in objects:
-    plot.line(*list(zip(*R))[:2], **style)
+    x, y, z = zip(*R)
+    plot.line(x, y, np.average(z), **style)
 
 plot.save('moebius', pdf=True)
