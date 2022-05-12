@@ -764,6 +764,8 @@ class Plot():
         of one pixel is sufficient.
     outline : bool, default False
         Draw dashed figure outline?
+    canvas : str, default None
+        Background color of whole document.
     background : str, default None
         Path to background image.
     preamble : str, default ''
@@ -847,6 +849,7 @@ class Plot():
         self.grid = False
         self.colorbar = None
         self.outline = False
+        self.canvas = None
 
         self.background = None
 
@@ -1436,8 +1439,17 @@ class Plot():
 
             # set bounding box
 
-            file.write('\n\t\\draw [use as bounding box, %s]'
-                % ('gray, very thin, dashed' if self.outline else 'draw=none'))
+            options = dict(use_as_bounding_box=True)
+
+            if self.outline:
+                options.update(color='gray', very_thin=True, dashed=True)
+            else:
+                options.update(draw='none')
+
+            if self.canvas:
+                options.update(fill=self.canvas)
+
+            file.write('\n\t\\draw%s' % csv(options))
 
             file.write('\n\t\t(%.3f, %.3f) rectangle +(%.3f, %.3f);'
                 % (-self.left, -self.bottom, self.width, self.height))
