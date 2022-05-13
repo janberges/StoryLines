@@ -1484,20 +1484,21 @@ class Plot():
 
             # set bounding box
 
-            options = dict(use_as_bounding_box=True)
+            bbox = ('\n\t\t(%.3f, %.3f) rectangle +(%.3f, %.3f);'
+                % (-self.left, -self.bottom, self.width, self.height))
+
+            file.write('\n\t\\useasboundingbox')
+            file.write(bbox)
+
+            if self.canvas is not None:
+                file.write('\n\t\\draw%s'
+                    % csv(dict(color=self.canvas, line_width='1mm', fill=True)))
+                file.write(bbox)
 
             if self.outline:
-                options.update(color='gray', very_thin=True, dashed=True)
-            else:
-                options.update(draw='none')
-
-            if self.canvas:
-                options.update(fill=self.canvas)
-
-            file.write('\n\t\\draw%s' % csv(options))
-
-            file.write('\n\t\t(%.3f, %.3f) rectangle +(%.3f, %.3f);'
-                % (-self.left, -self.bottom, self.width, self.height))
+                file.write('\n\t\\draw%s'
+                    % csv(dict(color='gray', very_thin=True, dashed=True)))
+                file.write(bbox)
 
             # add background image
 
