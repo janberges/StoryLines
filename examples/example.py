@@ -18,4 +18,4 @@ plot.zlabel = '$\omega / \mathrm{s^{-1}}$'
 
 plot.line(label='relevant points', mark='*', only_marks=True)
 
-plot.save('example', pdf=True)
+plot.save('example.pdf')

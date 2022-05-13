@@ -37,4 +37,4 @@ plot = storylines.Plot(preamble=r'\usetikzlibrary{decorations.pathmorphing}',
 for R, style in objects:
     plot.line(*list(zip(*R))[:2], **style)
 
-plot.save('project', pdf=True)
+plot.save('project.pdf')

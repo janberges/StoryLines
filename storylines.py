@@ -607,11 +607,21 @@ def goto(filename):
     -------
     stem : str
         File name without path and extension.
+    typ : str
+        Desired file type (extension).
     home : function
         Function to return to previous working directory.
     """
     head, tail = os.path.split(filename)
-    stem = tail[:-4] if tail.endswith(('.tex', '.pdf')) else tail
+
+    for extension in 'tex', 'pdf':
+        if tail.endswith('.%s' % extension):
+            stem = tail[:-len(extension) - 1]
+            typ = extension
+            break
+    else:
+        stem = tail
+        typ = None
 
     if head:
         cwd = os.getcwd()
@@ -622,7 +632,7 @@ def goto(filename):
         if head:
             os.chdir(cwd)
 
-    return stem, home
+    return stem, typ, home
 
 def typeset(stem):
     """Run ``pdflatex`` and remove ``.aux`` and ``.log`` files.
@@ -1199,6 +1209,7 @@ class Plot():
             document header etc.?
         pdf : bool, default False
             Typeset TeX file via ``pdflatex``? This implies `standalone`.
+            Automatically set to ``True`` if `filename` ends with ``.pdf``.
         """
         # determine data limits:
 
@@ -1379,7 +1390,9 @@ class Plot():
 
         labels = []
 
-        stem, home = goto(filename)
+        stem, typ, home = goto(filename)
+
+        pdf = pdf or typ == 'pdf'
 
         if pdf:
             standalone = True
@@ -1933,9 +1946,12 @@ def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False):
         Horizontal alignment of PDFs. Possible values are ``'left'``,
         ``'center'`` and ``'right'``.
     pdf : bool, default False
-        Convert resulting TeX file to PDF?
+        Convert resulting TeX file to PDF? Automatically set to ``True`` if
+        `filename` ends with ``.pdf``.
     """
-    stem, home = goto(filename)
+    stem, typ, home = goto(filename)
+
+    pdf = pdf or typ == 'pdf'
 
     with open('%s.tex' % stem, 'w') as tex:
         tex.write('\\documentclass[varwidth=\maxdimen]{standalone}\n'

@@ -33,4 +33,4 @@ for R, style in objects:
     x, y, z = zip(*R)
     plot.line(x, y, np.average(z), **style)
 
-plot.save('moebius', pdf=True)
+plot.save('moebius.pdf')
