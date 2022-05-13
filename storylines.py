@@ -614,7 +614,7 @@ def goto(filename):
     """
     head, tail = os.path.split(filename)
 
-    for extension in 'tex', 'pdf':
+    for extension in 'tex', 'pdf', 'png':
         if tail.endswith('.%s' % extension):
             stem = tail[:-len(extension) - 1]
             typ = extension
@@ -652,7 +652,27 @@ def typeset(stem):
     except OSError:
         print('pdflatex not found')
 
-pt = 2.54 / 72.27 # cm
+def rasterize(stem, dpi=300.0):
+    """Run ``pdftoppm`` and remove ``-1`` from name of resulting PNG file.
+
+    Parameters
+    ----------
+    stem : str
+        File name without path and extension (in current working directory).
+    dpi : float, default 300.0
+        Image resolution in dots per inch.
+    """
+    try:
+        subprocess.call(['pdftoppm', '-r', '%g' % dpi, '-png', '%s.pdf' % stem,
+            stem])
+
+        os.rename('%s-1.png' % stem, '%s.png' % stem)
+
+    except OSError:
+        print('pdftoppm not found')
+
+inch = 2.54 # cm
+pt = inch / 72.27 # cm
 
 class Plot():
     """Plot object.
@@ -1194,7 +1214,8 @@ class Plot():
 
         self.lines = []
 
-    def save(self, filename, external=False, standalone=False, pdf=False):
+    def save(self, filename, external=False, standalone=False, pdf=False,
+            png=False, dpi=300.0):
         """Save plot to file.
 
         Parameters
@@ -1210,6 +1231,11 @@ class Plot():
         pdf : bool, default False
             Typeset TeX file via ``pdflatex``? This implies `standalone`.
             Automatically set to ``True`` if `filename` ends with ``.pdf``.
+        png : bool, default False
+            Rasterize PDF file via ``pdftoppm``? This implies `pdf`.
+            Automatically set to ``True`` if `filename` ends with ``.png``.
+        dpi : float, default 300.0
+            Image resolution in dots per inch.
         """
         # determine data limits:
 
@@ -1392,7 +1418,8 @@ class Plot():
 
         stem, typ, home = goto(filename)
 
-        pdf = pdf or typ == 'pdf'
+        png = png or typ == 'png'
+        pdf = pdf or typ == 'pdf' or png
 
         if pdf:
             standalone = True
@@ -1926,9 +1953,13 @@ class Plot():
         if pdf:
             typeset(stem)
 
+        if png:
+            rasterize(stem, dpi)
+
         home()
 
-def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False):
+def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False,
+        png=False, dpi=300.0):
     """Arrange multiple PDFs in single file.
 
     Parameters
@@ -1948,10 +1979,16 @@ def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False):
     pdf : bool, default False
         Convert resulting TeX file to PDF? Automatically set to ``True`` if
         `filename` ends with ``.pdf``.
+    png : bool, default False
+        Convert resulting PDF file to PNG? This implies `pdf`. Automatically set
+        to ``True`` if `filename` ends with ``.png``.
+    dpi : float, default 300.0
+        Image resolution in dots per inch.
     """
     stem, typ, home = goto(filename)
 
-    pdf = pdf or typ == 'pdf'
+    png = png or typ == 'png'
+    pdf = pdf or typ == 'pdf' or png
 
     with open('%s.tex' % stem, 'w') as tex:
         tex.write('\\documentclass[varwidth=\maxdimen]{standalone}\n'
@@ -1973,6 +2010,9 @@ def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False):
 
     if pdf:
         typeset(stem)
+
+    if png:
+        rasterize(stem, dpi)
 
     home()
 
