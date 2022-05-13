@@ -607,8 +607,6 @@ def goto(filename):
     -------
     stem : str
         File name without path and extension.
-    typeset : function
-        Function to run ``pdflatex`` and remove ``.aux`` and ``.log`` files.
     home : function
         Function to return to previous working directory.
     """
@@ -620,22 +618,29 @@ def goto(filename):
         subprocess.call(['mkdir', '-p', head])
         os.chdir(head)
 
-    def typeset():
-        try:
-            subprocess.call(['pdflatex', '--interaction=batchmode',
-                '%s.tex' % stem])
-
-            for suffix in 'aux', 'log':
-                os.remove('%s.%s' % (stem, suffix))
-
-        except OSError:
-            print('pdflatex not found')
-
     def home():
         if head:
             os.chdir(cwd)
 
-    return stem, typeset, home
+    return stem, home
+
+def typeset(stem):
+    """Run ``pdflatex`` and remove ``.aux`` and ``.log`` files.
+
+    Parameters
+    ----------
+    stem : str
+        File name without path and extension (in current working directory).
+    """
+    try:
+        subprocess.call(['pdflatex', '--interaction=batchmode',
+            '%s.tex' % stem])
+
+        for suffix in 'aux', 'log':
+            os.remove('%s.%s' % (stem, suffix))
+
+    except OSError:
+        print('pdflatex not found')
 
 pt = 2.54 / 72.27 # cm
 
@@ -1195,9 +1200,6 @@ class Plot():
         pdf : bool, default False
             Typeset TeX file via ``pdflatex``? This implies `standalone`.
         """
-        if pdf:
-            standalone = True
-
         # determine data limits:
 
         lower = {}
@@ -1377,7 +1379,10 @@ class Plot():
 
         labels = []
 
-        stem, typeset, home = goto(filename)
+        stem, home = goto(filename)
+
+        if pdf:
+            standalone = True
 
         with open('%s.tex' % stem, 'w') as file:
             # print premable and open document
@@ -1906,7 +1911,7 @@ class Plot():
         # typeset document and clean up:
 
         if pdf:
-            typeset()
+            typeset(stem)
 
         home()
 
@@ -1930,7 +1935,7 @@ def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False):
     pdf : bool, default False
         Convert resulting TeX file to PDF?
     """
-    stem, typeset, home = goto(filename)
+    stem, home = goto(filename)
 
     with open('%s.tex' % stem, 'w') as tex:
         tex.write('\\documentclass[varwidth=\maxdimen]{standalone}\n'
@@ -1951,7 +1956,7 @@ def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False):
         tex.write('\\end{document}\n')
 
     if pdf:
-        typeset()
+        typeset(stem)
 
     home()
 
