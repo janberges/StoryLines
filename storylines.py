@@ -719,6 +719,13 @@ class Plot():
         Top margin in cm.
     margmin : float, default 0.15
         Minimum automatic margin in cm.
+    ratio : float, default None
+        Figure width divided by figure height. The desired aspect ratio is
+        obtained by adding extra margins as needed.
+    align : float, default 0.5
+        If `ratio` is used, this value aligns the original plot relative to the
+        new viewport. A value of ``0.0``, ``0.5``, and ``1.0`` moves it to the
+        lower side, to the center, and to the upper side, respectively.
     xlabel, ylabel, zlabel : str, default None
         Axis labels.
     xticks, yticks, zticks : list, default None
@@ -838,6 +845,9 @@ class Plot():
         self.dtop = 0.0
 
         self.margmin = 0.15
+
+        self.ratio = None
+        self.align = 0.5
 
         for x in 'xyz':
             setattr(self, x + 'label', None)
@@ -1382,6 +1392,25 @@ class Plot():
 
         extent['z'] = extent['y']
         scale['z'] = extent['z'] / (upper['z'] - lower['z'])
+
+        # set aspect ratio by adjusting margins:
+
+        if self.ratio is not None:
+            ratio = self.width / self.height
+
+            if ratio < self.ratio:
+                diff = self.height * self.ratio - self.width
+
+                self.width += diff
+                self.left += self.align * diff
+                self.right += (1 - self.align) * diff
+
+            elif self.ratio < ratio:
+                diff = self.width / self.ratio - self.height
+
+                self.height += diff
+                self.bottom += self.align * diff
+                self.top += (1 - self.align) * diff
 
         # determine tick positions:
 

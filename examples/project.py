@@ -32,7 +32,7 @@ for bond in bonds:
 objects = storylines.project(objects, R=observer)
 
 plot = storylines.Plot(preamble=r'\usetikzlibrary{decorations.pathmorphing}',
-    xyaxes=False, height=False, margin=1.0)
+    xyaxes=False, height=0.0, margin=1.0)
 
 for R, style in objects:
     plot.line(*list(zip(*R))[:2], **style)

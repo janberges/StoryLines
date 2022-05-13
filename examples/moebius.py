@@ -26,7 +26,7 @@ for u in range(1, len(U)):
 
 objects = storylines.project(objects, R=[2.0, 2.0, 2.0])
 
-plot = storylines.Plot(xyaxes=False, height=False, margin=0.5,
+plot = storylines.Plot(xyaxes=False, height=0.0, margin=0.5, ratio=1.0,
     canvas='cyan', upper='magenta', lower='yellow', colorbar=False)
 
 for R, style in objects:
