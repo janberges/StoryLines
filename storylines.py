@@ -1170,7 +1170,7 @@ class Plot():
         **options
             TikZ options of the node, e.g., ``above left=True``.
         """
-        self.code('\n\\node%s%s at (<x=%.14g>, <y=%.14g>) {%s};'
+        self.code('\\node%s%s at (<x=%.14g>, <y=%.14g>) {%s};'
             % (' (%s)' % name if name else '', csv(options), x, y, content))
 
     def cut(self, x=0.0, y=0.0):
@@ -1183,7 +1183,7 @@ class Plot():
         """
         self.axes()
         for cmd, color, to in ('fill', 'white', '--'), ('draw', 'black', '  '):
-            self.code('\n\\%s [%s, xshift=<x=%.14g>cm, yshift=<y=%.14g>cm] '
+            self.code('\\%s [%s, xshift=<x=%.14g>cm, yshift=<y=%.14g>cm] '
                 '(-0.1, -0.15) -- (0.1, 0.05) %s (0.1, 0.15) -- (-0.1, -0.05);'
                 % (cmd, color, x, y, to))
 
@@ -1197,7 +1197,7 @@ class Plot():
         name : str
             Name/label to refer back to the point.
         """
-        self.code('\n\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);'
+        self.code('\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);'
             % (name, x, y))
 
     def code(self, data, **options):
@@ -1818,7 +1818,7 @@ class Plot():
                 # insert TikZ code with special coordinates:
 
                 if line['code']:
-                    code = line['code']
+                    code = line['code'].strip()
 
                     for x in 'xy':
                         code = re.sub('<%s=(.*?)>' % x, lambda match: '%.3f'
@@ -1829,7 +1829,7 @@ class Plot():
                             % (scale[x] * float(match.group(1))),
                             code)
 
-                    file.write(code)
+                    file.write('\n%s' % code)
 
                 if line['grid']:
                     draw_grid()
