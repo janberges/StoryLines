@@ -1170,7 +1170,7 @@ class Plot():
         **options
             TikZ options of the node, e.g., ``above left=True``.
         """
-        self.code('\n\t\\node%s%s at (<x=%.14g>, <y=%.14g>) {%s};'
+        self.code('\n\\node%s%s at (<x=%.14g>, <y=%.14g>) {%s};'
             % (' (%s)' % name if name else '', csv(options), x, y, content))
 
     def cut(self, x=0.0, y=0.0):
@@ -1183,7 +1183,7 @@ class Plot():
         """
         self.axes()
         for cmd, color, to in ('fill', 'white', '--'), ('draw', 'black', '  '):
-            self.code('\n\t\\%s [%s, xshift=<x=%.14g>cm, yshift=<y=%.14g>cm] '
+            self.code('\n\\%s [%s, xshift=<x=%.14g>cm, yshift=<y=%.14g>cm] '
                 '(-0.1, -0.15) -- (0.1, 0.05) %s (0.1, 0.15) -- (-0.1, -0.05);'
                 % (cmd, color, x, y, to))
 
@@ -1197,7 +1197,7 @@ class Plot():
         name : str
             Name/label to refer back to the point.
         """
-        self.code('\n\t\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);'
+        self.code('\n\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);'
             % (name, x, y))
 
     def code(self, data, **options):
@@ -1513,26 +1513,26 @@ class Plot():
 
             # set bounding box
 
-            bbox = ('\n\t\t(%.3f, %.3f) rectangle +(%.3f, %.3f);'
+            bbox = ('\n\t(%.3f, %.3f) rectangle +(%.3f, %.3f);'
                 % (-self.left, -self.bottom, self.width, self.height))
 
-            file.write('\n\t\\useasboundingbox')
+            file.write('\n\\useasboundingbox')
             file.write(bbox)
 
             if self.canvas is not None:
-                file.write('\n\t\\draw%s'
+                file.write('\n\\draw%s'
                     % csv(dict(color=self.canvas, line_width='1mm', fill=True)))
                 file.write(bbox)
 
             if self.outline:
-                file.write('\n\t\\draw%s'
+                file.write('\n\\draw%s'
                     % csv(dict(color='gray', very_thin=True, dashed=True)))
                 file.write(bbox)
 
             # add background image
 
             if self.background is not None:
-                file.write('\n\t\\node '
+                file.write('\n\\node '
                     '[anchor=south west, inner sep=0, outer sep=0] '
                     '{\includegraphics[width=%.3fcm, height=%.3fcm]{%s}};'
                     % (extent['x'], extent['y'], self.background))
@@ -1541,16 +1541,16 @@ class Plot():
                 if draw_grid.done:
                     return
 
-                file.write('\n\t\\draw [lightgray, line cap=rect]')
+                file.write('\n\\draw [lightgray, line cap=rect]')
 
                 for x, label in ticks['x']:
                     if x != extent['x']:
-                        file.write('\n\t\t(%.3f, 0) -- +(0, %.3f)'
+                        file.write('\n\t(%.3f, 0) -- +(0, %.3f)'
                             % (x, extent['y']))
 
                 for y, label in ticks['y']:
                     if y != extent['y']:
-                        file.write('\n\t\t(0, %.3f) -- +( %.3f, 0)'
+                        file.write('\n\t(0, %.3f) -- +( %.3f, 0)'
                             % (y, extent['x']))
 
                 file.write(';')
@@ -1563,7 +1563,7 @@ class Plot():
                 if draw_frame.done:
                     return
 
-                file.write('\n\t\\draw [gray, line cap=rect]\n\t\t')
+                file.write('\n\\draw [gray, line cap=rect]\n\t')
 
                 if not self.xaxis:
                     file.write('(0, 0) -- ')
@@ -1588,24 +1588,24 @@ class Plot():
 
                 if self.colorbar:
                     if isinstance(self.colorbar, str):
-                        file.write('\n\t\\node at (%.3f, 0) '
+                        file.write('\n\\node at (%.3f, 0) '
                             '[anchor=south west, inner sep=0, outer sep=0] '
                             '{\includegraphics[width=%.3fcm, height=%.3fcm]'
                             '{%s}};' % (extent['x'] + self.gap,
                                 self.tip - self.gap, extent['y'],
                                 self.colorbar))
                     else:
-                        file.write('\n\t\\shade [bottom color=%s, top color=%s]'
+                        file.write('\n\\shade [bottom color=%s, top color=%s]'
                             % (self.lower, self.upper))
 
-                        file.write('\n\t\t(%.3f, 0) rectangle (%.3f, %.3f);'
+                        file.write('\n\t(%.3f, 0) rectangle (%.3f, %.3f);'
                             % (extent['x'] + self.gap,
                                extent['x'] + self.tip,
                                extent['z']))
 
                     if self.zmarks:
                         for z, label in ticks['z']:
-                            file.write('\n\t\\node '
+                            file.write('\n\\node '
                                 '[rotate=90, below] at (%.3f, %.3f) {%s};'
                                 % (extent['x'] + self.tip, z, label))
 
@@ -1619,17 +1619,17 @@ class Plot():
                     # draw tick marks and labels
 
                     if self.xaxis and ticks['x'] or self.yaxis and ticks['y']:
-                        file.write('\n\t\\draw [line cap=butt]')
+                        file.write('\n\\draw [line cap=butt]')
 
                         if self.xaxis and self.xmarks:
                             for x, label in ticks['x']:
-                                file.write('\n\t\t(%.3f, 0) -- +(0, %.3f) '
+                                file.write('\n\t(%.3f, 0) -- +(0, %.3f) '
                                     'node [below] {%s}'
                                     % (x, -self.tick, label))
 
                         if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
-                                file.write('\n\t\t(0, %.3f) -- +(%.3f, 0) '
+                                file.write('\n\t(0, %.3f) -- +(%.3f, 0) '
                                     'node [rotate=90, above] {%s}'
                                     % (y, -self.tick, label))
 
@@ -1637,7 +1637,7 @@ class Plot():
 
                     # draw coordinate axes
 
-                    file.write('\n\t\\draw [%s-%s, line cap=butt]\n\t\t'
+                    file.write('\n\\draw [%s-%s, line cap=butt]\n\t'
                         % ('<' * (self.xaxis and not self.colorbar),
                             '>' * self.yaxis))
 
@@ -1654,7 +1654,7 @@ class Plot():
                 # label coordinate axes
 
                 if self.xaxis and self.xlabel:
-                    file.write('\n\t\\node [below')
+                    file.write('\n\\node [below')
 
                     if ticks['x'] and not self.xclose:
                         file.write('=\\baselineskip')
@@ -1662,10 +1662,10 @@ class Plot():
                     file.write('] at (%.3f, %.3f)'
                         % (extent['x'] / 2, -self.tick))
 
-                    file.write('\n\t\t{%s};' % self.xlabel)
+                    file.write('\n\t{%s};' % self.xlabel)
 
                 if self.yaxis and self.ylabel:
-                    file.write('\n\t\\node [rotate=90, above')
+                    file.write('\n\\node [rotate=90, above')
 
                     if ticks['y'] and not self.yclose:
                         file.write('=\\baselineskip')
@@ -1673,10 +1673,10 @@ class Plot():
                     file.write('] at (%.3f, %.3f)'
                         % (-self.tick, extent['y'] / 2))
 
-                    file.write('\n\t\t{%s};' % self.ylabel)
+                    file.write('\n\t{%s};' % self.ylabel)
 
                 if self.colorbar and self.zlabel:
-                    file.write('\n\t\\node [rotate=90, below')
+                    file.write('\n\\node [rotate=90, below')
 
                     if ticks['z'] and not self.zclose:
                         file.write('=\\baselineskip')
@@ -1684,7 +1684,7 @@ class Plot():
                     file.write('] at (%.3f, %.3f)'
                         % (extent['x'] + self.tip, extent['y'] / 2))
 
-                    file.write('\n\t\t{%s};' % self.zlabel)
+                    file.write('\n\t{%s};' % self.zlabel)
 
                 draw_axes.done = True
 
@@ -1805,11 +1805,11 @@ class Plot():
                             segment = shortcut(segment, line['shortcut'],
                                 line['shortcut_rel'])
 
-                        file.write('\n\t\\draw%s plot coordinates {'
+                        file.write('\n\\draw%s plot coordinates {'
                             % csv(line['options']))
 
                         for group in groups(segment):
-                            file.write('\n\t\t')
+                            file.write('\n\t')
                             file.write(' '.join(form % point
                                 for point in group))
 
@@ -1852,7 +1852,7 @@ class Plot():
                     self.label = ('\\fontsize{%d}{%d}\\selectfont %s' %
                         (self.labelsize, self.labelsize, self.label))
 
-                file.write('\n\t\\node at (current bounding box.north west) '
+                file.write('\n\\node at (current bounding box.north west) '
                     '[inner sep=0pt, below right] {%s};'
                     % self.label)
 
@@ -1889,7 +1889,7 @@ class Plot():
                     x = scale['x'] * (x - lower['x'])
                     y = scale['y'] * (y - lower['y'])
 
-                file.write('\n\t\\node [align=%s' % self.lali)
+                file.write('\n\\node [align=%s' % self.lali)
 
                 if self.lopt is not None:
                     file.write(', %s' % self.lopt)
@@ -1900,8 +1900,8 @@ class Plot():
                 file.write('] at (%.3f, %.3f) {' % (x, y))
 
                 if self.ltop:
-                    file.write('\n\t\t\\tikzset{sharp corners}')
-                    file.write('\n\t\t%s' % self.ltop)
+                    file.write('\n\t\\tikzset{sharp corners}')
+                    file.write('\n\t%s' % self.ltop)
 
                     if labels:
                         file.write(' \\\\')
@@ -1910,7 +1910,7 @@ class Plot():
                             file.write('[%s]' % self.lsep)
 
                 if labels:
-                    file.write('\n\t\t\\begin{tikzpicture}[x=%s, y=-%s]'
+                    file.write('\n\t\\begin{tikzpicture}[x=%s, y=-%s]'
                         % (self.llen, self.lbls))
 
                     lrow = self.lrow or 1 + (len(labels) - 1) // self.lcol
@@ -1922,7 +1922,7 @@ class Plot():
                         row = n % lrow
 
                         if label:
-                            file.write('\n\t\t\t\\node '
+                            file.write('\n\t\t\\node '
                                 '[right] at (%.3f, %d) {%s};'
                                 % (col * self.lwid + 1, row, label))
 
@@ -1934,8 +1934,8 @@ class Plot():
                             if draw and mark:
                                 options['mark_indices'] = '{2}'
 
-                            file.write('\n\t\t\t\\draw%s' % csv(options))
-                            file.write('\n\t\t\t\tplot coordinates ')
+                            file.write('\n\t\t\\draw%s' % csv(options))
+                            file.write('\n\t\t\tplot coordinates ')
 
                             if draw and mark:
                                 x = [0.0, 0.5, 1.0]
@@ -1955,16 +1955,16 @@ class Plot():
                             file.write(' };')
 
                     if spacer:
-                        file.write('\n\t\t\t\\useasboundingbox (0, 0);')
+                        file.write('\n\t\t\\useasboundingbox (0, 0);')
 
-                    file.write('\n\t\t\\end{tikzpicture}%')
+                    file.write('\n\t\\end{tikzpicture}%')
 
-                file.write('\n\t\t};')
+                file.write('\n\t};')
 
             # add title:
 
             if self.title is not None:
-                file.write('\n\t\\node [above] at (%.3f, %.3f) {%s};'
+                file.write('\n\\node [above] at (%.3f, %.3f) {%s};'
                     % (extent['x'] / 2, extent['y'], self.title))
 
             # close TikZ environment
