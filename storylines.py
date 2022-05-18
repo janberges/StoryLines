@@ -1197,8 +1197,7 @@ class Plot():
         name : str
             Name/label to refer back to the point.
         """
-        self.code('\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);'
-            % (name, x, y))
+        self.code('\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);' % (name, x, y))
 
     def code(self, data, **options):
         """Insert literal TikZ code.
@@ -1569,7 +1568,7 @@ class Plot():
                     file.write('(0, 0) -- ')
 
                 file.write('(%.3f, 0) -- (%.3f, %.3f) -- (0, %.3f)'
-                        % tuple(extent[x] for x in 'xxyy'))
+                    % tuple(extent[x] for x in 'xxyy'))
 
                 if not self.yaxis:
                     file.write(' -- (0, 0)')
@@ -1849,12 +1848,11 @@ class Plot():
                     self.label = self.labelformat(self.label)
 
                 if self.labelsize is not None:
-                    self.label = ('\\fontsize{%d}{%d}\\selectfont %s' %
-                        (self.labelsize, self.labelsize, self.label))
+                    self.label = ('\\fontsize{%d}{%d}\\selectfont %s'
+                        % (self.labelsize, self.labelsize, self.label))
 
                 file.write('\n\\node at (current bounding box.north west) '
-                    '[inner sep=0pt, below right] {%s};'
-                    % self.label)
+                    '[inner sep=0pt, below right] {%s};' % self.label)
 
             # add legend
 
