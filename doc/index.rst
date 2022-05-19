@@ -1,11 +1,20 @@
 .. highlight:: bash
 .. mdinclude:: ../README.md
 
-Objects and functions
----------------------
+Modules
+-------
 
-.. automodule:: storylines
-   :members:
+.. toctree::
+   :maxdepth: 2
+
+   modules/storylines
+   modules/calc
+   modules/convert
+   modules/cut
+   modules/fatband
+   modules/files
+   modules/group
+   modules/proj
 
 Indices and tables
 ------------------
