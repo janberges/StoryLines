@@ -10,13 +10,15 @@ __version__ = '0.6'
 import math
 import re
 
+from .calc import (order_of_magnitude, power_of_ten, xround, xround_mantissa,
+    multiples, dot, cross, bonds)
+from .color import Color, colormap, colorize, HSV2RGB, RGB2HSV, PSV2RGB
 from .convert import inch, pt, csv
 from .cut import relevant, shortcut, cut, cut2d, jump
 from .fatband import fatband, miter_butt
 from .files import goto, typeset, rasterize, combine
 from .group import islands, groups
-from .calc import (order_of_magnitude, power_of_ten, xround, xround_mantissa,
-    multiples, dot, cross, bonds)
+from .png import save, load
 from .proj import projection, project
 
 class Plot():

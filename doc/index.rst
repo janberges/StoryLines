@@ -9,11 +9,13 @@ Modules
 
    modules/storylines
    modules/calc
+   modules/color
    modules/convert
    modules/cut
    modules/fatband
    modules/files
    modules/group
+   modules/png
    modules/proj
 
 Indices and tables
