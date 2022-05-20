@@ -40,12 +40,9 @@ class Color(object):
         self.C = C
         self.model = model
 
-    context = None
+    context = 'TeX'
 
     def __str__(self):
-        if self.context is None:
-            return '%s(%g, %g, %g)' % (self.model, self.A, self.B, self.C)
-
         RGB = tuple(map(int, map(round, self.RGB())))
 
         if self.context == 'TeX':
@@ -54,8 +51,10 @@ class Color(object):
         if self.context == 'HTML':
             return '#%02x%02x%02x' % RGB
 
+        return repr(self)
+
     def __repr__(self):
-        return 'Color(%g, %g, %g, %s)' % (self.A, self.B, self.C, self.model)
+        return "Color(%g, %g, %g, '%s')" % (self.A, self.B, self.C, self.model)
 
     def __add__(i, u):
         if i.model == u.model:
