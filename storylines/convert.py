@@ -4,10 +4,10 @@
 # This program is free software under the terms of the BSD Zero Clause License.
 
 inch = 2.54
-"""Inch in centimeters"""
+"""Inch in centimeters."""
 
 pt = inch / 72.27
-"""LaTeX point in centimeters"""
+"""LaTeX point in centimeters."""
 
 def csv(options, context=' [%s]'):
     """Format TikZ options.

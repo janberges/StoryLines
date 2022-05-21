@@ -18,6 +18,19 @@ Modules
    modules/png
    modules/proj
 
+Examples
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   examples/example
+   examples/fatband
+   examples/mandelbrot
+   examples/moebius
+   examples/project
+   examples/shortcut
+
 Indices and tables
 ------------------
 

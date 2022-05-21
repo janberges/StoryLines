@@ -1,7 +1,10 @@
-.PHONY: clean html
+.PHONY: html png clean
 
-html:
+html: png
 	sphinx-build -M html . .
+
+png:
+	$(MAKE) -C ../examples/
 
 clean:
 	rm -rf doctrees html

@@ -42,8 +42,8 @@ cmap = storylines.colormap(
 plot = storylines.Plot(height=0.0, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
     zmin=np.nanmin(image), zmax=np.nanmax(image), cmap=cmap, frame=False,
     title='Mandelbrot set', xlabel='Re', ylabel='Im', zlabel='Iterations',
-    background='mandelbrot.png')
+    background='mandelbrot.bg.png')
 
 storylines.save(plot.background, storylines.colorize(image, cmap))
 
-plot.save('mandelbrot.pdf')
+plot.save('mandelbrot.png')
