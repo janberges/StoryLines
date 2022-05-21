@@ -1,6 +1,6 @@
-![StoryLines logo](https://raw.githubusercontent.com/janberges/StoryLines/master/logo/logo.svg)
+# Line plots with Python & TikZ
 
-Line plots with Python and TikZ
+![StoryLines logo](https://raw.githubusercontent.com/janberges/StoryLines/master/logo/logo.svg)
 
     python3 example.py
     pdflatex example.tex
