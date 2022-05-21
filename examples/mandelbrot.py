@@ -34,14 +34,16 @@ for i in range(h):
 phase0 = 0.2
 phase1 = phase0 + 2 * np.pi
 
-image = storylines.colorize(image, storylines.colormap(
+cmap = storylines.colormap(
     (0, storylines.Color(phase0, 1, 255, 'PSV')),
     (1, storylines.Color(phase1, 1, 255, 'PSV')),
-    (None, storylines.Color(0, 0, 0))))
+    (None, storylines.Color(0, 0, 0)))
 
 plot = storylines.Plot(height=0.0, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
-    xlabel='Re', ylabel='Im', grid=True, background='mandelbrot.png')
+    zmin=np.nanmin(image), zmax=np.nanmax(image), cmap=cmap, frame=False,
+    title='Mandelbrot set', xlabel='Re', ylabel='Im', zlabel='Iterations',
+    background='mandelbrot.png')
 
-storylines.save(plot.background, image)
+storylines.save(plot.background, storylines.colorize(image, cmap))
 
 plot.save('mandelbrot.pdf')

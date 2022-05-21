@@ -99,6 +99,8 @@ class Plot():
         Lower color of colorbar.
     upper : str, default 'red'
         Upper color of colorbar.
+    cmap : function, default None
+        Colormap for colorbar used instead of `lower` and `upper`.
     title : str, default None
         Plot title.
     label : str, default None
@@ -211,6 +213,7 @@ class Plot():
 
         self.lower = 'blue'
         self.upper = 'red'
+        self.cmap = None
 
         self.title = None
 
@@ -933,6 +936,16 @@ class Plot():
                 # paint colorbar
 
                 if self.colorbar:
+                    if self.cmap is not None:
+                        dots = int(round(extent['z'] / inch * dpi))
+
+                        colorbar = colorize([[n / (dots - 1.0)]
+                            for n in reversed(range(dots))], self.cmap)
+
+                        self.colorbar = '%s.bar.png' % stem
+
+                        save(self.colorbar, colorbar)
+
                     if isinstance(self.colorbar, str):
                         file.write('\n\\node at (%.3f, 0) '
                             '[anchor=south west, inner sep=0, outer sep=0] '
@@ -1047,7 +1060,8 @@ class Plot():
                     ratio = (line['z'] - lower['z']) / (upper['z'] - lower['z'])
 
                     line['options'].setdefault('color',
-                        '%s!%.1f!%s' % (self.upper, 100 * ratio, self.lower))
+                        '%s!%.1f!%s' % (self.upper, 100 * ratio, self.lower)
+                            if self.cmap is None else self.cmap(ratio))
 
                     if line['options'].get('mark') == 'ball':
                         line['options'].setdefault('ball_color',
