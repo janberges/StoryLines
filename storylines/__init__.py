@@ -136,8 +136,10 @@ class Plot():
         Width of legend columns in units of `llen`.
     tick : str, default 0.07
         Length of tick marks in cm.
-    gap : float, default 0.0
+    gap : float, default 0.15
         Gap between plot area and colorbar in cm.
+    bar : float, default 0.15
+        Width of color bar in cm.
     tip : float, default 0.1
         Overlap of axis tips in cm.
     xaxis : bool, default `xyaxes`
@@ -235,7 +237,8 @@ class Plot():
         self.lwid = 4.0
 
         self.tick = 0.07
-        self.gap = 0.0
+        self.gap = 0.15
+        self.bar = 0.15
         self.tip = 0.1
 
         self.xaxis = xyaxes
@@ -663,7 +666,7 @@ class Plot():
             self.right = self.margmin
 
             if self.colorbar:
-                self.right += self.tip
+                self.right += self.gap + self.bar
 
                 zticks = ((self.zticks is None or bool(self.zticks))
                     and self.zmarks)
@@ -951,22 +954,21 @@ class Plot():
                             '[anchor=south west, inner sep=0, outer sep=0] '
                             '{\includegraphics[width=%.3fcm, height=%.3fcm]'
                             '{%s}};' % (extent['x'] + self.gap,
-                                self.tip - self.gap, extent['y'],
-                                self.colorbar))
+                                self.bar, extent['y'], self.colorbar))
                     else:
                         file.write('\n\\shade [bottom color=%s, top color=%s]'
                             % (self.lower, self.upper))
 
                         file.write('\n  (%.3f, 0) rectangle (%.3f, %.3f);'
                             % (extent['x'] + self.gap,
-                               extent['x'] + self.tip,
+                               extent['x'] + self.gap + self.bar,
                                extent['z']))
 
                     if self.zmarks:
                         for z, label in ticks['z']:
                             file.write('\n\\node '
                                 '[rotate=90, below] at (%.3f, %.3f) {%s};'
-                                % (extent['x'] + self.tip, z, label))
+                                % (extent['x'] + self.gap + self.bar, z, label))
 
                 if self.grid:
                     draw_grid()
@@ -997,8 +999,7 @@ class Plot():
                     # draw coordinate axes
 
                     file.write('\n\\draw [%s-%s, line cap=butt]\n  '
-                        % ('<' * (self.xaxis and not self.colorbar),
-                            '>' * self.yaxis))
+                        % ('<' * self.xaxis, '>' * self.yaxis))
 
                     if self.xaxis:
                         file.write('(%.3f, 0) -- ' % (extent['x'] + self.tip))
@@ -1041,7 +1042,7 @@ class Plot():
                         file.write('=\\baselineskip')
 
                     file.write('] at (%.3f, %.3f)'
-                        % (extent['x'] + self.tip, extent['y'] / 2))
+                        % (extent['x'] + self.gap + self.bar, extent['y'] / 2))
 
                     file.write('\n  {%s};' % self.zlabel)
 
