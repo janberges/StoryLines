@@ -80,17 +80,10 @@ def load(filename):
                 data = zlib.decompress(data)
                 byte = struct.unpack('%dB' % len(data), data)
 
-                image = [[[]]]
-
-                for n, x in enumerate(byte):
-                    if n % (1 + width * colors) != 0:
-                        if len(image[-1][-1]) == colors:
-                            if len(image[-1]) == width:
-                                image.append([[]])
-                            else:
-                                image[-1].append([])
-
-                        image[-1][-1].append(x)
+                image = [[[byte[y * (width * colors + 1) + 1 + x * colors + z]
+                    for z in range(colors)]
+                    for x in range(width)]
+                    for y in range(height)]
 
             if name == b'IEND':
                 break
