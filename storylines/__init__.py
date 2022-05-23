@@ -5,7 +5,7 @@
 
 from __future__ import division
 
-__version__ = '0.6'
+__version__ = '0.7'
 
 import math
 import re

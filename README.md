@@ -2,21 +2,40 @@
 
 ![StoryLines logo](https://raw.githubusercontent.com/janberges/StoryLines/master/logo/logo.svg)
 
-    python3 example.py
-    pdflatex example.tex
+* `storylines` - plot object
+* `calc` - mathematical helpers
+* `color` - blendable colors and colormaps
+* `convert` - inches to centimeters etc.
+* `cut` - remove redundant or unwanted points
+* `fatband` - plot weights along line
+* `files` - typeset TeX, rasterize PDF
+* `group` - chunk sequences of points
+* `png` - save and load RGB(A) graphics
+* `proj` - project 3D object onto plane
 
 ## Installation
 
-Using a virtual environment:
+Optionally using a virtual environment:
 
     python3 -m venv venv
     source venv/bin/activate
     python3 -m pip install --upgrade pip setuptools wheel
 
-Either from GitHub:
+Either from PyPI:
+
+    python3 -m pip install storylines
+
+Or from GitHub:
 
     python3 -m pip install git+https://github.com/janberges/StoryLines
 
-Or from PyPI:
+## Documentation
 
-    python3 -m pip install storylines
+The documentation and example scripts along with output can be found at
+<https://janberges.github.io/StoryLines>.
+
+## License
+
+This program is free software under the terms of the BSD Zero Clause License.
+
+Copyright (C) 2016-2022 Jan Berges
