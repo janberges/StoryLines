@@ -76,7 +76,8 @@ class Plot():
     xlabel, ylabel, zlabel : str, default None
         Axis labels.
     xticks, yticks, zticks : list, default None
-        List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``.
+        List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``. If the label is
+        ``None``, the tick mark is not drawn (but possibe grid lines are).
     xmarks, ymarks, zmarks : bool, default True
         Show tick marks and labels?
     xspacing, yspacing, zspacing : float, default 1.0
@@ -966,6 +967,9 @@ class Plot():
 
                     if self.zmarks:
                         for z, label in ticks['z']:
+                            if label is None:
+                                continue
+
                             file.write('\n\\node '
                                 '[rotate=90, below] at (%.3f, %.3f) {%s};'
                                 % (extent['x'] + self.gap + self.bar, z, label))
@@ -984,12 +988,18 @@ class Plot():
 
                         if self.xaxis and self.xmarks:
                             for x, label in ticks['x']:
+                                if label is None:
+                                    continue
+
                                 file.write('\n  (%.3f, 0) -- +(0, %.3f) '
                                     'node [below] {%s}'
                                     % (x, -self.tick, label))
 
                         if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
+                                if label is None:
+                                    continue
+
                                 file.write('\n  (0, %.3f) -- +(%.3f, 0) '
                                     'node [rotate=90, above] {%s}'
                                     % (y, -self.tick, label))
