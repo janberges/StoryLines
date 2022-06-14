@@ -2,7 +2,7 @@
 
 ![StoryLines logo](https://raw.githubusercontent.com/janberges/StoryLines/master/logo/logo.svg)
 
-* `storylines` - plot object
+* `plot` - figure object
 * `calc` - mathematical helpers
 * `color` - blendable colors and colormaps
 * `convert` - inches to centimeters etc.
