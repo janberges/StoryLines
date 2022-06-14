@@ -583,7 +583,7 @@ class Plot():
         self.lines = []
 
     def save(self, filename, external=False, standalone=False, pdf=False,
-            png=False, dpi=300.0):
+            png=False, dpi=300.0, width=0, height=0):
         """Save plot to file.
 
         Parameters
@@ -604,6 +604,10 @@ class Plot():
             Automatically set to ``True`` if `filename` ends with ``.png``.
         dpi : float, default 300.0
             Image resolution in dots per inch.
+        width, height : int
+            Image dimensions in pixels. If either `width` or `height` is zero,
+            it will be determined by the aspect ratio of the image. If both are
+            zero, they will also be determined by `dpi`.
         """
         # determine data limits:
 
@@ -1359,6 +1363,6 @@ class Plot():
             typeset(stem)
 
         if png:
-            rasterize(stem, dpi)
+            rasterize(stem, dpi, width, height)
 
         home()

@@ -63,7 +63,7 @@ def typeset(stem):
     except OSError:
         print('pdflatex not found')
 
-def rasterize(stem, dpi=300.0):
+def rasterize(stem, dpi=300.0, width=0, height=0):
     """Run ``pdftoppm`` and remove ``-1`` from name of resulting PNG file.
 
     Parameters
@@ -72,10 +72,21 @@ def rasterize(stem, dpi=300.0):
         File name without path and extension (in current working directory).
     dpi : float, default 300.0
         Image resolution in dots per inch.
+    width, height : int
+        Image dimensions in pixels. If either `width` or `height` is zero, it
+        will be determined by the aspect ratio of the image. If both are zero,
+        they will also be determined by `dpi`.
     """
     try:
-        subprocess.call(['pdftoppm', '-r', '%g' % dpi, '-png', '%s.pdf' % stem,
-            stem])
+        args = ['-png']
+
+        if width == height == -1:
+            args += ['-r', '%g' % dpi]
+        else:
+            args += ['-scale-to-x', '%g' % (width or -1)]
+            args += ['-scale-to-y', '%g' % (height or -1)]
+
+        subprocess.call(['pdftoppm'] + args + ['%s.pdf' % stem, stem])
 
         os.rename('%s-1.png' % stem, '%s.png' % stem)
 
