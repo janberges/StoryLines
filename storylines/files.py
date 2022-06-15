@@ -82,11 +82,11 @@ def rasterize(stem, dpi=300.0, width=0, height=0):
     try:
         args = ['-png']
 
-        if width == height == -1:
-            args += ['-r', '%g' % dpi]
-        else:
+        if width or height:
             args += ['-scale-to-x', '%g' % (width or -1)]
             args += ['-scale-to-y', '%g' % (height or -1)]
+        else:
+            args += ['-r', '%g' % dpi]
 
         subprocess.call(['pdftoppm'] + args + ['%s.pdf' % stem, stem])
 
