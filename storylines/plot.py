@@ -3,6 +3,8 @@
 # Copyright (C) 2016-2022 Jan Berges
 # This program is free software under the terms of the BSD Zero Clause License.
 
+"""Figure object."""
+
 import math
 import re
 
@@ -17,14 +19,6 @@ from .png import save
 
 class Plot():
     """Plot object.
-
-    Notes
-    -----
-
-    In all textual attributes and parameters, numbers in angle brackets are
-    interpreted as values in y data units, e.g., ``line_width='<0.1>'``. For
-    the parameters `line_width` and `mark_size` this is also the case if an
-    integer or float is passed instead of a string.
 
     Parameters
     ----------
@@ -173,6 +167,13 @@ class Plot():
         List of all line objects.
     options : dict
         Global TikZ options.
+
+    Notes
+    -----
+    In all textual attributes and parameters, numbers in angle brackets are
+    interpreted as values in y data units, e.g., ``line_width='<0.1>'``. For
+    the parameters `line_width` and `mark_size` this is also the case if an
+    integer or float is passed instead of a string.
     """
     def __init__(self, width=8.0, height=6.0, margin=None, xyaxes=True,
             style=None, **more):

@@ -3,6 +3,8 @@
 # Copyright (C) 2016-2022 Jan Berges
 # This program is free software under the terms of the BSD Zero Clause License.
 
+"""Chunk sequences of points."""
+
 def islands(N, criterion, join=False):
     """Select subranges of integer range.
 

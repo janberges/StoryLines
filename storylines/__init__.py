@@ -3,6 +3,8 @@
 # Copyright (C) 2016-2022 Jan Berges
 # This program is free software under the terms of the BSD Zero Clause License.
 
+"""Line plots with Python & TikZ."""
+
 from __future__ import division
 
 __version__ = '0.7'

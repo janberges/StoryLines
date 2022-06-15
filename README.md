@@ -34,6 +34,8 @@ Or from GitHub:
 The documentation and example scripts along with output can be found at
 <https://janberges.github.io/StoryLines>.
 
+Note that `storylines.module.member` is equivalent to `storylines.member`.
+
 ## License
 
 This program is free software under the terms of the BSD Zero Clause License.

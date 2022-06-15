@@ -1,5 +1,5 @@
 Plotting
 ========
 
-.. automodule:: storylines
+.. automodule:: storylines.plot
    :members:

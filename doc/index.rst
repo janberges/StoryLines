@@ -7,7 +7,7 @@ Modules
 .. toctree::
    :maxdepth: 2
 
-   modules/storylines
+   modules/plot
    modules/calc
    modules/color
    modules/convert
