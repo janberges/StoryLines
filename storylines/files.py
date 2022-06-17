@@ -5,6 +5,8 @@
 
 """Typeset TeX, rasterize PDF."""
 
+from __future__ import division
+
 import os
 import subprocess
 

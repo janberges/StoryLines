@@ -5,6 +5,8 @@
 
 """Chunk sequences of points."""
 
+from __future__ import division
+
 def islands(N, criterion, join=False):
     """Select subranges of integer range.
 

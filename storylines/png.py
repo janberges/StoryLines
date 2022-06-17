@@ -5,6 +5,8 @@
 
 """Save and load RGB(A) graphics."""
 
+from __future__ import division
+
 import zlib, struct
 
 def save(filename, image):

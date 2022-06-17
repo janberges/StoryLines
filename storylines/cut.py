@@ -5,6 +5,8 @@
 
 """Remove redundant or unwanted points."""
 
+from __future__ import division
+
 import math
 
 from .group import islands

@@ -5,6 +5,8 @@
 
 """Mathematical helpers."""
 
+from __future__ import division
+
 import math
 
 def order_of_magnitude(x):

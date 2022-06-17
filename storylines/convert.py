@@ -5,6 +5,8 @@
 
 """Inches to centimeters etc."""
 
+from __future__ import division
+
 inch = 2.54
 """Inch in centimeters."""
 

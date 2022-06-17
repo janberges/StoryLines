@@ -5,6 +5,8 @@
 
 """Project 3D object onto plane."""
 
+from __future__ import division
+
 import math
 import re
 

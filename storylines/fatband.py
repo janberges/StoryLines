@@ -5,6 +5,8 @@
 
 """Plot weights along line."""
 
+from __future__ import division
+
 import math
 
 def fatband(points, width, weights, shifts, nib=None):

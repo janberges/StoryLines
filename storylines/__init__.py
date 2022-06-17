@@ -5,8 +5,6 @@
 
 """Line plots with Python & TikZ."""
 
-from __future__ import division
-
 __version__ = '0.7'
 
 from .plot import Plot
