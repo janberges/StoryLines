@@ -40,7 +40,7 @@ class Plot():
         Predefined style. Possible values are ``'Nature'``, ``'NatCommun'``,
         and ``'APS'``. This changes some of the below default values.
     **more
-        Global TikZ options.
+        Initial values of attributes (see below) or global TikZ options.
 
     Attributes
     ----------
