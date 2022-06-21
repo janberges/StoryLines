@@ -548,6 +548,42 @@ class Plot():
         """
         self.code('\\coordinate (%s) at (<x=%.14g>, <y=%.14g>);' % (name, x, y))
 
+    def image(self, filename, x1, y1, x2, y2, **options):
+        """Insert image between given data coordinates.
+
+        Parameters
+        ----------
+        filename : str
+            File name of image.
+        x1, y1 : float
+            Position of bottom-left corner in data coordinates.
+        x2, y2 : float
+            Position of top-right corner in data coordinates.
+        **options
+            Options passed to `line`.
+        """
+        if x1 < x2:
+            xscale = 1
+        else:
+            xscale = -1
+            x1, x2 = x2, x1
+
+        if y1 < y2:
+            yscale = 1
+        else:
+            yscale = -1
+            y1, y2 = y2, y1
+
+        graphics = (r'\includegraphics[width=<dx=%g>cm, height=<dy=%g>cm]{%s}'
+            % (x2 - x1, y2 - y1, filename))
+
+        if not xscale == yscale == 1:
+            graphics = r'\scalebox{%s}[%s]{%s}' % (xscale, yscale, graphics)
+
+        self.code('\\node at (<x=%g>, <y=%g>) '
+            '[anchor=south west, inner sep=0, outer sep=0] {%s};'
+            % (x1, y1, graphics), **options)
+
     def code(self, data, **options):
         """Insert literal TikZ code.
 
