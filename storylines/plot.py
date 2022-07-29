@@ -279,6 +279,7 @@ class Plot():
 
             elif style == 'APS':
                 self.font = 'Times'
+                self.fontsize = 9
                 self.labelformat = lambda x: '(%s)' % x
                 self.single = 8.6
                 self.double = 17.8
