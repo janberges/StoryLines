@@ -39,6 +39,9 @@ class Plot():
     style : str, default None
         Predefined style. Possible values are ``'Nature'``, ``'NatCommun'``,
         and ``'APS'``. This changes some of the below default values.
+    rounded : bool, default True
+        Use ``round`` as default value for ``line cap`` and ``line join``?
+        Otherwise the TikZ initial values ``miter`` and ``butt`` are used.
     **more
         Initial values of attributes (see below) or global TikZ options.
 
@@ -176,7 +179,7 @@ class Plot():
     integer or float is passed instead of a string.
     """
     def __init__(self, width=8.0, height=6.0, margin=None, xyaxes=True,
-            style=None, **more):
+            style=None, rounded=True, **more):
 
         self.width = width
         self.height = height
@@ -255,10 +258,10 @@ class Plot():
 
         self.lines = []
 
-        self.options = dict(
-            line_cap='round',
-            line_join='round',
-            mark_size='0.05cm')
+        self.options = dict(mark_size='0.05cm')
+
+        if rounded:
+            self.options.update(line_cap='round', line_join='round')
 
         if style is not None:
             if style == 'Nature':
