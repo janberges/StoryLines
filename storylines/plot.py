@@ -938,12 +938,12 @@ class Plot():
                 file.write('\n\\draw [lightgray, line cap=rect]')
 
                 for x, label in ticks['x']:
-                    if x != extent['x']:
+                    if 0 < x < extent['x']:
                         file.write('\n  (%.3f, 0) -- +(0, %.3f)'
                             % (x, extent['y']))
 
                 for y, label in ticks['y']:
-                    if y != extent['y']:
+                    if 0 < y < extent['y']:
                         file.write('\n  (0, %.3f) -- +( %.3f, 0)'
                             % (y, extent['x']))
 
