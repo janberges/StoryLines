@@ -92,6 +92,8 @@ class Color(object):
     __div__ = __truediv__
 
     def RGB(self):
+        """Calculate red, green, and blue components."""
+
         if self.model == 'HSV':
             return HSV2RGB(self.A, self.B, self.C)
         elif self.model == 'PSV':
@@ -100,7 +102,14 @@ class Color(object):
             return self.A, self.B, self.C
 
     def toRGB(self):
+        """Create RGB representation."""
+
         return Color(*self.RGB())
+
+    def toHSV(self):
+        """Create HSV representation."""
+
+        return Color(*RGB2HSV(*self.RGB()), model='HSV')
 
 def colormap(*args):
     """Map interval [0, 1] to colors.
