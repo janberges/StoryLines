@@ -9,7 +9,7 @@ import math
 import re
 
 from .calc import power_of_ten, xround_mantissa, multiples
-from .color import colorize
+from .color import Color, colormap, colorize
 from .convert import inch, pt, csv
 from .cut import relevant, shortcut, cut2d, jump
 from .fatband import fatband, miter_butt
@@ -88,9 +88,11 @@ class Plot():
     xformat, yformat, zformat : function
         Tick formatter. Takes tick position as argument.
     lower : str, default 'blue'
-        Lower color of colorbar.
+        Lower color of colorbar. Can also be of type ``Color`` as long as
+        `upper` has the same type.
     upper : str, default 'red'
-        Upper color of colorbar.
+        Upper color of colorbar. Can also be of type ``Color`` as long as
+        `lower` has the same type.
     cmap : function, default None
         Colormap for colorbar used instead of `lower` and `upper`.
     title : str, default None
@@ -837,6 +839,12 @@ class Plot():
                     line[y] = [line[y][0]] * 2
 
                     line['options'].setdefault('line_cap', 'butt')
+
+        # create simple colormap from special lower and upper colors:
+
+        if self.cmap is None:
+            if isinstance(self.upper, Color) and isinstance(self.lower, Color):
+                self.cmap = colormap((0, self.lower), (1, self.upper))
 
         # build LaTeX file
 
