@@ -22,15 +22,16 @@ class Plot():
 
     Parameters
     ----------
-    width : float, default 8.0
+    width : float, default None
          Figure width in cm. A negative value is interpreted as the inner width
          (without left and right margins). If zero, the x-axis scale is set
-         equal to the y-axis scale and the width is inferred from the height.
-    height : float, default 6.0
+         equal to the y-axis scale and the width is inferred from the height. By
+         default, the single-column width for the chosen `style` is used.
+    height : float, default None
          Figure height in cm. A negative value is interpreted as the inner
          height (without bottom and top margins). If zero, the y-axis scale is
          set equal to the x-axis scale and the height is inferred from the
-         width.
+         width. By default, it is inferred from `width` for a 4:3 aspect ratio.
     margin : float, default None
         Default margin in cm. If ``None``, margins are set automatically. This
         is not always the best option.
@@ -168,6 +169,10 @@ class Plot():
         and ``'Times'``.
     fontsize : int, default 10
         Font size for standalone figures in pt.
+    single : float, default 8.0
+        Single-column width for the chosen `style`.
+    double : float, default 17.0
+        Full textwidth for the chosen `style`.
     lines : list
         List of all line objects.
     options : dict
@@ -180,7 +185,7 @@ class Plot():
     the parameters `line_width` and `mark_size` this is also the case if an
     integer or float is passed instead of a string.
     """
-    def __init__(self, width=8.0, height=6.0, margin=None, xyaxes=True,
+    def __init__(self, width=None, height=None, margin=None, xyaxes=True,
             style=None, rounded=True, **more):
 
         self.width = width
@@ -274,7 +279,7 @@ class Plot():
                 self.single = 8.9
                 self.double = 18.3
 
-            if style == 'NatCommun':
+            elif style == 'NatCommun':
                 self.font = 'Helvetica'
                 self.fontsize = 8
                 self.labelsize = 9
@@ -288,6 +293,16 @@ class Plot():
                 self.labelformat = lambda x: '(%s)' % x
                 self.single = 8.6
                 self.double = 17.8
+
+            else:
+                self.single = 8.0
+                self.double = 17.0
+
+        if self.width is None:
+            self.width = self.single
+
+        if self.height is None:
+            self.height = 3 * self.width / 4
 
         for name, value in more.items():
             if hasattr(self, name):
