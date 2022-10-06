@@ -1007,7 +1007,7 @@ class Plot():
 
                 if self.colorbar:
                     if self.cmap is not None:
-                        dots = int(round(extent['z'] / inch * dpi))
+                        dots = max(2, int(round(extent['z'] / inch * dpi)))
 
                         colorbar = colorize([[n / (dots - 1.0)]
                             for n in reversed(range(dots))], self.cmap)
