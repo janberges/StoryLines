@@ -128,7 +128,7 @@ def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False,
     pdf = pdf or typ == 'pdf' or png
 
     with open('%s.tex' % stem, 'w') as tex:
-        tex.write('\\documentclass{standalone}\n'
+        tex.write('\\documentclass[varwidth=1189mm]{standalone}\n'
             '\\usepackage{graphicx}\n'
             '\\begin{document}\n'
             '\\noindent%\n')
