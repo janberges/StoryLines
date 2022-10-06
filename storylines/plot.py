@@ -263,6 +263,9 @@ class Plot():
         self.font = None
         self.fontsize = 10
 
+        self.single = 8.0
+        self.double = 17.0
+
         self.lines = []
 
         self.options = dict(mark_size='0.05cm')
@@ -293,10 +296,6 @@ class Plot():
                 self.labelformat = lambda x: '(%s)' % x
                 self.single = 8.6
                 self.double = 17.8
-
-            else:
-                self.single = 8.0
-                self.double = 17.0
 
         if self.width is None:
             self.width = self.single
