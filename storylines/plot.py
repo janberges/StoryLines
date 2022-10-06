@@ -876,8 +876,7 @@ class Plot():
             # print premable and open document
 
             if standalone:
-                file.write('\\documentclass[class=%s, %dpt, '
-                    'varwidth=\\maxdimen]{standalone}\n'
+                file.write('\\documentclass[class=%s, %dpt]{standalone}\n'
                     % ('article' if 10 <= self.fontsize <= 12 else 'scrartcl',
                         self.fontsize))
                 file.write('\\usepackage{tikz}\n')
