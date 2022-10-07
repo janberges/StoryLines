@@ -330,7 +330,7 @@ class Plot():
             shifts=None,
             shortcut=0,
             shortcut_rel=0.5,
-            thickness=1,
+            thickness=0.05,
             weights=None,
             xref=None,
             yref=None,
@@ -388,8 +388,8 @@ class Plot():
         shortcut_rel : float, default 0.5
             Maximum length of loop to be cut off relative to the total length
             of the curve. This is only used if `shortcut` is nonzero.
-        thickness : float, default 1
-            Overall fatband linewidth scaling factor.
+        thickness : float, default 0.05
+           Fatband linewidth in cm.
         weights : list of float
             Fatband weights.
         xref, yref : float, default None
