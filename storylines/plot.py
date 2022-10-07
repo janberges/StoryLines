@@ -350,8 +350,10 @@ class Plot():
             of all data.
         code : str, default None
             Literal TikZ code to be inserted at current position.
-        cut : bool, default False
-            Cut off line segments beyond plotting range?
+        cut : bool or tuple, default False
+            Cut off line segments beyond plotting range? It is also possible to
+            pass the clipping window as a tuple ``(xmin, xmax, ymin, ymax)`` in
+            data coordinates, where ``None`` is replaced by the plot bounds.
         frame : bool, default False
             Draw frame at current z index? By default, the frame is drawn just
             below the axes.
@@ -1208,6 +1210,23 @@ class Plot():
                             for segment in segments]
 
                     if line['cut']:
+                        try:
+                            xmin, xmax, ymin, ymax = line['cut']
+                        except (TypeError, ValueError):
+                            xmin = xmax = ymin = ymax = None
+
+                        xmin = (scale['x'] * (xmin - lower['x'])
+                            if xmin is not None else 0)
+
+                        xmax = (scale['x'] * (xmax - lower['x'])
+                            if xmax is not None else extent['x'])
+
+                        ymin = (scale['y'] * (ymin - lower['y'])
+                            if ymin is not None else 0)
+
+                        ymax = (scale['y'] * (ymax - lower['y'])
+                            if ymax is not None else extent['y'])
+
                         if line['join'] is None:
                             line['join'] = (line['options'].get('fill')
                                 is not None)
@@ -1216,14 +1235,12 @@ class Plot():
                             segments = [[(x, y)
                                 for segment in segments
                                 for x, y in segment
-                                if 0 <= x <= extent['x']
-                                and 0 <= y <= extent['y']]]
+                                if xmin <= x <= xmax and ymin <= y <= ymax]]
                         else:
                             segments = [segment
                                 for segment in segments
                                 for segment in cut2d(segment,
-                                    0, extent['x'], 0, extent['y'],
-                                        line['join'])]
+                                    xmin, xmax, ymin, ymax, line['join'])]
 
                     if line['omit'] is None:
                         line['omit'] = 'mark' not in line['options']
