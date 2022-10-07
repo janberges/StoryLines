@@ -19,7 +19,6 @@ plot.line(1.3 * x, 1.3 * y, draw='none', fill='yellow', cut=True)
 plot.line(1.4 * x, 1.4 * y, draw='orange', fill='none', cut=True)
 plot.line(1.5 * x[::N // 50], 1.5 * y[::N // 50], color='red', cut=True,
     mark='*', only_marks=True, omit=False)
-plot.compline(phi, x, w, colors=['blue', 'teal'], draw='none', cut=True,
-    thickness=1.0)
+plot.compline(phi, x, w, colors=['blue', 'teal'], thickness=1.0, cut=True)
 
 plot.save('fatband.png')

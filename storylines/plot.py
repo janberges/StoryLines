@@ -441,7 +441,8 @@ class Plot():
         else:
             self.lines.insert(zindex, new_line)
 
-    def fatband(self, x, y, weights=1.0, shifts=0.0, **options):
+    def fatband(self, x, y, weights=1.0, shifts=0.0, fill=True, draw='none',
+            **options):
         """Draw fatband.
 
         Parameters
@@ -452,6 +453,8 @@ class Plot():
             Weights of `x` and `y`.
         shifts : list of float or float
             Displacements in weight direction.
+        fill, draw : str or Color
+            TikZ line options (filled without outline by default).
         **options
             Options passed to `line` function.
         """
@@ -470,7 +473,7 @@ class Plot():
             if len(island) > 1:
                 n = slice(island[0], island[-1] + 1)
                 self.line(x[n], y[n], weights=weights[n], shifts=shifts[n],
-                    **options)
+                    fill=fill, draw=draw, **options)
 
     def compline(self, x, y, weights=1.0, colors=True, threshold=0.0,
             **options):
