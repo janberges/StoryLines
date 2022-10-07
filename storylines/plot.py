@@ -449,9 +449,9 @@ class Plot():
         ----------
         x, y : list
             Vertices of linear spline.
-        weights : list of float or float
+        weights : list of float or float, default 1.0
             Weights of `x` and `y`.
-        shifts : list of float or float
+        shifts : list of float or float, default 0.0
             Displacements in weight direction.
         fill, draw : str or Color
             TikZ line options (filled without outline by default).
