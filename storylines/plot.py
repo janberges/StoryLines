@@ -173,6 +173,12 @@ class Plot():
         Single-column width for the chosen `style`.
     double : float, default 17.0
         Full textwidth for the chosen `style`.
+    resolution : float, default 1e-3
+        Smallest distance in cm expected to be discernible when looking at the
+        plot. The default is acceptable when the plot is viewed or printed in
+        its original size. For zooming, smaller values may be necessary. This
+        parameter determines the number of vertices used to render a line and
+        thus affects the file size.
     lines : list
         List of all line objects.
     options : dict
@@ -265,6 +271,8 @@ class Plot():
 
         self.single = 8.0
         self.double = 17.0
+
+        self.resolution = 1e-3
 
         self.lines = []
 
@@ -1247,7 +1255,8 @@ class Plot():
 
                     for segment in segments:
                         if line['omit']:
-                            segment = relevant(segment[::line['sgn']])
+                            segment = relevant(segment[::line['sgn']],
+                                self.resolution)
 
                         elif line['cut'] and line['options'].get('mark') \
                                 and not line['options'].get('only_marks'):
