@@ -70,18 +70,23 @@ def projection(
 
     return [x, y, z]
 
-def project(objects, *args, **kwargs):
+def project(objects, by_distance=True, return_order=False, *args, **kwargs):
     """Project list of 3D objects onto 2D screen.
 
     Line width, mark sizes, and length in angle brackets are scaled according
-    to the distance from the observer. The objects are sorted by distance so
-    that close object overlay remote objects.
+    to the distance from the observer.
+
 
     Parameters
     ----------
     objects : list of tuple
         List of objects. Each object is represented by a tuple, which consists
         of a list of three-tuples ``(x, y, z)`` and a style dictionary.
+    by_distance : bool, default True
+        Sort the objects by distance so that close object overlay remote
+        objects?
+    return_order : bool, default False
+        Also return sorting order as list of indices?
 
     *args, **kwargs
         Arguments passed to `projection`.
@@ -91,6 +96,8 @@ def project(objects, *args, **kwargs):
     list of tuple
         Objects is same format, but sorted with transformed coordinates and
         adjusted styles.
+    list of int, optional
+        Sorting order.
     """
     objects = [([projection(coordinate, *args, **kwargs)
         for coordinate in coordinates], style.copy())
@@ -110,6 +117,11 @@ def project(objects, *args, **kwargs):
                 style[option] = re.sub('(?<=<)([\d.]+)(?=>)', lambda match:
                     '%.3f' % (float(match.group(1)) * zoom[n]), style[option])
 
-    order = sorted(range(len(zoom)), key=lambda n: zoom[n])
+    if by_distance:
+        order = sorted(range(len(zoom)), key=lambda n: zoom[n])
+        objects = [objects[n] for n in order]
 
-    return [objects[n] for n in order]
+        if return_order:
+            return objects, order
+
+    return objects
