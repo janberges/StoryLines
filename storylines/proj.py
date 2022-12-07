@@ -76,7 +76,6 @@ def project(objects, by_distance=True, return_order=False, *args, **kwargs):
     Line width, mark sizes, and length in angle brackets are scaled according
     to the distance from the observer.
 
-
     Parameters
     ----------
     objects : list of tuple
