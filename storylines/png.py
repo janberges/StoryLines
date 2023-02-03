@@ -13,6 +13,8 @@ def save(filename, image):
     Specified at https://www.w3.org/TR/PNG/.
     Inspired by Blender thumbnailer code.
 
+    RGB images with less than 256 colors will be saved using indexed color.
+
     Parameters
     ----------
     filename : str
@@ -27,10 +29,20 @@ def save(filename, image):
 
     color = {1: 0, 3: 2, 4: 6}[colors]
 
-    byte = [min(max(int(round(x)), 0), 255)
-        for row in image
-        for col in [[0]] + list(row)
-        for x in col]
+    image = [[tuple(min(max(int(round(x)), 0), 255) for x in col)
+        for col in row] for row in image]
+
+    if colors == 3:
+        plte = sorted(set(col for row in image for col in row))
+
+        if len(plte) < 256:
+            color = 3
+
+            image = [[[plte.index(col)] for col in row] for row in image]
+
+            plte = [x for col in plte for x in col]
+
+    byte = [x for row in image for col in [[0]] + row for x in col]
 
     # 0 before each row: https://www.w3.org/TR/PNG/#4Concepts.EncodingFiltering
 
@@ -44,8 +56,13 @@ def save(filename, image):
             png.write(struct.pack('!I', zlib.crc32(name + data) & 0xffffffff))
 
         chunk(b'IHDR', struct.pack('!2I5B', width, height, 8, color, 0, 0, 0))
+
+        if color == 3:
+            chunk(b'PLTE', struct.pack('%dB' % len(plte), *plte))
+
         chunk(b'IDAT',
             zlib.compress(struct.pack('%dB' % len(byte), *byte), 9))
+
         chunk(b'IEND', b'')
 
 def load(filename):
@@ -76,7 +93,13 @@ def load(filename):
 
             if name == b'IHDR':
                 width, height, _, color, _, _, _ = struct.unpack('!2I5B', data)
-                colors = {0: 1, 2: 3, 6: 4}[color]
+                colors = {0: 1, 2: 3, 3: 1, 6: 4}[color]
+
+            elif name == b'PLTE':
+                byte = struct.unpack('%dB' % len(data), data)
+                plte = [[byte[3 * n + z]
+                    for z in range(3)]
+                    for n in range(len(data) // 3)]
 
             elif name == b'IDAT':
                 data = zlib.decompress(data)
@@ -89,5 +112,10 @@ def load(filename):
 
             if name == b'IEND':
                 break
+
+        if color == 3:
+            image = [[plte[image[y][x][0]]
+                for x in range(width)]
+                for y in range(height)]
 
         return image
