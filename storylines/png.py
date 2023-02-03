@@ -8,7 +8,7 @@ from __future__ import division
 import zlib, struct
 
 def save(filename, image):
-    """Save grayscale, RGB, or RGBA image as 8-bit PNG.
+    """Save image as 8-bit PNG without filtering.
 
     Specified at https://www.w3.org/TR/PNG/.
     Inspired by Blender thumbnailer code.
@@ -21,13 +21,13 @@ def save(filename, image):
         Name of PNG file to be written.
     image : list of list of list
         8-bit image data of shape (height, width, colors), where colors may be
-        1 (grayscale), 3 (RGB), or 4 (RGBA).
+        1 (grayscale), 2 (grayscale and alpha), 3 (RGB), or 4 (RGBA).
     """
     height = len(image)
     width = len(image[0])
     colors = len(image[0][0])
 
-    color = {1: 0, 3: 2, 4: 6}[colors]
+    color = {1: 0, 2: 4, 3: 2, 4: 6}[colors]
 
     image = [[tuple(min(max(int(round(x)), 0), 255) for x in col)
         for col in row] for row in image]
@@ -66,7 +66,7 @@ def save(filename, image):
         chunk(b'IEND', b'')
 
 def load(filename):
-    """Load grayscale, RGB, or RGBA image from 8-bit PNG.
+    """Load from 8-bit PNG without filtering.
 
     Parameters
     ----------
@@ -77,7 +77,7 @@ def load(filename):
     -------
     list of list of list
         8-bit image data of shape (height, width, colors), where colors may be
-        1 (grayscale), 3 (RGB), or 4 (RGBA).
+        1 (grayscale), 2 (grayscale and alpha), 3 (RGB), or 4 (RGBA).
     """
     with open(filename, 'rb') as png:
         png.read(8)
@@ -93,7 +93,7 @@ def load(filename):
 
             if name == b'IHDR':
                 width, height, _, color, _, _, _ = struct.unpack('!2I5B', data)
-                colors = {0: 1, 2: 3, 3: 1, 6: 4}[color]
+                colors = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[color]
 
             elif name == b'PLTE':
                 byte = struct.unpack('%dB' % len(data), data)
