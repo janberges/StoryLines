@@ -1223,17 +1223,19 @@ class Plot():
                         except (TypeError, ValueError):
                             xmin = xmax = ymin = ymax = None
 
+                        eps = 1e-14 if line['options'].get('mark') else 0
+
                         xmin = (scale['x'] * (xmin - lower['x'])
-                            if xmin is not None else 0)
+                            if xmin is not None else 0) - eps
 
                         xmax = (scale['x'] * (xmax - lower['x'])
-                            if xmax is not None else extent['x'])
+                            if xmax is not None else extent['x']) + eps
 
                         ymin = (scale['y'] * (ymin - lower['y'])
-                            if ymin is not None else 0)
+                            if ymin is not None else 0) - eps
 
                         ymax = (scale['y'] * (ymax - lower['y'])
-                            if ymax is not None else extent['y'])
+                            if ymax is not None else extent['y']) + eps
 
                         if line['join'] is None:
                             line['join'] = (line['options'].get('fill')
