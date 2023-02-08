@@ -375,7 +375,8 @@ class Plot():
             Shortest distance between consecutive data points that is
             considered as a discontinuity.
         label : str, default None
-            Label for legend entry.
+            Label for legend entry. The special label ``*next*`` adds a second
+            example line with the current line style to the next legend entry.
         miter : bool, default False
             Draw fatbands using `miter_butt` function? If ``False``, the
             `fatband` function is used.
@@ -1383,9 +1384,17 @@ class Plot():
 
                     spacer = True
 
-                    for n, (options, label) in enumerate(labels):
+                    n = 0
+
+                    for options, label in labels:
                         col = n // lrow
                         row = n % lrow
+
+                        if label == '*next*':
+                            label = None
+                            row -= 0.2
+                        else:
+                            n += 1
 
                         if label:
                             file.write('\n    \\node '
@@ -1415,7 +1424,7 @@ class Plot():
                             file.write('{')
 
                             for m in range(len(x)):
-                                file.write(' (%.3f, %d)'
+                                file.write(' (%.3f, %g)'
                                     % (col * self.lwid + x[m], row))
 
                             file.write(' };')
