@@ -91,6 +91,9 @@ class Color(object):
 
     __div__ = __truediv__
 
+    def __eq__(i, u):
+        return i.RGB() == u.RGB()
+
     def RGB(self):
         """Calculate red, green, and blue components."""
 
