@@ -1257,6 +1257,8 @@ class Plot():
                         line['omit'] = 'mark' not in line['options']
 
                     for segment in segments:
+                        options = line['options'].copy()
+
                         if line['omit']:
                             segment = relevant(segment[::line['sgn']],
                                 self.resolution)
@@ -1264,17 +1266,16 @@ class Plot():
                         elif line['cut'] and line['options'].get('mark') \
                                 and not line['options'].get('only_marks'):
 
-                            line['options']['mark_indices'] \
-                                = '{%s}' % ','.join(str(n)
-                                    for n, point in enumerate(segment, 1)
-                                    if point in points)
+                            options['mark_indices'] = '{%s}' % ','.join(str(n)
+                                for n, point in enumerate(segment, 1)
+                                if point in points)
 
                         if line['shortcut']:
                             segment = shortcut(segment, line['shortcut'],
                                 line['shortcut_rel'])
 
                         file.write('\n\\draw%s plot coordinates {'
-                            % csv(line['options']))
+                            % csv(options))
 
                         for group in groups(segment):
                             file.write('\n  ')
