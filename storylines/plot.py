@@ -608,11 +608,11 @@ class Plot():
             yscale = -1
             y1, y2 = y2, y1
 
-        graphics = (r'\includegraphics[width=<dx=%g>cm, height=<dy=%g>cm]{%s}'
+        graphics = ('\\includegraphics[width=<dx=%g>cm, height=<dy=%g>cm]{%s}'
             % (x2 - x1, y2 - y1, filename))
 
         if not xscale == yscale == 1:
-            graphics = r'\scalebox{%s}[%s]{%s}' % (xscale, yscale, graphics)
+            graphics = '\\scalebox{%s}[%s]{%s}' % (xscale, yscale, graphics)
 
         self.code('\\node at (<x=%g>, <y=%g>) '
             '[anchor=south west, inner sep=0, outer sep=0] {%s};'
