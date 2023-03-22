@@ -756,7 +756,7 @@ class Plot():
             self.top = self.margmin
 
             if self.title:
-                self.top += baselineskip
+                self.top += baselineskip * (self.title.count('\\\\') + 1)
 
         # interpret negative as inner dimensions:
 
@@ -1440,8 +1440,13 @@ class Plot():
             # add title:
 
             if self.title is not None:
-                file.write('\n\\node [above] at (%.3f, %.3f) {%s};'
-                    % (extent['x'] / 2, extent['y'], self.title))
+                options = dict(above=True)
+
+                if '\\\\' in self.title:
+                    options['align'] = 'center'
+
+                file.write('\n\\node%s at (%.3f, %.3f) {%s};'
+                    % (csv(options), extent['x'] / 2, extent['y'], self.title))
 
             # close TikZ environment
 
