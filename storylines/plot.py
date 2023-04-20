@@ -1071,8 +1071,10 @@ class Plot():
                                     continue
 
                                 file.write('\n  (%.3f, 0) -- +(0, %.3f) '
-                                    'node [below] {%s}'
-                                    % (x, -self.tick, label))
+                                    % (x, -self.tick))
+
+                                if label:
+                                    file.write('node [below] {%s}' % label)
 
                         if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
@@ -1080,8 +1082,11 @@ class Plot():
                                     continue
 
                                 file.write('\n  (0, %.3f) -- +(%.3f, 0) '
-                                    'node [rotate=90, above] {%s}'
-                                    % (y, -self.tick, label))
+                                    % (y, -self.tick))
+
+                                if label:
+                                    file.write('node [rotate=90, above] {%s}'
+                                        % label)
 
                         file.write(';')
 
