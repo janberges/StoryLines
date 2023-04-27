@@ -63,7 +63,7 @@ def typeset(stem):
             os.remove('%s.%s' % (stem, suffix))
 
     except OSError:
-        print('pdflatex not found')
+        print('Could not typeset %s' % stem)
 
 def rasterize(stem, dpi=300.0, width=0, height=0):
     """Run ``pdftoppm`` and remove ``-1`` from name of resulting PNG file.
@@ -93,7 +93,7 @@ def rasterize(stem, dpi=300.0, width=0, height=0):
         os.rename('%s-1.png' % stem, '%s.png' % stem)
 
     except OSError:
-        print('pdftoppm not found')
+        print('Could not rasterize %s' % stem)
 
 def combine(filename, pdfs, columns=100, align=0.5, halign='left', pdf=False,
         png=False, dpi=300.0):
