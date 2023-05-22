@@ -1420,10 +1420,8 @@ class Plot():
 
                             if draw and mark:
                                 x = [0.0, 0.5, 1.0]
-                                spacer = False
                             elif draw:
                                 x = [0.0, 1.0]
-                                spacer = False
                             elif mark:
                                 x = [0.5]
 
@@ -1434,6 +1432,9 @@ class Plot():
                                     % (col * self.lwid + x[m], row))
 
                             file.write(' };')
+
+                        if draw and not col:
+                            spacer = False
 
                     if spacer:
                         file.write('\n    \\useasboundingbox (0, 0);')
