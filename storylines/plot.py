@@ -1244,8 +1244,8 @@ class Plot():
                             if ymax is not None else extent['y']) + eps
 
                         if line['join'] is None:
-                            line['join'] = (line['options'].get('fill')
-                                is not None)
+                            line['join'] = line['options'].get('fill',
+                                'none') != 'none'
 
                         if line['options'].get('only_marks'):
                             segments = [[(x, y)
@@ -1407,33 +1407,39 @@ class Plot():
                                 '[right] at (%.3f, %d) {%s};'
                                 % (col * self.lwid + 1, row, label))
 
+                        fill = options.get('fill', 'none') != 'none'
                         draw = not options.get('only_marks')
                         draw &= not options.get('draw') == 'none'
                         mark = 'mark' in options
 
-                        if draw or mark:
-                            if draw and mark:
+                        if fill or draw or mark:
+                            if (fill or draw) and mark:
                                 options['mark_indices'] = '{2}'
 
                             file.write('\n    \\draw%s' % csv(options))
                             file.write('\n      plot coordinates ')
 
-                            if draw and mark:
-                                x = [0.0, 0.5, 1.0]
+                            if fill:
+                                top = row - 0.1
+                                bot = row + 0.1
+                                x = [0.0] + [0.5] * mark + [1.0, 1.0, 0.0, 0.0]
+                                y = [bot] + [bot] * mark + [bot, top, top, bot]
                             elif draw:
-                                x = [0.0, 1.0]
+                                x = [0.0] + [0.5] * mark + [1.0]
+                                y = [row] + [row] * mark + [row]
                             elif mark:
                                 x = [0.5]
+                                y = [row]
 
                             file.write('{')
 
                             for m in range(len(x)):
                                 file.write(' (%.3f, %g)'
-                                    % (col * self.lwid + x[m], row))
+                                    % (col * self.lwid + x[m], y[m]))
 
                             file.write(' };')
 
-                        if draw and not col:
+                        if draw or fill and not col:
                             spacer = False
 
                     if spacer:
