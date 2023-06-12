@@ -69,9 +69,12 @@ class Plot():
         Axis labels.
     xticks, yticks, zticks : list, default None
         List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``. If the label is
-        ``None``, the tick mark is not drawn (but possibe grid lines are).
+        ``None``, the tick mark is not drawn (but possibe grid lines are). If it
+        otherwise evaluates to ``False``, the tick mark but no label is drawn.
     xmarks, ymarks, zmarks : bool, default True
         Show tick marks and labels?
+    xlabels, ylabels, zlabels : bool, default True
+        Show tick labels?
     xspacing, yspacing, zspacing : float, default 1.0
         Approximate tick spacing in cm.
     xstep, ystep, zstep : float, default None
@@ -216,6 +219,7 @@ class Plot():
             setattr(self, x + 'label', None)
             setattr(self, x + 'ticks', None)
             setattr(self, x + 'marks', True)
+            setattr(self, x + 'labels', True)
             setattr(self, x + 'spacing', 1.0)
             setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
@@ -716,7 +720,7 @@ class Plot():
 
             if self.xaxis:
                 xticks = ((self.xticks is None or bool(self.xticks))
-                    and self.xmarks)
+                    and self.xmarks and self.xlabels)
 
                 if self.xlabel or xticks:
                     self.bottom += self.tick + baselineskip
@@ -729,7 +733,7 @@ class Plot():
 
             if self.yaxis:
                 yticks = ((self.yticks is None or bool(self.yticks))
-                    and self.ymarks)
+                    and self.ymarks and self.ylabels)
 
                 if self.ylabel or yticks:
                     self.left += self.tick + baselineskip
@@ -744,7 +748,7 @@ class Plot():
                 self.right += self.gap + self.bar
 
                 zticks = ((self.zticks is None or bool(self.zticks))
-                    and self.zmarks)
+                    and self.zmarks and self.zlabels)
 
                 if self.zlabel or zticks:
                     self.right += baselineskip
@@ -857,6 +861,9 @@ class Plot():
                     for n in multiples(lower[x], upper[x],
                         getattr(self, x + 'step') or xround_mantissa(
                         getattr(self, x + 'spacing') / scale[x]))]
+
+            if not getattr(self, x + 'labels'):
+                ticks[x] = [(position, False) for position, label in ticks[x]]
 
         # handle horizontal and vertical lines:
 
