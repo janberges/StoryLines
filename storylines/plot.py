@@ -38,8 +38,8 @@ class Plot():
     xyaxes : bool, default True
         Draw x and y axes?
     style : str, default None
-        Predefined style. Possible values are ``'Nature'``, ``'NatCommun'``,
-        and ``'APS'``. This changes some of the below default values.
+        Predefined style. Possible values are ``'APS'``, ``'NatCommun'``, and
+        ``'Nature'``. This changes some of the below default values.
     rounded : bool, default True
         Use ``round`` as default value for ``line cap`` and ``line join``?
         Otherwise the TikZ initial values ``miter`` and ``butt`` are used.
@@ -286,13 +286,12 @@ class Plot():
             self.options.update(line_cap='round', line_join='round')
 
         if style is not None:
-            if style == 'Nature':
-                self.font = 'Helvetica'
-                self.fontsize = 7
-                self.labelsize = 8
-                self.labelformat = lambda x: '\\textbf{%s}' % x
-                self.single = 8.9
-                self.double = 18.3
+            if style == 'APS':
+                self.font = 'Times'
+                self.fontsize = 9
+                self.labelformat = lambda x: '(%s)' % x
+                self.single = 8.6
+                self.double = 17.8
 
             elif style == 'NatCommun':
                 self.font = 'Helvetica'
@@ -302,12 +301,13 @@ class Plot():
                 self.single = 8.8
                 self.double = 18.0
 
-            elif style == 'APS':
-                self.font = 'Times'
-                self.fontsize = 9
-                self.labelformat = lambda x: '(%s)' % x
-                self.single = 8.6
-                self.double = 17.8
+            elif style == 'Nature':
+                self.font = 'Helvetica'
+                self.fontsize = 7
+                self.labelsize = 8
+                self.labelformat = lambda x: '\\textbf{%s}' % x
+                self.single = 8.9
+                self.double = 18.3
 
         if self.width is None:
             self.width = self.single
