@@ -80,6 +80,16 @@ class Plot():
         Approximate tick spacing in cm.
     xstep, ystep, zstep : float, default None
         Exact tick increment.
+    xminorticks, yminorticks : list, default None
+        List of minor-tick positions. There is currently no intelligent way to
+        set the minor ticks depending on the major ticks. However, minor ticks
+        that fall on major ticks are omitted.
+    xminormarks, yminormarks : bool, default False
+        Show minor tick marks?
+    xminorspacing, yminorspacing : float, default 0.1
+        Approximate minor-tick spacing in cm.
+    xminorstep, yminorstep : float, default None
+        Exact minor-tick increment.
     xmin, ymin, zmin : float, default None
         Lower axis limit.
     xmax, ymax, zmax : float, default None
@@ -135,6 +145,8 @@ class Plot():
         Width of legend columns in units of `llen`.
     tick : float, default 0.07
         Length of tick marks in cm.
+    minortick : float, default 0.04
+        Length of minor tick marks in cm.
     gap : float, default 0.15
         Gap between plot area and colorbar in cm.
     bar : float, default 0.15
@@ -230,6 +242,12 @@ class Plot():
             setattr(self, x + 'format',
                 lambda x: ('%g' % x).replace('-', '\\smash{\\llap\\textminus}'))
 
+        for x in 'xy':
+            setattr(self, x + 'minorticks', None)
+            setattr(self, x + 'minormarks', False)
+            setattr(self, x + 'minorspacing', 0.1)
+            setattr(self, x + 'minorstep', None)
+
         self.lower = 'blue'
         self.upper = 'red'
         self.cmap = None
@@ -254,6 +272,7 @@ class Plot():
         self.lwid = 4.0
 
         self.tick = 0.07
+        self.minortick = 0.04
         self.gap = 0.15
         self.bar = 0.15
         self.tip = 0.1
@@ -873,6 +892,24 @@ class Plot():
             if not getattr(self, x + 'labels'):
                 ticks[x] = [(position, False) for position, label in ticks[x]]
 
+        # determine minor-tick positions:
+
+        minorticks = {}
+
+        for x in 'xy':
+            if getattr(self, x + 'minormarks'):
+                positions = getattr(self, x + 'ticks')
+
+                if positions is None:
+                    positions = multiples(lower[x], upper[x],
+                        getattr(self, x + 'minorstep') or xround_mantissa(
+                        getattr(self, x + 'minorspacing') / scale[x]))
+
+                minorticks[x] = [scale[x] * (n - lower[x]) for n in positions]
+
+                minorticks[x] = [minor for minor in minorticks[x] if not
+                    any(abs(major - minor) < 5e-4 for major, label in ticks[x])]
+
         # handle horizontal and vertical lines:
 
         for x, y in 'xy', 'yx':
@@ -1077,8 +1114,10 @@ class Plot():
                 if self.xaxis or self.yaxis:
                     # draw tick marks and labels
 
-                    if (self.xaxis and self.xmarks and ticks['x'] or
-                        self.yaxis and self.ymarks and ticks['y']):
+                    if (self.xaxis and (self.xmarks and ticks['x'] or
+                        self.xminormarks and minorticks['x']) or
+                        self.yaxis and (self.ymarks and ticks['y'] or
+                        self.yminormarks and minorticks['y'])):
 
                         file.write('\n\\draw [line cap=butt]')
 
@@ -1093,6 +1132,11 @@ class Plot():
                                 if label:
                                     file.write(' node [below] {%s}' % label)
 
+                        if self.xaxis and self.xminormarks:
+                            for x in minorticks['x']:
+                                file.write('\n  (%.3f, 0) -- +(0, %.3f)'
+                                    % (x, -self.minortick))
+
                         if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
                                 if label is None:
@@ -1104,6 +1148,11 @@ class Plot():
                                 if label:
                                     file.write(' node [rotate=90, above] {%s}'
                                         % label)
+
+                        if self.yaxis and self.yminormarks:
+                            for y in minorticks['y']:
+                                file.write('\n  (0, %.3f) -- +(%.3f, 0)'
+                                    % (y, -self.minortick))
 
                         file.write(';')
 
