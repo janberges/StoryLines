@@ -118,6 +118,9 @@ class Plot():
         Different font size for subfigure label in pt.
     labelformat : function, default None
         Formatter for subfigure label. Takes `label` as argument.
+    labelpos : str, default 'LT'
+        Label position, a combination of ``lcrbmtLCRBMT`` or a tuple of data
+        coordinates.
     lali : str, default 'center'
         Alignment of legend entries.
     lbls : str, default '\\\\\\\\baselineskip'
@@ -257,6 +260,7 @@ class Plot():
         self.label = None
         self.labelsize = None
         self.labelformat = None
+        self.labelpos = 'LT'
 
         self.lali = 'center'
         self.lbls = '\\baselineskip'
@@ -1382,23 +1386,8 @@ class Plot():
 
             draw_axes()
 
-            # add label
-
-            if self.label is not None:
-                if self.labelformat is not None:
-                    self.label = self.labelformat(self.label)
-
-                if self.labelsize is not None:
-                    self.label = ('\\fontsize{%d}{%d}\\selectfont %s'
-                        % (self.labelsize, self.labelsize, self.label))
-
-                file.write('\n\\node at (current bounding box.north west) '
-                    '[inner sep=0pt, below right] {%s};' % self.label)
-
-            # add legend
-
-            if self.lput and (self.ltop is not None or labels):
-                if isinstance(self.lpos, str):
+            def position(pos):
+                if isinstance(pos, str):
                     x = []
                     y = []
 
@@ -1416,18 +1405,36 @@ class Plot():
                     abbreviations = dict(c='lr', C='LR', m='bt', M='BT')
 
                     for abbreviation in abbreviations.items():
-                        self.lpos = self.lpos.replace(*abbreviation)
+                        pos = pos.replace(*abbreviation)
 
-                    for char in self.lpos:
+                    for char in pos:
                         positions[char][0].append(positions[char][1])
 
                     x = sum(x) / len(x)
                     y = sum(y) / len(y)
                 else:
-                    x, y = self.lpos
+                    x, y = pos
                     x = scale['x'] * (x - lower['x'])
                     y = scale['y'] * (y - lower['y'])
 
+                return x, y
+
+            # add label
+
+            if self.label is not None:
+                if self.labelformat is not None:
+                    self.label = self.labelformat(self.label)
+
+                if self.labelsize is not None:
+                    self.label = ('\\fontsize{%d}{%d}\\selectfont %s'
+                        % (self.labelsize, self.labelsize, self.label))
+
+                file.write('\n\\node at (%.3f, %.3f)' % position(self.labelpos))
+                file.write(' [inner sep=0pt, below right] {%s};' % self.label)
+
+            # add legend
+
+            if self.lput and (self.ltop is not None or labels):
                 file.write('\n\\node [align=%s' % self.lali)
 
                 if self.lopt is not None:
@@ -1436,7 +1443,7 @@ class Plot():
                 if self.lbox:
                     file.write(', draw=gray, fill=white, rounded corners=1pt')
 
-                file.write('] at (%.3f, %.3f) {' % (x, y))
+                file.write('] at (%.3f, %.3f) {' % position(self.lpos))
 
                 if self.ltop:
                     file.write('\n  \\tikzset{sharp corners}')
