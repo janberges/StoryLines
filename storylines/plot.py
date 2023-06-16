@@ -133,7 +133,7 @@ class Plot():
         Legend title.
     lwid : float, default 4.0
         Width of legend columns in units of `llen`.
-    tick : str, default 0.07
+    tick : float, default 0.07
         Length of tick marks in cm.
     gap : float, default 0.15
         Gap between plot area and colorbar in cm.
@@ -1077,7 +1077,9 @@ class Plot():
                 if self.xaxis or self.yaxis:
                     # draw tick marks and labels
 
-                    if self.xaxis and ticks['x'] or self.yaxis and ticks['y']:
+                    if (self.xaxis and self.xmarks and ticks['x'] or
+                        self.yaxis and self.ymarks and ticks['y']):
+
                         file.write('\n\\draw [line cap=butt]')
 
                         if self.xaxis and self.xmarks:
@@ -1085,22 +1087,22 @@ class Plot():
                                 if label is None:
                                     continue
 
-                                file.write('\n  (%.3f, 0) -- +(0, %.3f) '
+                                file.write('\n  (%.3f, 0) -- +(0, %.3f)'
                                     % (x, -self.tick))
 
                                 if label:
-                                    file.write('node [below] {%s}' % label)
+                                    file.write(' node [below] {%s}' % label)
 
                         if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
                                 if label is None:
                                     continue
 
-                                file.write('\n  (0, %.3f) -- +(%.3f, 0) '
+                                file.write('\n  (0, %.3f) -- +(%.3f, 0)'
                                     % (y, -self.tick))
 
                                 if label:
-                                    file.write('node [rotate=90, above] {%s}'
+                                    file.write(' node [rotate=90, above] {%s}'
                                         % label)
 
                         file.write(';')
