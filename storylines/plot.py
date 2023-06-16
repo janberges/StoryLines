@@ -38,8 +38,9 @@ class Plot():
     xyaxes : bool, default True
         Draw x and y axes?
     style : str, default None
-        Predefined style. Possible values are ``'APS'``, ``'NatCommun'``, and
-        ``'Nature'``. This changes some of the below default values.
+        Predefined style. Possible values are ``'APS'``, ``'NanoLett''',
+        ``'NatCommun'``, and ``'Nature'``. This changes some of the below
+        default values.
     rounded : bool, default True
         Use ``round`` as default value for ``line cap`` and ``line join``?
         Otherwise the TikZ initial values ``miter`` and ``butt`` are used.
@@ -292,6 +293,13 @@ class Plot():
                 self.labelformat = lambda x: '(%s)' % x
                 self.single = 8.6
                 self.double = 17.8
+
+            elif style == 'NanoLett':
+                self.font = 'Helvetica'
+                self.fontsize = 9
+                self.labelformat = lambda x: '(%s)' % x
+                self.single = 3.33 * inch
+                self.double = 7.0 * inch
 
             elif style == 'NatCommun':
                 self.font = 'Helvetica'
