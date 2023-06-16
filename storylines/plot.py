@@ -1434,7 +1434,7 @@ class Plot():
                     file.write(', %s' % self.lopt)
 
                 if self.lbox:
-                    file.write(', draw, fill=white, rounded corners')
+                    file.write(', draw=gray, fill=white, rounded corners=1pt')
 
                 file.write('] at (%.3f, %.3f) {' % (x, y))
 
