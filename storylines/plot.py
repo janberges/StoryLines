@@ -879,7 +879,7 @@ class Plot():
         ticks = {}
 
         for x in extent.keys():
-            # use ticks or choose ticks with a spacing close to the given one
+            # use ticks or choose ticks with a spacing close to the given one:
 
             xformat = getattr(self, x + 'format')
 
@@ -930,7 +930,7 @@ class Plot():
             if isinstance(self.upper, Color) and isinstance(self.lower, Color):
                 self.cmap = colormap((0, self.lower), (1, self.upper))
 
-        # build LaTeX file
+        # build LaTeX file:
 
         labels = []
 
@@ -943,7 +943,7 @@ class Plot():
             standalone = True
 
         with open('%s.tex' % stem, 'w') as file:
-            # print premable and open document
+            # print premable and open document:
 
             if standalone:
                 file.write('\\documentclass[class=%s, %dpt]{standalone}\n'
@@ -990,16 +990,16 @@ class Plot():
 
                 file.write('\\begin{document}\n\\noindent\n')
 
-            # set filename for externalization
+            # set filename for externalization:
 
             elif external:
                 file.write('\\tikzsetnextfilename{%s}\n%%\n' % stem)
 
-            # open TikZ environment
+            # open TikZ environment:
 
             file.write('\\begin{tikzpicture}%s' % csv(self.options, '[%s]'))
 
-            # set bounding box
+            # set bounding box:
 
             bbox = ('\n  (%.3f, %.3f) rectangle +(%.3f, %.3f);'
                 % (-self.left, -self.bottom, self.width, self.height))
@@ -1017,7 +1017,7 @@ class Plot():
                     % csv(dict(color='gray', very_thin=True, dashed=True)))
                 file.write(bbox)
 
-            # add background image
+            # add background image:
 
             if self.background is not None:
                 file.write('\n\\node '
@@ -1072,7 +1072,7 @@ class Plot():
                 if draw_axes.done:
                     return
 
-                # paint colorbar
+                # paint colorbar:
 
                 if self.colorbar:
                     if self.cmap is not None:
@@ -1116,7 +1116,7 @@ class Plot():
                     draw_frame()
 
                 if self.xaxis or self.yaxis:
-                    # draw tick marks and labels
+                    # draw tick marks and labels:
 
                     if (self.xaxis and (self.xmarks and ticks['x'] or
                         self.xminormarks and minorticks['x']) or
@@ -1160,7 +1160,7 @@ class Plot():
 
                         file.write(';')
 
-                    # draw coordinate axes
+                    # draw coordinate axes:
 
                     file.write('\n\\draw [%s-%s, line cap=butt]\n  '
                         % ('<' * self.xaxis, '>' * self.yaxis))
@@ -1175,7 +1175,7 @@ class Plot():
 
                     file.write(';')
 
-                # label coordinate axes
+                # label coordinate axes:
 
                 if self.xaxis and self.xlabel:
                     file.write('\n\\node [below')
@@ -1214,7 +1214,7 @@ class Plot():
 
             draw_axes.done = False
 
-            # plot lines
+            # plot lines:
 
             form = '(%%%d.3f, %%%d.3f)' % (
                 5 if extent['x'] < 10 else 6,
@@ -1419,7 +1419,7 @@ class Plot():
 
                 return x, y
 
-            # add label
+            # add label:
 
             if self.label is not None:
                 if self.labelformat is not None:
@@ -1432,7 +1432,7 @@ class Plot():
                 file.write('\n\\node at (%.3f, %.3f)' % position(self.labelpos))
                 file.write(' [inner sep=0pt, below right] {%s};' % self.label)
 
-            # add legend
+            # add legend:
 
             if self.lput and (self.ltop is not None or labels):
                 file.write('\n\\node [align=%s' % self.lali)
@@ -1533,11 +1533,11 @@ class Plot():
                 file.write('\n\\node%s at (%.3f, %.3f) {%s};'
                     % (csv(options), extent['x'] / 2, extent['y'], self.title))
 
-            # close TikZ environment
+            # close TikZ environment:
 
             file.write('\n\\end{tikzpicture}%')
 
-            # close document
+            # close document:
 
             if standalone:
                 file.write('\n\\end{document}')
