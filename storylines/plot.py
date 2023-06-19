@@ -118,6 +118,8 @@ class Plot():
         Different font size for subfigure label in pt.
     labelformat : function, default None
         Formatter for subfigure label. Takes `label` as argument.
+    labelopt : str, default 'inner sep=0pt, below right'
+        Label options, e.g., for orientation.
     labelpos : str, default 'LT'
         Label position, a combination of ``lcrbmtLCRBMT`` or a tuple of data
         coordinates.
@@ -260,6 +262,7 @@ class Plot():
         self.label = None
         self.labelsize = None
         self.labelformat = None
+        self.labelopt = 'inner sep=0pt, below right'
         self.labelpos = 'LT'
 
         self.lali = 'center'
@@ -1430,7 +1433,7 @@ class Plot():
                         % (self.labelsize, self.labelsize, self.label))
 
                 file.write('\n\\node at (%.3f, %.3f)' % position(self.labelpos))
-                file.write(' [inner sep=0pt, below right] {%s};' % self.label)
+                file.write(' [%s] {%s};' % (self.labelopt, self.label))
 
             # add legend:
 
