@@ -905,7 +905,7 @@ class Plot():
 
         for x in 'xy':
             if getattr(self, x + 'minormarks'):
-                positions = getattr(self, x + 'ticks')
+                positions = getattr(self, x + 'minorticks')
 
                 if positions is None:
                     positions = multiples(lower[x], upper[x],
