@@ -93,6 +93,21 @@ def multiples(lower, upper, divisor=1):
             int(math.floor(upper / divisor)) + 1):
         yield divisor * n
 
+def subtract(A, B):
+    """Calculate difference of two vectors.
+
+    Parameters
+    ----------
+    A, B : list of float
+        Vectors to be subtracted.
+
+    Returns
+    -------
+    list of float
+        Difference of `A` and `B`.
+    """
+    return [a - b for a, b in zip(A, B)]
+
 def dot(A, B):
     """Calculate dot product of two vectors.
 
@@ -118,7 +133,7 @@ def cross(A, B):
 
     Returns
     -------
-    float
+    list of float
         Cross product of `A` and `B`.
     """
     return [
@@ -153,7 +168,7 @@ def bonds(R1, R2, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
             if oneway and m <= n:
                 continue
 
-            dr = [b - a for a, b in zip(r1, r2)]
+            dr = subtract(r2, r1)
             d = math.sqrt(dot(dr, dr))
 
             if dmin < d < dmax:

@@ -8,7 +8,7 @@ from __future__ import division
 import math
 import re
 
-from .calc import cross, dot
+from .calc import subtract, cross, dot
 
 def projection(
         r=[0.0, 0.0, 0.0], # object
@@ -35,7 +35,7 @@ def projection(
         x and y position as well as proximity factor z.
     """
     # viewing direction:
-    Z = [b - a for a, b in zip(R, T)]
+    Z = subtract(T, R)
     norm = math.sqrt(dot(Z, Z))
     Z = [z / norm for z in Z]
 
@@ -48,7 +48,7 @@ def projection(
     Y = cross(X, Z)
 
     # observer-object distance vector:
-    D = [b - a for a, b in zip(R, r)]
+    D = subtract(r, R)
 
     # observer-object distance (hypotenuse):
     hyp = math.sqrt(dot(D, D))
