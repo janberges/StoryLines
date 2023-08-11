@@ -142,7 +142,7 @@ def cross(A, B):
         A[0] * B[1] - A[1] * B[0],
         ]
 
-def bonds(R1, R2, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
+def bonds(R1, R2=None, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
     """Find lines that connect two sets of points.
 
     Parameters
@@ -161,7 +161,10 @@ def bonds(R1, R2, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
     """
     bonds = []
 
-    oneway = R1 is R2
+    if R2 is None:
+        R2 = R1
+
+    oneway = R2 is R1
 
     for n, r1 in enumerate(R1):
         for m, r2 in enumerate(R2):
