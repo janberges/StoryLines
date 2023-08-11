@@ -7,7 +7,7 @@ __version__ = '0.11'
 
 from .plot import Plot
 from .calc import (order_of_magnitude, power_of_ten, xround, xround_mantissa,
-    multiples, subtract, dot, cross, bonds)
+    multiples, subtract, dot, cross, bonds, faces)
 from .color import Color, colormap, colorize, HSV2RGB, RGB2HSV, PSV2RGB
 from .convert import inch, pt, csv
 from .cut import relevant, shortcut, cut, cut2d, jump

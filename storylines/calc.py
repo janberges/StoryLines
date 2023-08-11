@@ -181,3 +181,58 @@ def bonds(R1, R2, d1=0.0, d2=0.0, dmin=0.1, dmax=5.0):
                     ])
 
     return bonds
+
+def faces(R, d=0.0, dmin=0.1, dmax=5.0, nc=10):
+    """Find triangular faces, e.g., of tetrahedra of atoms.
+
+    Parameters
+    ----------
+    R : list of tuple
+        (Ordered) set of points.
+    d : float
+        Shortening at the corners, e.g., atomic radius.
+    dmin, dmax : float
+        Minimum and maximum side length.
+    nc : int
+        Number of points to trace path around corners.
+
+    Returns
+    -------
+    list of list of tuple
+        Outlines of faces.
+    """
+    faces = []
+
+    for i in range(len(R)):
+        for j in range(i + 1, len(R)):
+            dr = subtract(R[j], R[i])
+
+            if not dmin < math.sqrt(dot(dr, dr)) < dmax:
+                continue
+
+            for k in range(j + 1, len(R)):
+                dr = subtract(R[k], R[j])
+
+                if not dmin < math.sqrt(dot(dr, dr)) < dmax:
+                    continue
+
+                dr = subtract(R[i], R[k])
+
+                if not dmin < math.sqrt(dot(dr, dr)) < dmax:
+                    continue
+
+                if not d or nc < 1:
+                    face = [R[i], R[j], R[k]]
+                else:
+                    face = []
+
+                    for I, J, K in (i, j, k), (j, k, i), (k, i, j):
+                        for n in range(nc + 1):
+                            D = R[I] - (R[J] * n + R[K] * (nc - n)) / nc
+                            D = [x * d / math.sqrt(dot(D, D)) for x in D]
+                            face.append(subtract(R[I], D))
+
+                face.append(face[0])
+                faces.append(face)
+
+    return faces
