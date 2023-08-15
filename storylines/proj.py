@@ -92,7 +92,7 @@ def project(objects, by_distance=True, return_order=False, *args, **kwargs):
     Returns
     -------
     list of tuple
-        Objects is same format, but sorted with transformed coordinates and
+        Objects in same format, but sorted with transformed coordinates and
         adjusted styles.
     list of int, optional
         Sorting order.
