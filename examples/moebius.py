@@ -10,7 +10,7 @@ def moebius(t, u, r=1.0):
     y = R * np.sin(2 * u)
     z = t * np.sin(u)
 
-    return zip(x, y, z)
+    return list(zip(x, y, z))
 
 T = np.linspace(-1.0, 1.0, 10)
 U = np.linspace(0.0, np.pi, 40)

@@ -7,7 +7,7 @@ from __future__ import division
 
 import re
 
-from .calc import subtract, cross, dot, length
+from .calc import subtract, cross, dot, length, distance
 
 def projection(
         r=[0.0, 0.0, 0.0], # object
@@ -104,6 +104,10 @@ def project(objects, by_distance=True, return_cosines=False, return_order=False,
     list of int, optional
         Sorting order.
     """
+    if by_distance:
+        distances = [distance(R, [sum(x) / len(x) for x in zip(*coordinates)])
+            for coordinates, style in objects]
+
     if return_cosines:
         cosines = []
 
@@ -141,7 +145,7 @@ def project(objects, by_distance=True, return_cosines=False, return_order=False,
                     '%.3f' % (float(match.group(1)) * zoom[n]), style[option])
 
     if by_distance:
-        order = sorted(range(len(zoom)), key=lambda n: zoom[n])
+        order = sorted(range(len(distances)), key=lambda n: -distances[n])
         objects = [objects[n] for n in order]
 
         if return_order:
