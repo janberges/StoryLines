@@ -93,6 +93,21 @@ def multiples(lower, upper, divisor=1):
             int(math.floor(upper / divisor)) + 1):
         yield divisor * n
 
+def add(A, B):
+    """Calculate sum of two vectors.
+
+    Parameters
+    ----------
+    A, B : list of float
+        Vectors to be added.
+
+    Returns
+    -------
+    list of float
+        Sum of `A` and `B`.
+    """
+    return [a + b for a, b in zip(A, B)]
+
 def subtract(A, B):
     """Calculate difference of two vectors.
 
@@ -142,6 +157,36 @@ def cross(A, B):
         A[0] * B[1] - A[1] * B[0],
         ]
 
+def length(A):
+    """Calculate length of vector.
+
+    Parameters
+    ----------
+    A : list of float
+        Vector.
+
+    Returns
+    -------
+    float
+        Length of `A`.
+    """
+    return math.sqrt(dot(A, A))
+
+def distance(A, B):
+    """Calculate distance of two vectors.
+
+    Parameters
+    ----------
+    A, B : list of float
+        Vectors.
+
+    Returns
+    -------
+    float
+        Distance of `A` and `B`.
+    """
+    return length(subtract(A, B))
+
 def bonds(R1, R2=None, d1=0.0, d2=None, dmin=0.1, dmax=5.0):
     """Find lines that connect two sets of points.
 
@@ -174,8 +219,7 @@ def bonds(R1, R2=None, d1=0.0, d2=None, dmin=0.1, dmax=5.0):
             if oneway and m <= n:
                 continue
 
-            dr = subtract(r2, r1)
-            d = math.sqrt(dot(dr, dr))
+            d = distance(r1, r2)
 
             if dmin < d < dmax:
                 s1 = d1 / d
@@ -211,20 +255,14 @@ def faces(R, d=0.0, dmin=0.1, dmax=5.0, nc=10):
 
     for i in range(len(R)):
         for j in range(i + 1, len(R)):
-            dr = subtract(R[j], R[i])
-
-            if not dmin < math.sqrt(dot(dr, dr)) < dmax:
+            if not dmin < distance(R[i], R[j]) < dmax:
                 continue
 
             for k in range(j + 1, len(R)):
-                dr = subtract(R[k], R[j])
-
-                if not dmin < math.sqrt(dot(dr, dr)) < dmax:
+                if not dmin < distance(R[j], R[k]) < dmax:
                     continue
 
-                dr = subtract(R[i], R[k])
-
-                if not dmin < math.sqrt(dot(dr, dr)) < dmax:
+                if not dmin < distance(R[k], R[i]) < dmax:
                     continue
 
                 if not d or nc < 1:
@@ -234,9 +272,10 @@ def faces(R, d=0.0, dmin=0.1, dmax=5.0, nc=10):
 
                     for I, J, K in (i, j, k), (j, k, i), (k, i, j):
                         for n in range(nc + 1):
-                            D = R[I] - (R[J] * n + R[K] * (nc - n)) / nc
-                            D = [x * d / math.sqrt(dot(D, D)) for x in D]
-                            face.append(subtract(R[I], D))
+                            D = [(rj * n + rk * (nc - n)) / nc - ri
+                                for ri, rj, rk in zip(R[I], R[J], R[K])]
+                            scale = d / length(D)
+                            face.append(add(R[I], [r * scale for r in D]))
 
                 face.append(face[0])
                 faces.append(face)

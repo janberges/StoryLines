@@ -5,10 +5,9 @@
 
 from __future__ import division
 
-import math
 import re
 
-from .calc import subtract, cross, dot
+from .calc import subtract, cross, dot, length
 
 def projection(
         r=[0.0, 0.0, 0.0], # object
@@ -36,12 +35,12 @@ def projection(
     """
     # viewing direction:
     Z = subtract(T, R)
-    norm = math.sqrt(dot(Z, Z))
+    norm = length(Z)
     Z = [z / norm for z in Z]
 
     # horizontal screen direction:
     X = cross(Z, U)
-    norm = math.sqrt(dot(X, X))
+    norm = length(X)
     X = [x / norm for x in X]
 
     # vertical screen direction:
@@ -51,7 +50,7 @@ def projection(
     D = subtract(r, R)
 
     # observer-object distance (hypotenuse):
-    hyp = math.sqrt(dot(D, D))
+    hyp = length(D)
 
     # projection onto viewing direction (adjacent leg):
     adj = dot(D, Z)
