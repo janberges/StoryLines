@@ -25,6 +25,7 @@ Examples
    :maxdepth: 2
 
    examples/example
+   examples/faces
    examples/fatband
    examples/mandelbrot
    examples/moebius
