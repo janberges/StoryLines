@@ -69,7 +69,8 @@ def projection(
 
     return [x, y, z]
 
-def project(objects, by_distance=True, return_order=False, *args, **kwargs):
+def project(objects, by_distance=True, return_cosines=False, return_order=False,
+        R=[0.0, -1.0, 0.0], *args, **kwargs):
     """Project list of 3D objects onto 2D screen.
 
     Line width, mark sizes, and length in angle brackets are scaled according
@@ -83,8 +84,12 @@ def project(objects, by_distance=True, return_order=False, *args, **kwargs):
     by_distance : bool, default True
         Sort the objects by distance so that close object overlay remote
         objects?
+    return_cosines : bool, default False
+        Calculate cosines of angles between objects and viewing direction?
     return_order : bool, default False
         Also return sorting order as list of indices?
+    R : list of float, optional
+        Observer position.
 
     *args, **kwargs
         Arguments passed to `projection`.
@@ -94,10 +99,30 @@ def project(objects, by_distance=True, return_order=False, *args, **kwargs):
     list of tuple
         Objects in same format, but sorted with transformed coordinates and
         adjusted styles.
+    list of float, optional
+        Cosines of angles between objects and viewing direction.
     list of int, optional
         Sorting order.
     """
-    objects = [([projection(coordinate, *args, **kwargs)
+    if return_cosines:
+        cosines = []
+
+        for coordinates, style in objects:
+            view = subtract(R, [sum(x) / len(x) for x in zip(*coordinates)])
+
+            if len(coordinates) < 2:
+                normal = view
+            elif len(coordinates) == 2:
+                normal = cross(subtract(coordinates[1], coordinates[0]),
+                    cross(subtract(coordinates[1], coordinates[0]), view))
+            else:
+                normal = cross(subtract(coordinates[1], coordinates[0]),
+                    subtract(coordinates[2], coordinates[0]))
+
+            cosines.append(abs(dot(normal, view))
+                / (length(normal) * length(view)))
+
+    objects = [([projection(coordinate, R=R, *args, **kwargs)
         for coordinate in coordinates], style.copy())
         for coordinates, style in objects]
 
@@ -120,6 +145,12 @@ def project(objects, by_distance=True, return_order=False, *args, **kwargs):
         objects = [objects[n] for n in order]
 
         if return_order:
+            if return_cosines:
+                return objects, cosines, order
+
             return objects, order
+
+    if return_cosines:
+        return objects, cosines
 
     return objects
