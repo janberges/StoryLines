@@ -314,3 +314,53 @@ def faces(R, d=0.0, dmin=0.1, dmax=5.0, nc=10):
                 faces.append(face)
 
     return faces
+
+def spring(r1, r2, N=500, k=50, radius=0.1, ends=0.15):
+    """Draw coil spring in three-dimensional space.
+
+    Parameters
+    ----------
+    r1, r2 : list of float
+        End points.
+    N : int
+        Number of path segments.
+    k : float
+        Winding wave vector.
+    radius : float
+        Radius of spring.
+    ends : float
+        Taper length on both ends.
+
+    Returns
+    -------
+    list of list of float
+        Coordinates of spring.
+    """
+    z = subtract(r2, r1)
+    z = divide(z, length(z))
+    x = cross([0, 1, 0] if z[0] or z[2] else [1, 0, 0], z)
+    x = divide(x, length(x))
+    y = cross(z, x)
+
+    path = []
+
+    for n in range(N + 1):
+        r = divide(add(multiply(r1, N - n), multiply(r2, n)), N)
+
+        d1 = distance(r, r1)
+        d2 = distance(r, r2)
+
+        envelope = radius
+
+        if d1 < ends:
+            envelope *= (1 - math.cos(d1 * math.pi / ends)) / 2
+
+        if d2 < ends:
+            envelope *= (1 - math.cos(d2 * math.pi / ends)) / 2
+
+        r = add(r, multiply(x, envelope * math.cos(k * d1)))
+        r = add(r, multiply(y, envelope * math.sin(k * d1)))
+
+        path.append(r)
+
+    return path
