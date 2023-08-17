@@ -93,6 +93,40 @@ def multiples(lower, upper, divisor=1):
             int(math.floor(upper / divisor)) + 1):
         yield divisor * n
 
+def multiply(A, b):
+    """Multiply vector by scalar.
+
+    Parameters
+    ----------
+    A : list of float
+        Vector.
+    b : float
+        Scalar.
+
+    Returns
+    -------
+    list of float
+        `A` multiplied by `b`.
+    """
+    return [a * b for a in A]
+
+def divide(A, b):
+    """Divide vector by scalar.
+
+    Parameters
+    ----------
+    A : list of float
+        Vector.
+    b : float
+        Scalar.
+
+    Returns
+    -------
+    list of float
+        `A` divided by `b`.
+    """
+    return [a / b for a in A]
+
 def add(A, B):
     """Calculate sum of two vectors.
 
@@ -274,8 +308,7 @@ def faces(R, d=0.0, dmin=0.1, dmax=5.0, nc=10):
                         for n in range(nc + 1):
                             D = [(rj * n + rk * (nc - n)) / nc - ri
                                 for ri, rj, rk in zip(R[I], R[J], R[K])]
-                            scale = d / length(D)
-                            face.append(add(R[I], [r * scale for r in D]))
+                            face.append(add(R[I], multiply(D, d / length(D))))
 
                 face.append(face[0])
                 faces.append(face)

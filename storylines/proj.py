@@ -7,7 +7,7 @@ from __future__ import division
 
 import re
 
-from .calc import subtract, cross, dot, length, distance
+from .calc import divide, subtract, cross, dot, length, distance
 
 def projection(
         r=[0.0, 0.0, 0.0], # object
@@ -35,13 +35,11 @@ def projection(
     """
     # viewing direction:
     Z = subtract(T, R)
-    norm = length(Z)
-    Z = [z / norm for z in Z]
+    Z = divide(Z, length(Z))
 
     # horizontal screen direction:
     X = cross(Z, U)
-    norm = length(X)
-    X = [x / norm for x in X]
+    X = divide(X, length(X))
 
     # vertical screen direction:
     Y = cross(X, Z)
