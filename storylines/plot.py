@@ -686,7 +686,7 @@ class Plot():
         self.lines = []
 
     def save(self, filename, external=False, standalone=False, pdf=False,
-            png=False, dpi=300.0, width=0, height=0):
+            png=False, dpi=300.0, width=0, height=0, engine='pdflatex'):
         """Save plot to file.
 
         Parameters
@@ -711,6 +711,8 @@ class Plot():
             Image dimensions in pixels. If either `width` or `height` is zero,
             it will be determined by the aspect ratio of the image. If both are
             zero, they will also be determined by `dpi`.
+        engine : str, default 'pdflatex'
+            TeX typesetting engine.
         """
         # determine data limits:
 
@@ -958,7 +960,7 @@ class Plot():
                     file.write('\\usepackage[%s]{inputenc}\n' % self.inputenc)
 
                 if self.font is not None:
-                    file.write({
+                    texfonts = {
                         'Gill Sans':
                             '\\usepackage[math]{iwona}\n'
                             '\\usepackage[sfdefault]{cabin}\n'
@@ -974,10 +976,18 @@ class Plot():
                             '\\usepackage{lmodern}\n',
                         'Times':
                             '\\usepackage{newtxtext, newtxmath}\n',
-                        }[self.font])
+                        }
 
-                    if self.fontenc is None:
-                        self.fontenc = 'T1'
+                    if self.font in texfonts:
+                        file.write(texfonts[self.font])
+
+                        if self.fontenc is None:
+                            self.fontenc = 'T1'
+                    else:
+                        file.write('\\usepackage{mathspec}\n')
+                        file.write('\\setallmainfonts{%s}\n' % self.font)
+
+                        engine = 'xelatex'
 
                 if self.fontenc and 'fontenc' not in self.preamble:
                     file.write('\\usepackage[%s]{fontenc}\n' % self.fontenc)
@@ -1550,7 +1560,7 @@ class Plot():
         # typeset document and clean up:
 
         if pdf:
-            typeset(stem)
+            typeset(stem, engine)
 
         if png:
             rasterize(stem, dpi, width, height)

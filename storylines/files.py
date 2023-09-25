@@ -47,17 +47,18 @@ def goto(filename):
 
     return stem, typ, home
 
-def typeset(stem):
-    """Run ``pdflatex`` and remove ``.aux`` and ``.log`` files.
+def typeset(stem, engine='pdflatex'):
+    """Run typesetting engine and remove ``.aux`` and ``.log`` files.
 
     Parameters
     ----------
     stem : str
         File name without path and extension (in current working directory).
+    engine : str, default 'pdflatex'
+        TeX typesetting engine.
     """
     try:
-        subprocess.call(['pdflatex', '--interaction=batchmode',
-            '%s.tex' % stem])
+        subprocess.call([engine, '--interaction=batchmode', '%s.tex' % stem])
 
         for suffix in 'aux', 'log':
             os.remove('%s.%s' % (stem, suffix))
