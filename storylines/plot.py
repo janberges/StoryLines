@@ -38,7 +38,7 @@ class Plot():
     xyaxes : bool, default True
         Draw x and y axes?
     style : str, default None
-        Predefined style. Possible values are ``'APS'``, ``'NanoLett''',
+        Predefined style. Possible values are ``'APS'``, ``'NanoLett'``,
         ``'NatCommun'``, and ``'Nature'``. This changes some of the below
         default values.
     rounded : bool, default True
