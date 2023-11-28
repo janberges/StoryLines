@@ -1,6 +1,6 @@
 # Line plots with Python & TikZ
 
-![StoryLines logo](https://raw.githubusercontent.com/janberges/StoryLines/master/logo/logo.svg)
+![StoryLines logo](https://raw.githubusercontent.com/janberges/StoryLines/master/logo/StoryLines.svg)
 
 * `plot` - figure object
 * `calc` - mathematical helpers
