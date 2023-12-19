@@ -93,7 +93,7 @@ def load(filename):
             if struct.pack('!I', zlib.crc32(name + data) & 0xffffffff) != csum:
                 print("Chunk '%s' corrupted!" % name)
 
-            if name == b'IHDR':
+            elif name == b'IHDR':
                 width, height, _, color, _, _, _ = struct.unpack('!2I5B', data)
                 colors = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[color]
 
@@ -106,7 +106,7 @@ def load(filename):
             elif name == b'IDAT':
                 idat += data
 
-            if name == b'IEND':
+            elif name == b'IEND':
                 break
 
         data = zlib.decompress(idat)
