@@ -82,6 +82,8 @@ def load(filename):
     with open(filename, 'rb') as png:
         png.read(8)
 
+        idat = b''
+
         while True:
             size, = struct.unpack('!I', png.read(4))
             name = png.read(4)
@@ -102,16 +104,18 @@ def load(filename):
                     for n in range(len(data) // 3)]
 
             elif name == b'IDAT':
-                data = zlib.decompress(data)
-                byte = struct.unpack('%dB' % len(data), data)
-
-                image = [[[byte[y * (width * colors + 1) + 1 + x * colors + z]
-                    for z in range(colors)]
-                    for x in range(width)]
-                    for y in range(height)]
+                idat += data
 
             if name == b'IEND':
                 break
+
+        data = zlib.decompress(idat)
+        byte = struct.unpack('%dB' % len(data), data)
+
+        image = [[[byte[y * (width * colors + 1) + 1 + x * colors + z]
+            for z in range(colors)]
+            for x in range(width)]
+            for y in range(height)]
 
         if color == 3:
             image = [[plte[image[y][x][0]]
