@@ -66,7 +66,7 @@ def save(filename, image):
         chunk(b'IEND', b'')
 
 def load(filename):
-    """Load from 8-bit PNG without filtering.
+    """Load 8-bit PNG image.
 
     Parameters
     ----------
@@ -112,10 +112,37 @@ def load(filename):
         data = zlib.decompress(idat)
         byte = struct.unpack('%dB' % len(data), data)
 
+        filters = [byte[y * (width * colors + 1)] for y in range(height)]
+
         image = [[[byte[y * (width * colors + 1) + 1 + x * colors + z]
             for z in range(colors)]
             for x in range(width)]
             for y in range(height)]
+
+        for y in range(height):
+            if filters[y] == 0:
+                continue
+
+            for x in range(width):
+                for z in range(colors):
+                    A = image[y][x - 1][z] if x else 0
+                    B = image[y - 1][x][z] if y else 0
+                    C = image[y - 1][x - 1][z] if x and y else 0
+
+                    if filters[y] == 1:
+                        image[y][x][z] += A
+
+                    elif filters[y] == 2:
+                        image[y][x][z] += B
+
+                    elif filters[y] == 3:
+                        image[y][x][z] += (A + B) // 2
+
+                    elif filters[y] == 4:
+                        p = A + B - C
+                        image[y][x][z] += min(A, B, C, key=lambda x: abs(p - x))
+
+                    image[y][x][z] %= 256
 
         if color == 3:
             image = [[plte[image[y][x][0]]
