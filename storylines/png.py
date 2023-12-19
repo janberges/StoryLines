@@ -33,7 +33,15 @@ def save(filename, image):
         for col in row] for row in image]
 
     if colors == 3:
-        plte = sorted(set(col for row in image for col in row))
+        pixels = [col for row in image for col in row]
+
+        plte = sorted(set(pixels))
+
+        # assign 0 to most common color so that 0 before row does not stand out:
+
+        imax = plte.index(max(plte, key=pixels.count))
+
+        plte[0], plte[imax] = plte[imax], plte[0]
 
         if len(plte) < 256:
             color = 3
