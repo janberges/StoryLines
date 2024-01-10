@@ -40,4 +40,4 @@ Note that `storylines.module.member` is equivalent to `storylines.member`.
 
 This program is free software under the terms of the BSD Zero Clause License.
 
-Copyright (C) 2016-2023 Jan Berges
+Copyright (C) 2016-2024 Jan Berges
