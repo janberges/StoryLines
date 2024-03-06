@@ -16,9 +16,9 @@ for omega in np.linspace(0.0, np.pi, 10):
     plot.line(t, np.sin(omega * t), omega, mark='*', omit=True)
 
 plot.title = 'StoryLines'
-plot.xlabel = '$t / \mathrm s$'
-plot.ylabel = '$\sin(\omega t)$'
-plot.zlabel = '$\omega / \mathrm{s^{-1}}$'
+plot.xlabel = '$t / \\mathrm s$'
+plot.ylabel = '$\\sin(\\omega t)$'
+plot.zlabel = '$\\omega / \\mathrm{s^{-1}}$'
 
 plot.line(label='relevant points', mark='*', only_marks=True)
 

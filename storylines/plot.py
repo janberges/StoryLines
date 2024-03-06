@@ -1035,7 +1035,7 @@ class Plot():
             if self.background is not None:
                 file.write('\n\\node '
                     '[anchor=south west, inner sep=0, outer sep=0] '
-                    '{\includegraphics[width=%.3fcm, height=%.3fcm]{%s}};'
+                    '{\\includegraphics[width=%.3fcm, height=%.3fcm]{%s}};'
                     % (extent['x'], extent['y'], self.background))
 
             def draw_grid():
@@ -1101,7 +1101,7 @@ class Plot():
                     if isinstance(self.colorbar, str):
                         file.write('\n\\node at (%.3f, 0) '
                             '[anchor=south west, inner sep=0, outer sep=0] '
-                            '{\includegraphics[width=%.3fcm, height=%.3fcm]'
+                            '{\\includegraphics[width=%.3fcm, height=%.3fcm]'
                             '{%s}};' % (extent['x'] + self.gap,
                                 self.bar, extent['y'], self.colorbar))
                     else:
@@ -1252,7 +1252,7 @@ class Plot():
 
                 for option in line['options']:
                     if isinstance(line['options'][option], str):
-                        line['options'][option] = re.sub('<([\d.]+)>',
+                        line['options'][option] = re.sub('<([\\d.]+)>',
                             lambda match: '%.3f' % (float(match.group(1))
                                 * scale['y']), line['options'][option])
 

@@ -139,7 +139,7 @@ def project(objects, by_distance=True, return_cosines=False, return_order=False,
 
         for option in style:
             if isinstance(style[option], str):
-                style[option] = re.sub('(?<=<)([\d.]+)(?=>)', lambda match:
+                style[option] = re.sub('(?<=<)([\\d.]+)(?=>)', lambda match:
                     '%.3f' % (float(match.group(1)) * zoom[n]), style[option])
 
     if by_distance:
