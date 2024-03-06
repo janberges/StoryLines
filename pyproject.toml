@@ -10,9 +10,8 @@ description = "Line plots with Python & TikZ"
 readme = "README.md"
 urls = {Homepage = "https://github.com/janberges/StoryLines"}
 classifiers = [
+    "License :: OSI Approved :: Zero-Clause BSD (0BSD)",
     "Programming Language :: Python",
-    "License :: Freely Distributable",
-    "Operating System :: POSIX :: Linux",
 ]
 requires-python = ">=2.7"
 
