@@ -202,6 +202,9 @@ class Plot():
         its original size. For zooming, smaller values may be necessary. This
         parameter determines the number of vertices used to render a line and
         thus affects the file size.
+    eps : float, default 1e-14
+        Distance from plot boundary beyond which a mark is considered to lie
+        outside of the plot area (and is potentially cut off).
     lines : list
         List of all line objects.
     options : dict
@@ -307,6 +310,7 @@ class Plot():
         self.double = 17.0
 
         self.resolution = 1e-3
+        self.eps = 1e-14
 
         self.lines = []
 
@@ -895,6 +899,9 @@ class Plot():
                 ticks[x] = [(scale[x] * (n - lower[x]), label) for n, label in
                     [tick if hasattr(tick, '__len__') else (tick, xformat(tick))
                         for tick in getattr(self, x + 'ticks')]]
+
+                ticks[x] = [(position, label) for position, label in ticks[x]
+                    if -self.eps < position < extent[x] + self.eps]
             else:
                 ticks[x] = [(scale[x] * (n - lower[x]), xformat(n))
                     for n in multiples(lower[x], upper[x],
@@ -921,6 +928,9 @@ class Plot():
 
                 minorticks[x] = [minor for minor in minorticks[x] if not
                     any(abs(major - minor) < 5e-4 for major, label in ticks[x])]
+
+                minorticks[x] = [position for position in minorticks[x]
+                    if -self.eps < position < extent[x] + self.eps]
 
         # handle horizontal and vertical lines:
 
@@ -1330,7 +1340,7 @@ class Plot():
                         except (TypeError, ValueError):
                             xmin = xmax = ymin = ymax = None
 
-                        eps = 1e-14 if line['options'].get('mark') else 0
+                        eps = self.eps if line['options'].get('mark') else 0
 
                         xmin = (scale['x'] * (xmin - lower['x'])
                             if xmin is not None else 0) - eps
