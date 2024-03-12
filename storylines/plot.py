@@ -165,7 +165,9 @@ class Plot():
     frame : bool, default `xyaxes`
         Draw frame around plot area?
     grid : bool, default False
-        Add grid lines (at tick positions)?
+        Add grid lines at tick positions?
+    minorgrid : bool, default False
+        Add grid lines at minor-tick positions?
     colorbar : bool or str, default None
         Draw colorbar? If ``None``, the colorbar is drawn if any line is given a
         z value or if both `zmin` and `zmax` are given. Alternatively, the path
@@ -288,6 +290,7 @@ class Plot():
         self.yaxis = xyaxes
         self.frame = xyaxes
         self.grid = False
+        self.minorgrid = False
         self.colorbar = None
         self.outline = False
         self.canvas = None
@@ -404,8 +407,8 @@ class Plot():
             Draw frame at current z index? By default, the frame is drawn just
             below the axes.
         grid : bool, default False
-            Add grid lines (at tick positions) at current z index? By default,
-            the grid is drawn just below the frame.
+            Add grid lines (at positions of major and possibly minor ticks) at
+            current z index? By default, the grid is drawn just below the frame.
         join : bool, default None
             Join cut-up line segments along edge of plotting range? By default,
             this is ``True`` if any ``fill`` is specified, ``False`` otherwise.
@@ -906,7 +909,7 @@ class Plot():
         minorticks = {}
 
         for x in 'xy':
-            if getattr(self, x + 'minormarks'):
+            if getattr(self, x + 'minormarks') or self.minorgrid:
                 positions = getattr(self, x + 'minorticks')
 
                 if positions is None:
@@ -1041,6 +1044,21 @@ class Plot():
             def draw_grid():
                 if draw_grid.done:
                     return
+
+                if self.minorgrid:
+                    file.write('\n\\draw [lightgray!50, line cap=rect]')
+
+                    for x in minorticks['x']:
+                        if 0 < x < extent['x']:
+                            file.write('\n  (%.3f, 0) -- +(0, %.3f)'
+                                % (x, extent['y']))
+
+                    for y in minorticks['y']:
+                        if 0 < y < extent['y']:
+                            file.write('\n  (0, %.3f) -- +( %.3f, 0)'
+                                % (y, extent['x']))
+
+                    file.write(';')
 
                 file.write('\n\\draw [lightgray, line cap=rect]')
 
