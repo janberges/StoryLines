@@ -145,7 +145,9 @@ class Plot():
     lsep : str, default None
         Space between legend title and entries, e.g., ``'6pt'``.
     ltop : str, default None
-        Legend title.
+        Legend title. If `lbox` is used, you might want to prevent that TikZ
+        pictures in the legend inherit the ``rounded corners`` of the box by
+        prepending ``\\tikzset{sharp corners}`` to this value.
     lwid : float, default 4.0
         Width of legend columns in units of `llen`.
     tick : float, default 0.07
@@ -1487,7 +1489,6 @@ class Plot():
                 file.write('] at (%.3f, %.3f) {' % position(self.lpos))
 
                 if self.ltop:
-                    file.write('\n  \\tikzset{sharp corners}')
                     file.write('\n  %s' % self.ltop)
 
                     if labels:
