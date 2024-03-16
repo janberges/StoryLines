@@ -204,9 +204,9 @@ class Plot():
         its original size. For zooming, smaller values may be necessary. This
         parameter determines the number of vertices used to render a line and
         thus affects the file size.
-    eps : float, default 1e-14
-        Distance from plot boundary beyond which a mark is considered to lie
-        outside of the plot area (and is potentially cut off).
+    eps : float, default 1e-4
+        Distance from plot boundary in cm beyond which a mark is considered to
+        lie outside of the plot area (and is potentially cut off).
     lines : list
         List of all line objects.
     options : dict
@@ -312,7 +312,7 @@ class Plot():
         self.double = 17.0
 
         self.resolution = 1e-3
-        self.eps = 1e-14
+        self.eps = 0.1 * self.resolution
 
         self.lines = []
 
