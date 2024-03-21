@@ -315,7 +315,7 @@ def faces(R, d=0.0, dmin=0.1, dmax=5.0, nc=10):
 
     return faces
 
-def spring(r1, r2, N=500, k=50, radius=0.1, ends=0.15):
+def spring(r1, r2, N=500, k=50, radius=0.1, ends=0.15, xscale=1.0, yscale=1.0):
     """Draw coil spring in three-dimensional space.
 
     Parameters
@@ -330,6 +330,9 @@ def spring(r1, r2, N=500, k=50, radius=0.1, ends=0.15):
         Radius of spring.
     ends : float
         Taper length on both ends.
+    scalex, scaley : float, default 1.0
+        Scaling factors in transverse directions. If only one of these is zero,
+        the coil becomes a flat wavy line.
 
     Returns
     -------
@@ -358,8 +361,8 @@ def spring(r1, r2, N=500, k=50, radius=0.1, ends=0.15):
         if d2 < ends:
             envelope *= (1 - math.cos(d2 * math.pi / ends)) / 2
 
-        r = add(r, multiply(x, envelope * math.cos(k * d1)))
-        r = add(r, multiply(y, envelope * math.sin(k * d1)))
+        r = add(r, multiply(x, xscale * envelope * math.cos(k * d1)))
+        r = add(r, multiply(y, yscale * envelope * math.sin(k * d1)))
 
         path.append(r)
 
