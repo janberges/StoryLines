@@ -1,6 +1,6 @@
 # Line plots with Python & TikZ
 
-![StoryLines logo](https://raw.githubusercontent.com/janberges/StoryLines/master/logo/StoryLines.svg)
+StoryLines is a Python library to create plots in LaTeX format.
 
 * `plot` - figure object
 * `calc` - mathematical helpers
@@ -25,9 +25,10 @@ Either from PyPI:
 
     python3 -m pip install storylines
 
-Or from GitHub:
+Or from the repository:
 
-    python3 -m pip install git+https://github.com/janberges/StoryLines
+    git clone https://github.com/janberges/StoryLines
+    python3 -m pip install -e StoryLines
 
 ## Documentation
 
