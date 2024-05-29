@@ -8,6 +8,8 @@ from __future__ import division
 import os
 import subprocess
 
+from .png import save, load
+
 def goto(filename):
     """Go to output directory for plot typesetting.
 
@@ -66,7 +68,7 @@ def typeset(stem, engine='pdflatex'):
     except OSError:
         print('Could not typeset %s' % stem)
 
-def rasterize(stem, dpi=300.0, width=0, height=0):
+def rasterize(stem, dpi=300.0, width=0, height=0, rewrite=False):
     """Run ``pdftoppm`` and remove ``-1`` from name of resulting PNG file.
 
     Parameters
@@ -75,10 +77,13 @@ def rasterize(stem, dpi=300.0, width=0, height=0):
         File name without path and extension (in current working directory).
     dpi : float, default 300.0
         Image resolution in dots per inch.
-    width, height : int
+    width, height : int, default 0
         Image dimensions in pixels. If either `width` or `height` is zero, it
         will be determined by the aspect ratio of the image. If both are zero,
         they will also be determined by `dpi`.
+    rewrite : bool, default False
+        Rewrite resulting PNG file using StoryLines? This will remove possible
+        metadata.
     """
     try:
         args = ['-png']
@@ -92,6 +97,9 @@ def rasterize(stem, dpi=300.0, width=0, height=0):
         subprocess.call(['pdftoppm'] + args + ['%s.pdf' % stem, stem])
 
         os.rename('%s-1.png' % stem, '%s.png' % stem)
+
+        if rewrite:
+            save('%s.png' % stem, load('%s.png' % stem))
 
     except OSError:
         print('Could not rasterize %s' % stem)

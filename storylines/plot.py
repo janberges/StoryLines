@@ -695,7 +695,8 @@ class Plot():
         self.lines = []
 
     def save(self, filename, external=False, standalone=False, pdf=False,
-            png=False, dpi=300.0, width=0, height=0, engine='pdflatex'):
+            png=False, dpi=300.0, width=0, height=0, rewrite=False,
+            engine='pdflatex'):
         """Save plot to file.
 
         Parameters
@@ -720,6 +721,9 @@ class Plot():
             Image dimensions in pixels. If either `width` or `height` is zero,
             it will be determined by the aspect ratio of the image. If both are
             zero, they will also be determined by `dpi`.
+        rewrite : bool, default False
+            Rewrite resulting PNG file using StoryLines? This will remove
+            possible metadata.
         engine : str, default 'pdflatex'
             TeX typesetting engine.
         """
@@ -1592,6 +1596,6 @@ class Plot():
             typeset(stem, engine)
 
         if png:
-            rasterize(stem, dpi, width, height)
+            rasterize(stem, dpi, width, height, rewrite)
 
         home()
