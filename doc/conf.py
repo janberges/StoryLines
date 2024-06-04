@@ -6,7 +6,12 @@ project = 'StoryLines'
 copyright = '2016-2024 Jan Berges'
 author = 'Jan Berges'
 
-extensions = ['sphinx.ext.autodoc', 'numpydoc', 'm2r2']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
+    'numpydoc',
+    'm2r2',
+    ]
 
 html_theme = 'sphinx_rtd_theme'
 html_logo = '../logo/StoryLines.svg'
