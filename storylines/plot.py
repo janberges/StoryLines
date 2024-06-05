@@ -191,7 +191,7 @@ class Plot():
     font : str, default None
         Predefined font selection. Imitates well-known fonts. Possible values
         are ``'Gill Sans'``, ``'Helvetica'``, ``'Iwona'``, ``'Latin Modern'``,
-        and ``'Times'``.
+        ``'Times'``, and ``'Utopia'``.
     fontsize : int, default 10
         Font size for standalone figures in pt.
     single : float, default 8.0
@@ -995,6 +995,8 @@ class Plot():
                             '\\usepackage{lmodern}\n',
                         'Times':
                             '\\usepackage{newtxtext, newtxmath}\n',
+                        'Utopia':
+                            '\\usepackage{fourier}',
                         }
 
                     if self.font in texfonts:
