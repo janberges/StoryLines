@@ -123,11 +123,11 @@ def load(filename):
                 break
 
         data = zlib.decompress(idat)
-        byte = struct.unpack('%dB' % len(data), data)
+        byte = iter(struct.unpack('%dB' % len(data), data))
 
-        filters = [byte[y * (width * colors + 1)] for y in range(height)]
+        filters = []
 
-        image = [[[byte[y * (width * colors + 1) + 1 + x * colors + z]
+        image = [filters.append(next(byte)) or [[next(byte)
             for z in range(colors)]
             for x in range(width)]
             for y in range(height)]
