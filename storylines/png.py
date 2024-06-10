@@ -153,7 +153,7 @@ def load(filename):
 
                     elif filters[y] == 4:
                         p = A + B - C
-                        image[y][x][z] += min(A, B, C, key=lambda x: abs(p - x))
+                        image[y][x][z] += min(A, B, C, key=lambda q: abs(p - q))
 
                     image[y][x][z] %= 256
 
