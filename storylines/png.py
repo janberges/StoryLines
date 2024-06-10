@@ -39,7 +39,12 @@ def save(filename, image):
 
         # assign 0 to most common color so that 0 before row does not stand out:
 
-        imax = plte.index(max(plte, key=pixels.count))
+        count = dict()
+
+        for x in pixels:
+            count[x] = count.get(x, 0) + 1
+
+        imax = plte.index(max(count, key=count.get))
 
         plte[0], plte[imax] = plte[imax], plte[0]
 
