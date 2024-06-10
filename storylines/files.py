@@ -83,7 +83,7 @@ def rasterize(stem, dpi=300.0, width=0, height=0, rewrite=False):
         they will also be determined by `dpi`.
     rewrite : bool, default False
         Rewrite resulting PNG file using StoryLines? This will remove possible
-        metadata.
+        metadata and may reduce the file size but currently is quite slow.
     """
     try:
         args = ['-png']

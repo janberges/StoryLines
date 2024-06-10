@@ -723,7 +723,8 @@ class Plot():
             zero, they will also be determined by `dpi`.
         rewrite : bool, default False
             Rewrite resulting PNG file using StoryLines? This will remove
-            possible metadata.
+            possible metadata and may reduce the file size but currently is
+            quite slow.
         engine : str, default 'pdflatex'
             TeX typesetting engine.
         """
