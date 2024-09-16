@@ -164,6 +164,12 @@ class Plot():
         Draw x axis?
     yaxis : bool, default `xyaxes`
         Draw y axis?
+    xorigin : float, default None
+        Horizontal position of y axis in data coordinates. A reasonable value
+        could be zero. By default, the y axis is shown on the left.
+    yorigin : float, default None
+        Vertical position of x axis in data coordinates. A reasonable value
+        could be zero. By default, the x axis is shown on the bottom.
     frame : bool, default `xyaxes`
         Draw frame around plot area?
     grid : bool, default False
@@ -293,6 +299,8 @@ class Plot():
 
         self.xaxis = xyaxes
         self.yaxis = xyaxes
+        self.xorigin = None
+        self.yorigin = None
         self.frame = xyaxes
         self.grid = False
         self.minorgrid = False
@@ -1060,6 +1068,33 @@ class Plot():
                     '{\\includegraphics[width=%.3fcm, height=%.3fcm]{%s}};'
                     % (extent['x'], extent['y'], self.background))
 
+            # draw coordinate system:
+
+            origin = {}
+
+            for x in 'xy':
+                xorigin = getattr(self, x + 'origin')
+
+                if xorigin is None:
+                    origin[x] = 0
+                else:
+                    origin[x] = scale[x] * (xorigin - lower[x])
+
+            for x, y in 'xy', 'yx':
+                if not origin[y]:
+                    continue
+
+                ticks[x] = [(position, label) for position, label in ticks[x]
+                    if not abs(position - origin[x]) < self.eps]
+
+                if getattr(self, x + 'minorticks'):
+                    minorticks[x] = [position for position in minorticks[x]
+                        if not abs(position - origin[x]) < self.eps]
+
+            for x in 'xy':
+                if origin[x]:
+                    origin[x] = '%.3f' % origin[x]
+
             def draw_grid():
                 if draw_grid.done:
                     return
@@ -1103,13 +1138,13 @@ class Plot():
 
                 file.write('\n\\draw [gray, line cap=rect]\n  ')
 
-                if not self.xaxis:
+                if not self.xaxis or origin['y']:
                     file.write('(0, 0) -- ')
 
                 file.write('(%.3f, 0) -- (%.3f, %.3f) -- (0, %.3f)'
                     % tuple(extent[x] for x in 'xxyy'))
 
-                if not self.yaxis:
+                if not self.yaxis or origin['x']:
                     file.write(' -- (0, 0)')
 
                 file.write(';')
@@ -1180,72 +1215,92 @@ class Plot():
                                 if label is None:
                                     continue
 
-                                file.write('\n  (%.3f, 0) -- +(0, %.3f)'
-                                    % (x, -self.tick))
+                                file.write('\n  (%.3f, %s) -- +(0, %.3f)'
+                                    % (x, origin['y'], -self.tick))
 
                                 if label:
                                     file.write(' node [below] {%s}' % label)
 
                         if self.xaxis and self.xminormarks:
                             for x in minorticks['x']:
-                                file.write('\n  (%.3f, 0) -- +(0, %.3f)'
-                                    % (x, -self.minortick))
+                                file.write('\n  (%.3f, %s) -- +(0, %.3f)'
+                                    % (x, origin['y'], -self.minortick))
 
                         if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
                                 if label is None:
                                     continue
 
-                                file.write('\n  (0, %.3f) -- +(%.3f, 0)'
-                                    % (y, -self.tick))
+                                file.write('\n  (%s, %.3f) -- +(%.3f, 0)'
+                                    % (origin['x'], y, -self.tick))
 
                                 if label:
-                                    file.write(' node [rotate=90, above] {%s}'
-                                        % label)
+                                    file.write(' node [%s] {%s}'
+                                        % ('left' if origin['x'] else
+                                        'rotate=90, above', label))
 
                         if self.yaxis and self.yminormarks:
                             for y in minorticks['y']:
-                                file.write('\n  (0, %.3f) -- +(%.3f, 0)'
-                                    % (y, -self.minortick))
+                                file.write('\n  (%s, %.3f) -- +(%.3f, 0)'
+                                    % (origin['x'], y, -self.minortick))
 
                         file.write(';')
 
                     # draw coordinate axes:
 
-                    file.write('\n\\draw [%s-%s, line cap=butt]\n  '
-                        % ('<' * self.xaxis, '>' * self.yaxis))
+                    if origin['x'] or origin['y']:
+                        file.write('\n\\draw [->, line cap=rect]\n  '
+                            '(0, %s) -- +(%.3f, 0);'
+                            % (origin['y'], extent['x'] + self.tip))
 
-                    if self.xaxis:
-                        file.write('(%.3f, 0) -- ' % (extent['x'] + self.tip))
+                        file.write('\n\\draw [->, line cap=rect]\n  '
+                            '(%s, 0) -- +(0, %.3f);'
+                            % (origin['x'], extent['y'] + self.tip))
+                    else:
+                        file.write('\n\\draw [%s-%s, line cap=butt]\n  '
+                            % ('<' * self.xaxis, '>' * self.yaxis))
 
-                    file.write('(0, 0)')
+                        if self.xaxis:
+                            file.write('(%.3f, 0) -- '
+                                % (extent['x'] + self.tip))
 
-                    if self.yaxis:
-                        file.write(' -- (0, %.3f)' % (extent['y'] + self.tip))
+                        file.write('(0, 0)')
 
-                    file.write(';')
+                        if self.yaxis:
+                            file.write(' -- (0, %.3f)'
+                                % (extent['y'] + self.tip))
+
+                        file.write(';')
 
                 # label coordinate axes:
 
                 if self.xaxis and self.xlabel:
-                    file.write('\n\\node [below')
+                    if origin['y']:
+                        file.write('\n\\node [right] at (%.3f, %s)'
+                            % (extent['x'] + self.tip, origin['y']))
+                    else:
+                        file.write('\n\\node [below')
 
-                    if ticks['x'] and not self.xclose:
-                        file.write('=\\baselineskip')
+                        if ticks['x'] and not self.xclose:
+                            file.write('=\\baselineskip')
 
-                    file.write('] at (%.3f, %.3f)'
-                        % (extent['x'] / 2, -self.tick))
+                        file.write('] at (%.3f, %.3f)'
+                            % (extent['x'] / 2, -self.tick))
 
                     file.write('\n  {%s};' % self.xlabel)
 
                 if self.yaxis and self.ylabel:
-                    file.write('\n\\node [rotate=90, above')
+                    if origin['x']:
+                        file.write('\n\\node [above] at (%s, %.3f)'
+                            % (origin['x'], extent['y'] + self.tip))
+                    else:
+                        file.write('\n\\node [rotate=90, above')
 
-                    if ticks['y'] and not self.yclose:
-                        file.write('=\\baselineskip')
+                        if ticks['y'] and not self.yclose:
+                            file.write('=\\baselineskip')
 
-                    file.write('] at (%.3f, %.3f)'
-                        % (-self.tick, extent['y'] / 2))
+                        file.write('] at (%.3f, %.3f)'
+                            % (-self.tick, extent['y'] / 2))
 
                     file.write('\n  {%s};' % self.ylabel)
 
