@@ -411,8 +411,8 @@ class Plot():
         z : float, default None
             z value for entire line, represented by color.
         axes : bool, default False
-            Draw axes at current z index? By default, the axes are drawn on top
-            of all data.
+            Draw axes at current z index? By default, the axes are drawn first,
+            i.e., below all data.
         code : str, default None
             Literal TikZ code to be inserted at current position.
         cut : bool or tuple, default False
@@ -1337,6 +1337,9 @@ class Plot():
                 draw_axes.done = True
 
             draw_axes.done = False
+
+            if not any(line['axes'] for line in self.lines):
+                draw_axes()
 
             # plot lines:
 
