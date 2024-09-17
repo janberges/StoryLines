@@ -1096,16 +1096,32 @@ class Plot():
                 if draw_grid.done:
                     return
 
+                lines = {}
+
+                for x in 'xy':
+                    lines[x] = set()
+
+                    if getattr(self, x + 'axis'):
+                        lines[x].add(origin[x])
+
+                    if self.frame:
+                        lines[x].add(0.0)
+                        lines[x].add(extent[x])
+
                 if self.minorgrid:
                     file.write('\n\\draw [lightgray!50, line cap=rect]')
 
                     for x in minorticks['x']:
-                        if 0 < x < extent['x']:
+                        if not any(abs(x - line) < self.resolution
+                                for line in lines['x']):
+
                             file.write('\n  (%.3f, 0) -- +(0, %.3f)'
                                 % (x, extent['y']))
 
                     for y in minorticks['y']:
-                        if 0 < y < extent['y']:
+                        if not any(abs(y - line) < self.resolution
+                                for line in lines['y']):
+
                             file.write('\n  (0, %.3f) -- +( %.3f, 0)'
                                 % (y, extent['x']))
 
@@ -1114,12 +1130,16 @@ class Plot():
                 file.write('\n\\draw [lightgray, line cap=rect]')
 
                 for x, label in ticks['x']:
-                    if 0 < x < extent['x']:
+                    if not any(abs(x - line) < self.resolution
+                            for line in lines['x']):
+
                         file.write('\n  (%.3f, 0) -- +(0, %.3f)'
                             % (x, extent['y']))
 
                 for y, label in ticks['y']:
-                    if 0 < y < extent['y']:
+                    if not any(abs(y - line) < self.resolution
+                            for line in lines['y']):
+
                         file.write('\n  (0, %.3f) -- +( %.3f, 0)'
                             % (y, extent['x']))
 
