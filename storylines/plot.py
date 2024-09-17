@@ -1091,10 +1091,6 @@ class Plot():
                     minorticks[x] = [position for position in minorticks[x]
                         if not abs(position - origin[x]) < self.eps]
 
-            for x in 'xy':
-                if origin[x]:
-                    origin[x] = '%.3f' % origin[x]
-
             def draw_grid():
                 if draw_grid.done:
                     return
@@ -1215,7 +1211,7 @@ class Plot():
                                 if label is None:
                                     continue
 
-                                file.write('\n  (%.3f, %s) -- +(0, %.3f)'
+                                file.write('\n  (%.3f, %.3f) -- +(0, %.3f)'
                                     % (x, origin['y'], -self.tick))
 
                                 if label:
@@ -1223,7 +1219,7 @@ class Plot():
 
                         if self.xaxis and self.xminormarks:
                             for x in minorticks['x']:
-                                file.write('\n  (%.3f, %s) -- +(0, %.3f)'
+                                file.write('\n  (%.3f, %.3f) -- +(0, %.3f)'
                                     % (x, origin['y'], -self.minortick))
 
                         if self.yaxis and self.ymarks:
@@ -1231,7 +1227,7 @@ class Plot():
                                 if label is None:
                                     continue
 
-                                file.write('\n  (%s, %.3f) -- +(%.3f, 0)'
+                                file.write('\n  (%.3f, %.3f) -- +(%.3f, 0)'
                                     % (origin['x'], y, -self.tick))
 
                                 if label:
@@ -1241,7 +1237,7 @@ class Plot():
 
                         if self.yaxis and self.yminormarks:
                             for y in minorticks['y']:
-                                file.write('\n  (%s, %.3f) -- +(%.3f, 0)'
+                                file.write('\n  (%.3f, %.3f) -- +(%.3f, 0)'
                                     % (origin['x'], y, -self.minortick))
 
                         file.write(';')
@@ -1250,11 +1246,11 @@ class Plot():
 
                     if origin['x'] or origin['y']:
                         file.write('\n\\draw [->, line cap=rect]\n  '
-                            '(0, %s) -- +(%.3f, 0);'
+                            '(0, %.3f) -- +(%.3f, 0);'
                             % (origin['y'], extent['x'] + self.tip))
 
                         file.write('\n\\draw [->, line cap=rect]\n  '
-                            '(%s, 0) -- +(0, %.3f);'
+                            '(%.3f, 0) -- +(0, %.3f);'
                             % (origin['x'], extent['y'] + self.tip))
                     else:
                         file.write('\n\\draw [%s-%s, line cap=butt]\n  '
@@ -1276,7 +1272,7 @@ class Plot():
 
                 if self.xaxis and self.xlabel:
                     if origin['y']:
-                        file.write('\n\\node [right] at (%.3f, %s)'
+                        file.write('\n\\node [right] at (%.3f, %.3f)'
                             % (extent['x'] + self.tip, origin['y']))
                     else:
                         file.write('\n\\node [below')
@@ -1291,7 +1287,7 @@ class Plot():
 
                 if self.yaxis and self.ylabel:
                     if origin['x']:
-                        file.write('\n\\node [above] at (%s, %.3f)'
+                        file.write('\n\\node [above] at (%.3f, %.3f)'
                             % (origin['x'], extent['y'] + self.tip))
                     else:
                         file.write('\n\\node [rotate=90, above')
