@@ -941,8 +941,9 @@ class Plot():
 
                 minorticks[x] = [scale[x] * (n - lower[x]) for n in positions]
 
-                minorticks[x] = [minor for minor in minorticks[x] if not
-                    any(abs(major - minor) < 5e-4 for major, label in ticks[x])]
+                minorticks[x] = [minor for minor in minorticks[x]
+                    if not any(abs(major - minor) < self.resolution
+                        for major, label in ticks[x])]
 
                 minorticks[x] = [position for position in minorticks[x]
                     if -self.eps < position < extent[x] + self.eps]
