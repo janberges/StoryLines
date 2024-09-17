@@ -1124,7 +1124,7 @@ class Plot():
                         if not any(abs(y - line) < self.resolution
                                 for line in lines['y']):
 
-                            file.write('\n  (0, %.3f) -- +( %.3f, 0)'
+                            file.write('\n  (0, %.3f) -- +(%.3f, 0)'
                                 % (y, extent['x']))
 
                     file.write(';')
@@ -1142,7 +1142,7 @@ class Plot():
                     if not any(abs(y - line) < self.resolution
                             for line in lines['y']):
 
-                        file.write('\n  (0, %.3f) -- +( %.3f, 0)'
+                        file.write('\n  (0, %.3f) -- +(%.3f, 0)'
                             % (y, extent['x']))
 
                 file.write(';')
