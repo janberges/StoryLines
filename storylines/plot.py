@@ -86,7 +86,7 @@ class Plot():
         that fall on major ticks are omitted.
     xminormarks, yminormarks : bool, default False
         Show minor tick marks?
-    xminorspacing, yminorspacing : float, default 0.1
+    xminorspacing, yminorspacing : float, default None
         Approximate minor-tick spacing in cm.
     xminorstep, yminorstep : float, default None
         Exact minor-tick increment.
@@ -265,7 +265,7 @@ class Plot():
         for x in 'xy':
             setattr(self, x + 'minorticks', None)
             setattr(self, x + 'minormarks', False)
-            setattr(self, x + 'minorspacing', 0.1)
+            setattr(self, x + 'minorspacing', None)
             setattr(self, x + 'minorstep', None)
 
         self.lower = 'blue'
@@ -937,9 +937,14 @@ class Plot():
                 positions = getattr(self, x + 'minorticks')
 
                 if positions is None:
-                    positions = multiples(lower[x], upper[x],
-                        getattr(self, x + 'minorstep') or xround_mantissa(
-                        getattr(self, x + 'minorspacing') / scale[x]))
+                    if (getattr(self, x + 'minorstep') is None and
+                        getattr(self, x + 'minorspacing') is None):
+
+                        positions = []
+                    else:
+                        positions = multiples(lower[x], upper[x],
+                            getattr(self, x + 'minorstep') or xround_mantissa(
+                            getattr(self, x + 'minorspacing') / scale[x]))
 
                 minorticks[x] = [scale[x] * (n - lower[x]) for n in positions]
 
