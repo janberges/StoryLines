@@ -211,8 +211,10 @@ class Plot():
         parameter determines the number of vertices used to render a line and
         thus affects the file size.
     eps : float, default 1e-4
-        Distance from plot boundary in cm beyond which a mark is considered to
-        lie outside of the plot area (and is potentially cut off).
+        Distance from plot boundary in cm beyond which a mark or grid line is
+        considered to lie outside of the plot area (and is potentially cut off).
+        This tolerance is meant to make up for the limited numerical precision.
+        For example, using double preicision, ``3 * 0.1 > 0.3``.
     lines : list
         List of all line objects.
     options : dict
@@ -916,7 +918,7 @@ class Plot():
                         for tick in getattr(self, x + 'ticks')]]
 
                 ticks[x] = [(position, label) for position, label in ticks[x]
-                    if -self.eps < position < extent[x] + self.eps]
+                    if -self.eps <= position <= extent[x] + self.eps]
             else:
                 ticks[x] = [(scale[x] * (n - lower[x]), xformat(n))
                     for n in multiples(lower[x], upper[x],
@@ -946,7 +948,7 @@ class Plot():
                         for major, label in ticks[x])]
 
                 minorticks[x] = [position for position in minorticks[x]
-                    if -self.eps < position < extent[x] + self.eps]
+                    if -self.eps <= position <= extent[x] + self.eps]
 
         # handle horizontal and vertical lines:
 
@@ -1086,11 +1088,11 @@ class Plot():
                     continue
 
                 ticks[x] = [(position, label) for position, label in ticks[x]
-                    if not abs(position - origin[x]) < self.eps]
+                    if not abs(position - origin[x]) < self.resolution]
 
                 if getattr(self, x + 'minorticks'):
                     minorticks[x] = [position for position in minorticks[x]
-                        if not abs(position - origin[x]) < self.eps]
+                        if not abs(position - origin[x]) < self.resolution]
 
             def draw_grid():
                 if draw_grid.done:
