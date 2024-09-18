@@ -21,4 +21,6 @@ plot.line(1.5 * x[::N // 50], 1.5 * y[::N // 50], color='red', cut=True,
     mark='*', only_marks=True, omit=False)
 plot.compline(phi, x, w, colors=['blue', 'teal'], thickness=1.0, cut=True)
 
+plot.axes()
+
 plot.save('fatband.png')

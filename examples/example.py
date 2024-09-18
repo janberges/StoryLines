@@ -8,7 +8,6 @@ cmap = storylines.colormap(
     (1, storylines.Color(0, 1, 255, 'HSV')))
 
 plot = storylines.Plot(lpos='rb', lopt='above left', cmap=cmap)
-plot.axes()
 
 t = np.linspace(-1.0, 1.0, 100)
 
