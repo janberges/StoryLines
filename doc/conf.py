@@ -3,7 +3,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 project = 'StoryLines'
-copyright = '2016-2024 Jan Berges'
+copyright = '2016-2025 Jan Berges'
 author = 'Jan Berges'
 
 extensions = [

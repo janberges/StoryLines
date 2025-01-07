@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2024 Jan Berges
+# Copyright (C) 2016-2025 Jan Berges
 # This program is free software under the terms of the BSD Zero Clause License.
 
 """Save and load RGB(A) graphics."""
