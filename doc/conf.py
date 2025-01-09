@@ -10,7 +10,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'numpydoc',
-    'm2r2',
+    'myst_parser',
     ]
 
 html_theme = 'sphinx_rtd_theme'
