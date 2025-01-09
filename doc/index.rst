@@ -1,11 +1,9 @@
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
 
-Modules
--------
-
 .. toctree::
-   :maxdepth: 2
+   :caption: Modules
+   :hidden:
 
    modules/plot
    modules/calc
@@ -18,11 +16,9 @@ Modules
    modules/png
    modules/proj
 
-Examples
---------
-
 .. toctree::
-   :maxdepth: 2
+   :caption: Examples
+   :hidden:
 
    examples/example
    examples/faces
@@ -32,8 +28,9 @@ Examples
    examples/project
    examples/shortcut
 
-Indices and tables
-------------------
+.. toctree::
+   :caption: More
+   :hidden:
 
-* :ref:`genindex`
-* :ref:`search`
+   genindex
+   search
