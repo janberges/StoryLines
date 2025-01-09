@@ -33,4 +33,3 @@
    :hidden:
 
    genindex
-   search
