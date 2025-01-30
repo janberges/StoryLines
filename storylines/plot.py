@@ -197,7 +197,7 @@ class Plot():
     font : str, default None
         Predefined font selection. Imitates well-known fonts. Possible values
         are ``'Gill Sans'``, ``'Helvetica'``, ``'Iwona'``, ``'Latin Modern'``,
-        ``'Times'``, and ``'Utopia'``.
+        ``'Times'``, ``'Utopia'``, and ``'Concrete'``.
     fontsize : int, default 10
         Font size for standalone figures in pt.
     single : float, default 8.0
@@ -1021,6 +1021,15 @@ class Plot():
 
                         if self.fontenc is None:
                             self.fontenc = 'T1'
+
+                    elif self.font == 'Concrete':
+                        file.write('\\usepackage{concmath-otf}\n')
+
+                        self.fontenc = None
+
+                        if engine != 'lualatex':
+                            engine = 'xelatex'
+
                     else:
                         file.write('\\usepackage{mathspec}\n')
                         file.write('\\setallmainfonts{%s}\n' % self.font)
