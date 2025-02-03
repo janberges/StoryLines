@@ -1582,7 +1582,8 @@ class Plot():
                     file.write(', %s' % self.lopt)
 
                 if self.lbox:
-                    file.write(', draw=gray, fill=white, rounded corners=1pt')
+                    file.write(', draw=gray, fill=%s, rounded corners=1pt'
+                        % (self.canvas or 'white'))
 
                 file.write('] at (%.3f, %.3f) {' % position(self.lpos))
 
