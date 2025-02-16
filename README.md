@@ -33,7 +33,7 @@ Or from the repository:
 ## Documentation
 
 The documentation and example scripts along with output can be found at
-<https://janberges.github.io/StoryLines>.
+<https://io.janberges.de/StoryLines>.
 
 Note that `storylines.module.member` is equivalent to `storylines.member`.
 
