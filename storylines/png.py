@@ -5,7 +5,8 @@
 
 from __future__ import division
 
-import zlib, struct
+import struct
+import zlib
 
 def save(filename, image):
     """Save image as 8-bit PNG without filtering.
