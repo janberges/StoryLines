@@ -37,19 +37,20 @@ def save(filename, image):
 
         plte = sorted(set(pixels))
 
-        # assign 0 to most common color so that 0 before row does not stand out:
-
-        count = dict()
-
-        for x in pixels:
-            count[x] = count.get(x, 0) + 1
-
-        imax = plte.index(max(count, key=count.get))
-
-        plte[0], plte[imax] = plte[imax], plte[0]
-
         if len(plte) < 256:
             color = 3
+
+            # assign 0 to most common color so that 0 before row (see below)
+            # does not stand out and compression becomes more effective:
+
+            count = dict()
+
+            for x in pixels:
+                count[x] = count.get(x, 0) + 1
+
+            imax = plte.index(max(count, key=count.get))
+
+            plte[0], plte[imax] = plte[imax], plte[0]
 
             image = [[[plte.index(col)] for col in row] for row in image]
 
