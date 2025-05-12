@@ -536,7 +536,7 @@ class Plot():
             shifts = [shifts] * len(x)
 
         for island in islands(len(weights),
-            lambda n: any(weights[max(n - 1, 0):n + 2])):
+                lambda n: any(weights[max(n - 1, 0):n + 2])):
 
             if len(island) > 1:
                 n = slice(island[0], island[-1] + 1)

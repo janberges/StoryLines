@@ -129,8 +129,9 @@ def shortcut(points, length=None, length_rel=1):
                     v = (dx[i] * dyij - dy[i] * dxij) / det
 
                     if 0 <= v < 1:
-                        if u == 1 and v == 0 and N > 4 == len(shortcut(
-                            [(x[k], y[k]) for k in (i, i + 2, j - 1, j + 1)])):
+                        if (u == 1 and v == 0
+                                and N > 4 == len(shortcut([(x[k], y[k])
+                                    for k in (i, i + 2, j - 1, j + 1)]))):
                             print('Preserve non-crossing intersection '
                                 '(%.2g, %.2g)' % (x[j], y[j]))
                             continue

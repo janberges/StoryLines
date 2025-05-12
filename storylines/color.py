@@ -62,8 +62,7 @@ class Color(object):
         if i.model == u.model:
             if i.model == 'RGB':
                 return Color(i.A + u.A, i.B + u.B, i.C + u.C)
-            if i.model == 'HSV'\
-            or i.model == 'PSV':
+            if i.model == 'HSV' or i.model == 'PSV':
                 if i.C == u.C == 0:
                     return Color((i.A + u.A) / 2, (i.B + u.B) / 2, 0, i.model)
 
@@ -77,8 +76,7 @@ class Color(object):
     def __mul__(i, u):
         if i.model == 'RGB':
             return Color(i.A * u, i.B * u, i.C * u)
-        if i.model == 'HSV'\
-        or i.model == 'PSV':
+        if i.model == 'HSV' or i.model == 'PSV':
             return Color(i.A, i.B, i.C * u, i.model)
 
     __rmul__ = __mul__
