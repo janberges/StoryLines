@@ -128,7 +128,7 @@ def colormap(*args):
             (0, Color(0.0, 1, 255, 'PSV'), math.sqrt),
             (1, Color(5.5, 1, 255, 'PSV')),
             (None, Color(255, 255, 255, 'RGB')),
-            )
+        )
 
         AFMhot = colormap( # Gnuplot
             (0.00, Color(  0,   0,   0)),
@@ -136,7 +136,7 @@ def colormap(*args):
             (0.50, Color(255, 128,   0)),
             (0.75, Color(255, 255, 128)),
             (1.00, Color(255, 255, 255)),
-            )
+        )
     """
     default = Color(255, 255, 255)
     points = []

@@ -9,12 +9,8 @@ import re
 
 from .calc import divide, subtract, cross, dot, length, distance
 
-def projection(
-        r=[0.0, 0.0, 0.0], # object
-        R=[0.0, -1.0, 0.0], # observer
-        T=[0.0, 0.0, 0.0], # target
-        U=[0.0, 0.0, 1.0], # up
-        ):
+def projection(r=[0.0, 0.0, 0.0], R=[0.0, -1.0, 0.0],
+        T=[0.0, 0.0, 0.0], U=[0.0, 0.0, 1.0]):
     """Project 3D point onto 2D screen.
 
     Parameters
@@ -24,9 +20,9 @@ def projection(
     R : list of float
         Observer position.
     T : list of float
-        Viewing direction (from observer).
+        Viewing direction (from observer to target).
     U : list of float
-        Vertical direction.
+        Vertical direction (up).
 
     Returns
     -------

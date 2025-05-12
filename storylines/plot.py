@@ -502,7 +502,7 @@ class Plot():
             yref=yref,
 
             options=options,
-            )
+        )
 
         if zindex is None:
             self.lines.append(new_line)
@@ -1014,7 +1014,7 @@ class Plot():
                             '\\usepackage{newtxtext, newtxmath}\n',
                         'Utopia':
                             '\\usepackage{fourier}',
-                        }
+                    }
 
                     if self.font in texfonts:
                         file.write(texfonts[self.font])
@@ -1421,7 +1421,7 @@ class Plot():
                             points[j] = (
                                 points[i][0] + dx * rescale,
                                 points[i][1] + dy * rescale,
-                                )
+                            )
 
                     if line['jump']:
                         segments = jump(points, distance=line['jump'])
@@ -1541,7 +1541,7 @@ class Plot():
                         t=(y, extent['y']),
                         R=(x, extent['x'] + self.right),
                         T=(y, extent['y'] + self.top),
-                        )
+                    )
 
                     abbreviations = dict(c='lr', C='LR', m='bt', M='BT')
 

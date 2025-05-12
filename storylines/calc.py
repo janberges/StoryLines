@@ -189,7 +189,7 @@ def cross(A, B):
         A[1] * B[2] - A[2] * B[1],
         A[2] * B[0] - A[0] * B[2],
         A[0] * B[1] - A[1] * B[0],
-        ]
+    ]
 
 def length(A):
     """Calculate length of vector.
@@ -262,7 +262,7 @@ def bonds(R1, R2=None, d1=0.0, d2=None, dmin=0.1, dmax=5.0):
                 bonds.append([
                     [(1 - s1) * a + s1 * b for a, b in zip(r1, r2)],
                     [s2 * a + (1 - s2) * b for a, b in zip(r1, r2)],
-                    ])
+                ])
 
     return bonds
 

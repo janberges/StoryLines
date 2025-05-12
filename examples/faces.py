@@ -8,7 +8,7 @@ corners = [
     [0.5, 0.0, 0.0],
     [0.0, 0.5 * math.sqrt(3), 0.0],
     [0.0, 0.5 / math.sqrt(3), math.sqrt(2) / math.sqrt(3)]
-    ]
+]
 
 objects = [(bond, dict())
     for bond in storylines.faces(R=corners, d=0.2, dmin=0.9, dmax=1.1)]
