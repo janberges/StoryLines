@@ -1563,15 +1563,17 @@ class Plot():
             # add label:
 
             if self.label is not None:
+                label = self.label
+
                 if self.labelformat is not None:
-                    self.label = self.labelformat(self.label)
+                    label = self.labelformat(label)
 
                 if self.labelsize is not None:
-                    self.label = ('\\fontsize{%d}{%d}\\selectfont %s'
-                        % (self.labelsize, self.labelsize, self.label))
+                    label = ('\\fontsize{%d}{%d}\\selectfont %s'
+                        % (self.labelsize, self.labelsize, label))
 
                 file.write('\n\\node at (%.3f, %.3f)' % position(self.labelpos))
-                file.write(' [%s] {%s};' % (self.labelopt, self.label))
+                file.write(' [%s] {%s};' % (self.labelopt, label))
 
             # add legend:
 
