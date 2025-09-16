@@ -434,6 +434,7 @@ class Plot():
         label : str, default None
             Label for legend entry. The special label ``*next*`` adds a second
             example line with the current line style to the next legend entry.
+            ``*none*`` adds an empty legend entry, i.e., some whitespace.
         miter : bool, default False
             Draw fatbands using `miter_butt` function? If ``False``, the
             `fatband` function is used.
@@ -1617,6 +1618,9 @@ class Plot():
                             row -= 0.2
                         else:
                             n += 1
+
+                            if label == '*none*':
+                                continue
 
                         if label:
                             file.write('\n    \\node '
