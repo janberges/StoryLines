@@ -53,7 +53,9 @@ def save(filename, image):
 
             plte[0], plte[imax] = plte[imax], plte[0]
 
-            image = [[[plte.index(col)] for col in row] for row in image]
+            indices = dict((col, plte.index(col)) for col in plte)
+
+            image = [[[indices[col]] for col in row] for row in image]
 
             plte = [x for col in plte for x in col]
 
