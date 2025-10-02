@@ -3,7 +3,7 @@
 
 """Line plots with Python & TikZ."""
 
-__version__ = '0.15'
+__version__ = '0.16'
 
 from .plot import Plot
 from .calc import (order_of_magnitude, power_of_ten, xround, xround_mantissa,
