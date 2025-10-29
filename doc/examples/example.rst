@@ -5,4 +5,4 @@ Example
    :language: python
 
 .. image:: ../../examples/example.png
-    :alt: Output
+   :alt: Output

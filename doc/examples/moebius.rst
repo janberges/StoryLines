@@ -5,4 +5,4 @@ Moebius
    :language: python
 
 .. image:: ../../examples/moebius.png
-    :alt: Output
+   :alt: Output

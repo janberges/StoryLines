@@ -5,4 +5,4 @@ Shortcuts
    :language: python
 
 .. image:: ../../examples/shortcut.png
-    :alt: Output
+   :alt: Output

@@ -5,4 +5,4 @@ Projection
    :language: python
 
 .. image:: ../../examples/project.png
-    :alt: Output
+   :alt: Output

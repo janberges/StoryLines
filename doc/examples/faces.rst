@@ -5,4 +5,4 @@ Tetrahedron
    :language: python
 
 .. image:: ../../examples/faces.png
-    :alt: Output
+   :alt: Output

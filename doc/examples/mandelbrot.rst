@@ -5,4 +5,4 @@ Mandelbrot
    :language: python
 
 .. image:: ../../examples/mandelbrot.png
-    :alt: Output
+   :alt: Output

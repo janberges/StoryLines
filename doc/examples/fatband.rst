@@ -5,4 +5,4 @@ Fatbands
    :language: python
 
 .. image:: ../../examples/fatband.png
-    :alt: Output
+   :alt: Output
