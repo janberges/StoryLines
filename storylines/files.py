@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2025 Jan Berges
+# Copyright (C) 2016-2026 Jan Berges
 # This program is free software under the terms of the BSD Zero Clause License.
 
 """Typeset TeX, rasterize PDF."""
