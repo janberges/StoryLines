@@ -780,7 +780,7 @@ class Plot():
             self.bottom = self.margmin
 
             if self.xaxis:
-                xticks = ((self.xticks is None or bool(self.xticks))
+                xticks = ((self.xticks is None or len(self.xticks) > 0)
                     and self.xmarks and self.xlabels)
 
                 if self.xlabel or xticks:
@@ -793,7 +793,7 @@ class Plot():
             self.left = self.margmin
 
             if self.yaxis:
-                yticks = ((self.yticks is None or bool(self.yticks))
+                yticks = ((self.yticks is None or len(self.yticks) > 0)
                     and self.ymarks and self.ylabels)
 
                 if self.ylabel or yticks:
@@ -808,7 +808,7 @@ class Plot():
             if self.colorbar:
                 self.right += self.gap + self.bar
 
-                zticks = ((self.zticks is None or bool(self.zticks))
+                zticks = ((self.zticks is None or len(self.zticks) > 0)
                     and self.zmarks and self.zlabels)
 
                 if self.zlabel or zticks:
