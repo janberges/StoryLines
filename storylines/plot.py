@@ -1637,9 +1637,6 @@ class Plot():
                             if (fill or draw) and mark:
                                 options['mark_indices'] = '{2}'
 
-                            file.write('\n    \\draw%s' % csv(options))
-                            file.write('\n      plot coordinates ')
-
                             if fill:
                                 top = row - 0.1
                                 bot = row + 0.1
@@ -1652,7 +1649,8 @@ class Plot():
                                 x = [0.5]
                                 y = [row]
 
-                            file.write('{')
+                            file.write('\n    \\draw%s' % csv(options))
+                            file.write('\n      plot coordinates {')
 
                             for m in range(len(x)):
                                 file.write(' (%.3f, %g)'
