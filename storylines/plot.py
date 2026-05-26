@@ -921,7 +921,9 @@ class Plot():
                     if -self.eps <= position <= extent[x] + self.eps]
             else:
                 ticks[x] = [(scale[x] * (n - lower[x]), xformat(n))
-                    for n in multiples(lower[x], upper[x],
+                    for n in multiples(
+                        lower[x] - self.eps / scale[x],
+                        upper[x] + self.eps / scale[x],
                         getattr(self, x + 'step') or xround_mantissa(
                         getattr(self, x + 'spacing') / scale[x]))]
 
@@ -942,7 +944,9 @@ class Plot():
 
                         positions = []
                     else:
-                        positions = multiples(lower[x], upper[x],
+                        positions = multiples(
+                            lower[x] - self.eps / scale[x],
+                            upper[x] + self.eps / scale[x],
                             getattr(self, x + 'minorstep') or xround_mantissa(
                             getattr(self, x + 'minorspacing') / scale[x]))
 
