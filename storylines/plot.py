@@ -928,7 +928,7 @@ class Plot():
                         lower[x] - self.eps / scale[x],
                         upper[x] + self.eps / scale[x],
                         getattr(self, x + 'step') or xround_mantissa(
-                        getattr(self, x + 'spacing') / scale[x]))]
+                            getattr(self, x + 'spacing') / scale[x]))]
 
             if not getattr(self, x + 'labels'):
                 ticks[x] = [(position, False) for position, label in ticks[x]]
@@ -951,7 +951,7 @@ class Plot():
                             lower[x] - self.eps / scale[x],
                             upper[x] + self.eps / scale[x],
                             getattr(self, x + 'minorstep') or xround_mantissa(
-                            getattr(self, x + 'minorspacing') / scale[x]))
+                                getattr(self, x + 'minorspacing') / scale[x]))
 
                 minorticks[x] = [scale[x] * (n - lower[x]) for n in positions]
 
