@@ -188,6 +188,8 @@ class Plot():
         Path to background image.
     preamble : str, default ''
         Definitions for standalone figures.
+    packages : list of str
+        Names of additional LaTeX packages to be added to the preamble.
     inputenc : str, default None
         Text encoding, e.g., ``'utf8'``.
     fontenc : str, default None
@@ -312,6 +314,7 @@ class Plot():
         self.background = None
 
         self.preamble = ''
+        self.packages = []
         self.inputenc = None
         self.fontenc = None
         self.font = None
@@ -1045,6 +1048,9 @@ class Plot():
 
                 if self.preamble:
                     file.write('%s\n' % self.preamble.strip())
+
+                for package in self.packages:
+                    file.write('\\usepackage{%s}\n' % package)
 
                 for line in self.lines:
                     if ('mark' in line['options'] and line['options']['mark']
