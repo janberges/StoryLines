@@ -147,7 +147,7 @@ class Plot():
     ltop : str, default None
         Legend title. TikZ options that apply to all legend entries may be set
         or overridden by prepending a ``\\tikzset{...}`` command to this value.
-    lwid : float, default 4.0
+    lwid : float or list of float, default 4.0
         Width of legend columns in units of `llen`.
     tick : float, default 0.07
         Length of tick marks in cm.
@@ -1624,6 +1624,11 @@ class Plot():
 
                     n = 0
 
+                    if not hasattr(self.lwid, '__len__'):
+                        lwid = [self.lwid] * self.lcol
+                    else:
+                        lwid = self.lwid
+
                     for options, label in labels:
                         col = n // lrow
                         row = n % lrow
@@ -1640,7 +1645,7 @@ class Plot():
                         if label:
                             file.write('\n    \\node '
                                 '[right] at (%.3f, %d) {%s};'
-                                % (col * self.lwid + 1, row, label))
+                                % (sum(lwid[:col]) + 1, row, label))
 
                         fill = options.get('fill', 'none') != 'none'
                         draw = not options.get('only_marks')
@@ -1668,7 +1673,7 @@ class Plot():
 
                             for m in range(len(x)):
                                 file.write(' (%.3f, %g)'
-                                    % (col * self.lwid + x[m], y[m]))
+                                    % (sum(lwid[:col]) + x[m], y[m]))
 
                             file.write(' };')
 
