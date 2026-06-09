@@ -131,7 +131,7 @@ class Plot():
         Draw box around legend?
     lcol : int, default 1
         Number of columns in legend.
-    llen : str, default '4mm'
+    llen : str, default '9pt'
         Length of example lines next to labels.
     lopt : str, default None
         Legend options, e.g., for orientation.
@@ -285,7 +285,7 @@ class Plot():
         self.lbls = '\\baselineskip'
         self.lbox = False
         self.lcol = 1
-        self.llen = '4mm'
+        self.llen = '9pt'
         self.lopt = None
         self.lpos = 'cm'
         self.lput = True
