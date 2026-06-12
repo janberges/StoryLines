@@ -1020,7 +1020,7 @@ class Plot():
                         'Times':
                             '\\usepackage{newtxtext, newtxmath}\n',
                         'Utopia':
-                            '\\usepackage{fourier}',
+                            '\\usepackage{fourier}\n',
                     }
 
                     if self.font in texfonts:
