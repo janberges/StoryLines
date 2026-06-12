@@ -188,8 +188,9 @@ class Plot():
         Path to background image.
     preamble : str, default ''
         Definitions for standalone figures.
-    packages : list of str
-        Names of additional LaTeX packages to be loaded before preamble.
+    packages : list, default []
+        Additional LaTeX package imports and macro definitions before preamble,
+        e.g., ``['bm', '\\\\let\\\\vec\\\\bm', ('colorlinks', 'hyperref')]``.
     inputenc : str, default None
         Text encoding, e.g., ``'utf8'``.
     fontenc : str, default None
@@ -998,38 +999,38 @@ class Plot():
                     % ('article' if 10 <= self.fontsize <= 12 else 'scrartcl',
                         self.fontsize))
 
+                packages = []
+
                 if self.inputenc and 'inputenc' not in self.preamble:
-                    file.write('\\usepackage[%s]{inputenc}\n' % self.inputenc)
+                    packages.append((self.inputenc, 'inputenc'))
 
                 if self.font is not None:
                     texfonts = {
-                        'Gill Sans':
-                            '\\usepackage[math]{iwona}\n'
-                            '\\usepackage[sfdefault]{cabin}\n'
-                            '\\usepackage[italic, noplusnominus]{mathastext}\n',
-                        'Helvetica':
-                            '\\usepackage{sansmathfonts}\n'
-                            '\\usepackage[scaled]{helvet}\n'
-                            '\\let\\familydefault\\sfdefault\n'
-                            '\\usepackage[italic]{mathastext}\n',
-                        'Iwona':
-                            '\\usepackage[math]{iwona}\n',
-                        'Latin Modern':
-                            '\\usepackage{lmodern}\n',
-                        'Times':
-                            '\\usepackage{newtxtext, newtxmath}\n',
-                        'Utopia':
-                            '\\usepackage{fourier}\n',
+                        'Gill Sans': [
+                            ('math', 'iwona'),
+                            ('sfdefault', 'cabin'),
+                            ('italic', 'noplusnominus', 'mathastext'),
+                        ],
+                        'Helvetica': [
+                            'sansmathfonts',
+                            ('scaled', 'helvet'),
+                            '\\let\\familydefault\\sfdefault',
+                            ('italic', 'mathastext'),
+                        ],
+                        'Iwona': [('math', 'iwona')],
+                        'Latin Modern': ['lmodern'],
+                        'Times': ['newtxtext', 'newtxmath'],
+                        'Utopia': ['fourier'],
                     }
 
                     if self.font in texfonts:
-                        file.write(texfonts[self.font])
+                        packages.extend(texfonts[self.font])
 
                         if self.fontenc is None:
                             self.fontenc = 'T1'
 
                     elif self.font == 'Concrete':
-                        file.write('\\usepackage{concmath-otf}\n')
+                        packages.append('concmath-otf')
 
                         self.fontenc = None
 
@@ -1037,16 +1038,28 @@ class Plot():
                             engine = 'xelatex'
 
                     else:
-                        file.write('\\usepackage{mathspec}\n')
-                        file.write('\\setallmainfonts{%s}\n' % self.font)
+                        packages.append('mathspec')
+                        packages.append('\\setallmainfonts{%s}' % self.font)
 
                         engine = 'xelatex'
 
                 if self.fontenc and 'fontenc' not in self.preamble:
-                    file.write('\\usepackage[%s]{fontenc}\n' % self.fontenc)
+                    packages.append((self.fontenc, 'fontenc'))
 
-                for package in ['tikz'] + self.packages:
-                    file.write('\\usepackage{%s}\n' % package)
+                packages.append('tikz')
+
+                for package in packages + self.packages:
+                    while len(package) == 1:
+                        package = package[0]
+
+                    if isinstance(package, str):
+                        if '\\' in package:
+                            file.write('%s\n' % package)
+                        else:
+                            file.write('\\usepackage{%s}\n' % package)
+                    else:
+                        file.write('\\usepackage[%s]{%s}\n'
+                            % (', '.join(package[:-1]), package[-1]))
 
                 if self.preamble:
                     file.write('%s\n' % self.preamble.strip())
