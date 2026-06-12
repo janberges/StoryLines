@@ -550,8 +550,8 @@ class Plot():
                 self.line(x[n], y[n], weights=weights[n], shifts=shifts[n],
                     fill=fill, draw=draw, **options)
 
-    def compline(self, x, y, weights=1.0, colors=True, threshold=0.0,
-            **options):
+    def compline(self, x, y, weights=1.0, colors=True, labels=None,
+            threshold=0.0, **options):
         """Represent points of multiple weights as composite fatband.
 
         Parameters
@@ -566,6 +566,8 @@ class Plot():
             Colors of different components. Any objects whose representations
             as a string are valid LaTeX colors can be used. If ``True``, the
             fill color is the same as the stroke color.
+        labels : list of str or str, default None
+            Labels of different components.
         threshold : float, default 0.0
             Minimum displayed weight.
         **options
@@ -586,6 +588,11 @@ class Plot():
         except TypeError:
             colors = [colors] * len(x)
 
+        try:
+            iter(labels)
+        except TypeError:
+            labels = [labels] * len(x)
+
         shifts = []
 
         for parts in weights:
@@ -599,8 +606,10 @@ class Plot():
                 shift[m] -= (shift[-1] - part) / 2
 
         sgn = +1
-        for weights, shifts, color in zip(zip(*weights), zip(*shifts), colors):
-            self.fatband(x, y, weights, shifts, fill=color, sgn=sgn, **options)
+        for weights, shifts, color, label in zip(zip(*weights), zip(*shifts),
+                colors, labels):
+            self.fatband(x, y, weights, shifts, fill=color, label=label,
+                sgn=sgn, **options)
             sgn *= -1
 
     def node(self, x, y, content, name=None, **options):
