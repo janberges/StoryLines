@@ -997,7 +997,6 @@ class Plot():
                 file.write('\\documentclass[class=%s, %dpt]{standalone}\n'
                     % ('article' if 10 <= self.fontsize <= 12 else 'scrartcl',
                         self.fontsize))
-                file.write('\\usepackage{tikz}\n')
 
                 if self.inputenc and 'inputenc' not in self.preamble:
                     file.write('\\usepackage[%s]{inputenc}\n' % self.inputenc)
@@ -1046,7 +1045,7 @@ class Plot():
                 if self.fontenc and 'fontenc' not in self.preamble:
                     file.write('\\usepackage[%s]{fontenc}\n' % self.fontenc)
 
-                for package in self.packages:
+                for package in ['tikz'] + self.packages:
                     file.write('\\usepackage{%s}\n' % package)
 
                 if self.preamble:
