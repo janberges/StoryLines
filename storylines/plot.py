@@ -189,7 +189,7 @@ class Plot():
     preamble : str, default ''
         Definitions for standalone figures.
     packages : list of str
-        Names of additional LaTeX packages to be added to the preamble.
+        Names of additional LaTeX packages to be loaded before preamble.
     inputenc : str, default None
         Text encoding, e.g., ``'utf8'``.
     fontenc : str, default None
@@ -1046,11 +1046,11 @@ class Plot():
                 if self.fontenc and 'fontenc' not in self.preamble:
                     file.write('\\usepackage[%s]{fontenc}\n' % self.fontenc)
 
-                if self.preamble:
-                    file.write('%s\n' % self.preamble.strip())
-
                 for package in self.packages:
                     file.write('\\usepackage{%s}\n' % package)
+
+                if self.preamble:
+                    file.write('%s\n' % self.preamble.strip())
 
                 for line in self.lines:
                     if ('mark' in line['options'] and line['options']['mark']
