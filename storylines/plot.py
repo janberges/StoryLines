@@ -1064,9 +1064,6 @@ class Plot():
                         file.write('\\usepackage[%s]{%s}\n'
                             % (', '.join(package[:-1]), package[-1]))
 
-                if self.preamble:
-                    file.write('%s\n' % self.preamble.strip())
-
                 libraries = []
 
                 if 'plotmarks' not in self.libraries:
@@ -1078,6 +1075,9 @@ class Plot():
 
                 for library in libraries + self.libraries:
                     file.write('\\usetikzlibrary{%s}\n' % library)
+
+                if self.preamble:
+                    file.write('%s\n' % self.preamble.strip())
 
                 file.write('\\begin{document}\n\\noindent\n')
 
