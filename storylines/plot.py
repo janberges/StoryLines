@@ -191,6 +191,8 @@ class Plot():
     packages : list, default []
         Additional LaTeX package imports and macro definitions before preamble,
         e.g., ``['bm', '\\\\let\\\\vec\\\\bm', ('colorlinks', 'hyperref')]``.
+    libraries : list, default []
+        TikZ libraries. ``'plotmarks'`` is automatically added if needed.
     inputenc : str, default None
         Text encoding, e.g., ``'utf8'``.
     fontenc : str, default None
@@ -316,6 +318,7 @@ class Plot():
 
         self.preamble = ''
         self.packages = []
+        self.libraries = []
         self.inputenc = None
         self.fontenc = None
         self.font = None
@@ -1064,11 +1067,17 @@ class Plot():
                 if self.preamble:
                     file.write('%s\n' % self.preamble.strip())
 
-                for line in self.lines:
-                    if ('mark' in line['options'] and line['options']['mark']
-                            not in ['*', '+', 'x', 'ball']):
-                        file.write('\\usetikzlibrary{plotmarks}\n')
-                        break
+                libraries = []
+
+                if 'plotmarks' not in self.libraries:
+                    for line in self.lines:
+                        if ('mark' in line['options'] and line['options']
+                                ['mark'] not in ['*', '+', 'x', 'ball']):
+                            libraries.append('plotmarks')
+                            break
+
+                for library in libraries + self.libraries:
+                    file.write('\\usetikzlibrary{%s}\n' % library)
 
                 file.write('\\begin{document}\n\\noindent\n')
 
