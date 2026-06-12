@@ -1411,7 +1411,7 @@ class Plot():
 
                     for previous in labels:
                         if label[1] and previous == label:
-                            if not re.search(r'^\*.*\*$', label[1]):
+                            if not re.search('^\\*.*\\*$', label[1]):
                                 break
                     else:
                         labels.append(label)
