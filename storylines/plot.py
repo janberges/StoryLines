@@ -140,8 +140,10 @@ class Plot():
         coordinates.
     lput : bool, default True
         Draw legend?
-    lrow : int, default 0
-        Number of rows in legend.
+    lrmo : bool, default False
+        Arrange legend entries in row-major order?
+    lrow : int, default None
+        Number of rows in legend. If set, `lcol` is ignored.
     lsep : str, default None
         Space between legend title and entries, e.g., ``'6pt'``.
     ltop : str, default None
@@ -292,7 +294,8 @@ class Plot():
         self.lopt = None
         self.lpos = 'cm'
         self.lput = True
-        self.lrow = 0
+        self.lrmo = False
+        self.lrow = None
         self.lsep = None
         self.ltop = None
         self.lwid = 4.0
@@ -1655,7 +1658,12 @@ class Plot():
 
                     file.write(']')
 
-                    lrow = self.lrow or 1 + (len(labels) - 1) // self.lcol
+                    if self.lrow is None:
+                        lcol = self.lcol
+                        lrow = 1 + (len(labels) - 1) // lcol
+                    else:
+                        lrow = self.lrow
+                        lcol = 1 + (len(labels) - 1) // lrow
 
                     spacer = True
 
@@ -1667,8 +1675,12 @@ class Plot():
                         lwid = self.lwid
 
                     for options, label in labels:
-                        col = n // lrow
-                        row = n % lrow
+                        if self.lrmo:
+                            row = n // lcol
+                            col = n % lcol
+                        else:
+                            col = n // lrow
+                            row = n % lrow
 
                         if label == '*next*':
                             label = None
