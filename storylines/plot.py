@@ -941,8 +941,10 @@ class Plot():
             # use ticks or choose ticks with a spacing close to the given one:
 
             if getattr(self, x + 'log'):
-                xformat = lambda logx: getattr(self, x + 'format')(10 ** logx)
                 setattr(self, x + 'step', 1)
+
+                def xformat(logx):
+                    return getattr(self, x + 'format')(10 ** logx)
             else:
                 xformat = getattr(self, x + 'format')
 
