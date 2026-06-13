@@ -1425,7 +1425,13 @@ class Plot():
                                 * scale['y']), line['options'][option])
 
                 if line['label'] is not None:
-                    label = [line['options'], line['label']]
+                    options = line['options']
+
+                    if line['weights'] is not None:
+                        options = options.copy()
+                        options['thickness'] = line['thickness']
+
+                    label = [options, line['label']]
 
                     for previous in labels:
                         if label[1] and previous == label:
@@ -1682,6 +1688,14 @@ class Plot():
                         draw = not options.get('only_marks')
                         draw &= not options.get('draw') == 'none'
                         mark = 'mark' in options
+
+                        thickness = options.pop('thickness', False)
+
+                        if thickness and fill and not draw and not mark:
+                            options['line_width'] = '%gcm' % thickness
+                            options['line_cap'] = 'butt'
+                            options['draw'] = options.pop('fill')
+                            fill, draw = draw, fill
 
                         if fill or draw or mark:
                             if (fill or draw) and mark:
