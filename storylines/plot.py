@@ -84,6 +84,8 @@ class Plot():
     xminorticks, yminorticks : list, default None
         List of minor-tick positions. Minor ticks that fall on major ticks are
         omitted.
+    xminormarks, yminormarks : bool, default True
+        Show minor tick marks?
     xminorstep, yminorstep : float, default None
         Exact minor-tick increment.
     xmin, ymin, zmin : float, default None
@@ -269,6 +271,7 @@ class Plot():
 
         for x in 'xy':
             setattr(self, x + 'minorticks', None)
+            setattr(self, x + 'minormarks', True)
             setattr(self, x + 'minorstep', None)
 
         self.lower = 'blue'
@@ -1292,9 +1295,9 @@ class Plot():
                     # draw tick marks and labels:
 
                     if (self.xaxis and self.xmarks and
-                        (ticks['x'] or minorticks['x']) or
+                        (ticks['x'] or self.xminormarks and minorticks['x']) or
                         self.yaxis and self.ymarks and
-                        (ticks['y'] or minorticks['y'])):
+                        (ticks['y'] or self.yminormarks and minorticks['y'])):
 
                         file.write('\n\\draw [line cap=butt]')
 
@@ -1309,9 +1312,10 @@ class Plot():
                                 if label:
                                     file.write(' node [below] {%s}' % label)
 
-                            for x in minorticks['x']:
-                                file.write('\n  (%.3f, %.3f) -- +(0, %.3f)'
-                                    % (x, origin['y'], -self.minortick))
+                            if self.xminormarks:
+                                for x in minorticks['x']:
+                                    file.write('\n  (%.3f, %.3f) -- +(0, %.3f)'
+                                        % (x, origin['y'], -self.minortick))
 
                         if self.yaxis and self.ymarks:
                             for y, label in ticks['y']:
@@ -1326,9 +1330,10 @@ class Plot():
                                         % ('left' if origin['x'] else
                                         'rotate=90, above', label))
 
-                            for y in minorticks['y']:
-                                file.write('\n  (%.3f, %.3f) -- +(%.3f, 0)'
-                                    % (origin['x'], y, -self.minortick))
+                            if self.yminormarks:
+                                for y in minorticks['y']:
+                                    file.write('\n  (%.3f, %.3f) -- +(%.3f, 0)'
+                                        % (origin['x'], y, -self.minortick))
 
                         file.write(';')
 
