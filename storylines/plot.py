@@ -72,6 +72,7 @@ class Plot():
         List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``. If the label is
         ``None``, the tick mark is not drawn (but possibe grid lines are). If it
         otherwise evaluates to ``False``, the tick mark but no label is drawn.
+        For logarithmic axes, the tick positions are interpreted as exponents.
     xmarks, ymarks, zmarks : bool, default True
         Show tick marks and labels?
     xlabels, ylabels, zlabels : bool, default True
@@ -89,6 +90,8 @@ class Plot():
         Lower axis limit.
     xmax, ymax, zmax : float, default None
         Upper axis limit.
+    xlog, ylog, zlog : bool, default False
+        Use base-10 logarithmic axes?
     dleft, dright, dbottom, dtop : float, default 0.0
         Protrusion of x- and y-axis limits into margins in cm.
     xpadding, ypadding, zpadding : float, default 0.0
@@ -258,6 +261,7 @@ class Plot():
             setattr(self, x + 'step', None)
             setattr(self, x + 'min', None)
             setattr(self, x + 'max', None)
+            setattr(self, x + 'log', False)
             setattr(self, x + 'padding', 0.0)
             setattr(self, x + 'close', False)
             setattr(self, x + 'format',
@@ -775,6 +779,17 @@ class Plot():
             lower[x] -= getattr(self, x + 'padding')
             upper[x] += getattr(self, x + 'padding')
 
+            if getattr(self, x + 'log'):
+                lower[x] = math.log10(lower[x])
+                upper[x] = math.log10(upper[x])
+
+                for line in self.lines:
+                    if x == 'z':
+                        if line[x] is not None:
+                            line[x] = math.log10(line[x])
+                    else:
+                        line[x] = [math.log10(value) for value in line[x]]
+
             # embed zero- and one-dimensional data:
 
             if lower[x] == upper[x]:
@@ -922,7 +937,11 @@ class Plot():
         for x in extent.keys():
             # use ticks or choose ticks with a spacing close to the given one:
 
-            xformat = getattr(self, x + 'format')
+            if getattr(self, x + 'log'):
+                xformat = lambda logx: getattr(self, x + 'format')(10 ** logx)
+                setattr(self, x + 'step', 1)
+            else:
+                xformat = getattr(self, x + 'format')
 
             if getattr(self, x + 'ticks') is not None:
                 ticks[x] = [(scale[x] * (n - lower[x]), label) for n, label in
@@ -950,7 +969,11 @@ class Plot():
             positions = getattr(self, x + 'minorticks')
 
             if positions is None:
-                if getattr(self, x + 'minorstep') is not None:
+                if getattr(self, x + 'log'):
+                    positions = [math.log10(n) + x
+                        for x in range(int(lower[x]), int(upper[x]))
+                        for n in range(1, 10)]
+                elif getattr(self, x + 'minorstep') is not None:
                     positions = multiples(
                         lower[x] - self.eps / scale[x],
                         upper[x] + self.eps / scale[x],
