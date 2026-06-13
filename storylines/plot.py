@@ -1514,7 +1514,7 @@ class Plot():
                         line['omit'] = 'mark' not in line['options']
 
                     for segment in segments:
-                        options = line['options'].copy()
+                        options = line['options']
 
                         if line['omit']:
                             segment = relevant(segment[::line['sgn']],
@@ -1523,6 +1523,7 @@ class Plot():
                         elif line['cut'] and line['options'].get('mark') \
                                 and not line['options'].get('only_marks'):
 
+                            options = options.copy()
                             options['mark_indices'] = '{%s}' % ','.join(str(n)
                                 for n, point in enumerate(segment, 1)
                                 if point in points)
