@@ -81,13 +81,8 @@ class Plot():
     xstep, ystep, zstep : float, default None
         Exact tick increment.
     xminorticks, yminorticks : list, default None
-        List of minor-tick positions. There is currently no intelligent way to
-        set the minor ticks depending on the major ticks. However, minor ticks
-        that fall on major ticks are omitted.
-    xminormarks, yminormarks : bool, default False
-        Show minor tick marks?
-    xminorspacing, yminorspacing : float, default None
-        Approximate minor-tick spacing in cm.
+        List of minor-tick positions. Minor ticks that fall on major ticks are
+        omitted.
     xminorstep, yminorstep : float, default None
         Exact minor-tick increment.
     xmin, ymin, zmin : float, default None
@@ -270,8 +265,6 @@ class Plot():
 
         for x in 'xy':
             setattr(self, x + 'minorticks', None)
-            setattr(self, x + 'minormarks', False)
-            setattr(self, x + 'minorspacing', None)
             setattr(self, x + 'minorstep', None)
 
         self.lower = 'blue'
@@ -954,29 +947,25 @@ class Plot():
         minorticks = {}
 
         for x in 'xy':
-            if getattr(self, x + 'minormarks') or self.minorgrid:
-                positions = getattr(self, x + 'minorticks')
+            positions = getattr(self, x + 'minorticks')
 
-                if positions is None:
-                    if (getattr(self, x + 'minorstep') is None and
-                        getattr(self, x + 'minorspacing') is None):
+            if positions is None:
+                if getattr(self, x + 'minorstep') is not None:
+                    positions = multiples(
+                        lower[x] - self.eps / scale[x],
+                        upper[x] + self.eps / scale[x],
+                        getattr(self, x + 'minorstep'))
+                else:
+                    positions = []
 
-                        positions = []
-                    else:
-                        positions = multiples(
-                            lower[x] - self.eps / scale[x],
-                            upper[x] + self.eps / scale[x],
-                            getattr(self, x + 'minorstep') or xround_mantissa(
-                                getattr(self, x + 'minorspacing') / scale[x]))
+            minorticks[x] = [scale[x] * (n - lower[x]) for n in positions]
 
-                minorticks[x] = [scale[x] * (n - lower[x]) for n in positions]
+            minorticks[x] = [minor for minor in minorticks[x]
+                if not any(abs(major - minor) < self.resolution
+                    for major, label in ticks[x])]
 
-                minorticks[x] = [minor for minor in minorticks[x]
-                    if not any(abs(major - minor) < self.resolution
-                        for major, label in ticks[x])]
-
-                minorticks[x] = [position for position in minorticks[x]
-                    if -self.eps <= position <= extent[x] + self.eps]
+            minorticks[x] = [position for position in minorticks[x]
+                if -self.eps <= position <= extent[x] + self.eps]
 
         # handle horizontal and vertical lines:
 
@@ -1279,10 +1268,10 @@ class Plot():
                 if self.xaxis or self.yaxis:
                     # draw tick marks and labels:
 
-                    if (self.xaxis and (self.xmarks and ticks['x'] or
-                        self.xminormarks and minorticks['x']) or
-                        self.yaxis and (self.ymarks and ticks['y'] or
-                        self.yminormarks and minorticks['y'])):
+                    if (self.xaxis and self.xmarks and
+                        (ticks['x'] or minorticks['x']) or
+                        self.yaxis and self.ymarks and
+                        (ticks['y'] or minorticks['y'])):
 
                         file.write('\n\\draw [line cap=butt]')
 
@@ -1297,7 +1286,6 @@ class Plot():
                                 if label:
                                     file.write(' node [below] {%s}' % label)
 
-                        if self.xaxis and self.xminormarks:
                             for x in minorticks['x']:
                                 file.write('\n  (%.3f, %.3f) -- +(0, %.3f)'
                                     % (x, origin['y'], -self.minortick))
@@ -1315,7 +1303,6 @@ class Plot():
                                         % ('left' if origin['x'] else
                                         'rotate=90, above', label))
 
-                        if self.yaxis and self.yminormarks:
                             for y in minorticks['y']:
                                 file.write('\n  (%.3f, %.3f) -- +(%.3f, 0)'
                                     % (origin['x'], y, -self.minortick))
