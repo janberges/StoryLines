@@ -72,7 +72,6 @@ class Plot():
         List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``. If the label is
         ``None``, the tick mark is not drawn (but possibe grid lines are). If it
         otherwise evaluates to ``False``, the tick mark but no label is drawn.
-        For logarithmic axes, the tick positions are interpreted as exponents.
     xmarks, ymarks, zmarks : bool, default True
         Show tick marks and labels?
     xlabels, ylabels, zlabels : bool, default True
@@ -785,6 +784,11 @@ class Plot():
             if getattr(self, x + 'log'):
                 lower[x] = math.log10(lower[x])
                 upper[x] = math.log10(upper[x])
+
+                if getattr(self, x + 'ticks') is not None:
+                    setattr(self, x + 'ticks', [(math.log10(tick[0]), tick[1])
+                        if hasattr(tick, '__len__') else math.log10(tick)
+                        for tick in getattr(self, x + 'ticks')])
 
                 for line in self.lines:
                     if x == 'z':
