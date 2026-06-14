@@ -175,7 +175,7 @@ class Plot():
         Draw frame around plot area?
     grid : bool, default False
         Add grid lines at tick positions?
-    minorgrid : bool, default False
+    minorgrid : bool, default True
         Add grid lines at minor-tick positions?
     colorbar : bool or str, default None
         Draw colorbar? If ``None``, the colorbar is drawn if any line is given a
@@ -312,7 +312,7 @@ class Plot():
         self.yorigin = None
         self.frame = xyaxes
         self.grid = False
-        self.minorgrid = False
+        self.minorgrid = True
         self.colorbar = None
         self.outline = False
         self.canvas = None
