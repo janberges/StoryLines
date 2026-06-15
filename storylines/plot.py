@@ -720,7 +720,7 @@ class Plot():
     def nolabel(self):
         """Pass empty entry to legend (as spacer between entries)."""
 
-        self.line(draw='none', label='')
+        self.line(label='*none*')
 
     def clear(self):
         """Remove all lines from plot."""
