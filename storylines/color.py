@@ -300,3 +300,26 @@ def PSV2RGB(P, S=1, V=255):
         Red, green, and blue values between 0 an 255.
     """
     return tuple(V * (0.5 - 0.5 * math.cos(P + S * n)) for n in range(3))
+
+color = dict(
+    black=Color(0, 0, 0),
+    darkgray=Color(64, 64, 64),
+    gray=Color(128, 128, 128),
+    lightgray=Color(191, 191, 191),
+    white=Color(255, 255, 255),
+    pink=Color(255, 191, 191),
+    purple=Color(191, 0, 64),
+    magenta=Color(236, 0, 140),
+    red=Color(255, 0, 0),
+    orange=Color(255, 128, 0),
+    blue=Color(0, 0, 255),
+    cyan=Color(0, 173, 239),
+    green=Color(0, 255, 0),
+    lime=Color(191, 255, 0),
+    yellow=Color(255, 242, 0),
+    brown=Color(191, 128, 64),
+    olive=Color(141, 134, 0),
+    teal=Color(0, 128, 128),
+    violet=Color(128, 0, 128),
+)
+"""RGB versions of xcolor's predefined colors obtained from Okular and Gpick."""

@@ -20,6 +20,7 @@
    :caption: Examples
    :hidden:
 
+   examples/colors
    examples/example
    examples/faces
    examples/fatband

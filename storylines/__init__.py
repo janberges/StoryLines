@@ -9,7 +9,7 @@ from .plot import Plot
 from .calc import (order_of_magnitude, power_of_ten, xround, xround_mantissa,
     multiples, multiply, divide, add, subtract, dot, cross, length, distance,
     bonds, faces, spring)
-from .color import Color, colormap, colorize, HSV2RGB, RGB2HSV, PSV2RGB
+from .color import Color, colormap, colorize, HSV2RGB, RGB2HSV, PSV2RGB, color
 from .convert import inch, pt, csv
 from .cut import relevant, shortcut, cut, cut2d, jump
 from .fatband import fatband, miter_butt
