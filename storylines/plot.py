@@ -989,7 +989,9 @@ class Plot():
             if positions is None:
                 if getattr(self, x + 'log'):
                     positions = [x + math.log10(n)
-                        for x in range(int(lower[x]), int(upper[x]))
+                        for x in range(
+                            int(math.floor(lower[x] - self.eps / scale[x])),
+                            int(math.floor(upper[x] + self.eps / scale[x])) + 1)
                         for n in range(1, 10)]
                 elif getattr(self, x + 'minorstep') is not None:
                     positions = multiples(
