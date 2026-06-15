@@ -712,6 +712,11 @@ class Plot():
 
         self.line(axes=True, **options)
 
+    def grids(self, **options):
+        """Draw grids at current z index."""
+
+        self.line(grid=True, **options)
+
     def nolabel(self):
         """Pass empty entry to legend (as spacer between entries)."""
 
