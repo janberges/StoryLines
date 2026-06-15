@@ -790,6 +790,10 @@ class Plot():
                         if hasattr(tick, '__len__') else math.log10(tick)
                         for tick in getattr(self, x + 'ticks')])
 
+                if getattr(self, x + 'minorticks') is not None:
+                    setattr(self, x + 'minorticks', [math.log10(tick)
+                        for tick in getattr(self, x + 'minorticks')])
+
                 for line in self.lines:
                     if x == 'z':
                         if line[x] is not None:
