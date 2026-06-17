@@ -70,7 +70,7 @@ class Plot():
         Axis labels.
     xticks, yticks, zticks : list, default None
         List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``. If the label is
-        ``None``, the tick mark is not drawn (but possibe grid lines are). If it
+        ``None``, the tick mark is not drawn (but possible grid lines are). If it
         otherwise evaluates to ``False``, the tick mark but no label is drawn.
     xmarks, ymarks, zmarks : bool, default True
         Show tick marks and labels?
@@ -208,7 +208,7 @@ class Plot():
     single : float, default 8.0
         Single-column width for the chosen `style`.
     double : float, default 17.0
-        Full textwidth for the chosen `style`.
+        Full text width for the chosen `style`.
     resolution : float, default 1e-3
         Smallest distance in cm expected to be discernible when looking at the
         plot. The default is acceptable when the plot is viewed or printed in
@@ -219,7 +219,7 @@ class Plot():
         Distance from plot boundary in cm beyond which a mark or grid line is
         considered to lie outside of the plot area (and is potentially cut off).
         This tolerance is meant to make up for the limited numerical precision.
-        For example, using double preicision, ``3 * 0.1 > 0.3``.
+        For example, using double precision, ``3 * 0.1 > 0.3``.
     lines : list
         List of all line objects.
     options : dict

@@ -172,7 +172,7 @@ def colorize(data, cmap=None, minimum=None, maximum=None):
         Data on two-dimensional mesh.
     cmap : function
         Colormap.
-    minimum, maxmimum : float
+    minimum, maximum : float
         Data values corresponding to minimum and maximum of color scale.
 
     Returns
