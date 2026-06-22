@@ -38,7 +38,7 @@ def save(filename, image):
 
         plte = sorted(set(pixels))
 
-        if len(plte) < 256:
+        if len(plte) <= 256:
             color = 3
 
             # assign 0 to most common color so that 0 before row (see below)
