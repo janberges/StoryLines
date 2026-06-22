@@ -70,8 +70,8 @@ class Plot():
         Axis labels.
     xticks, yticks, zticks : list, default None
         List of ticks, e.g., ``[0, (0.5, '$\\\\frac12$'), 1]``. If the label is
-        ``None``, the tick mark is not drawn (but possible grid lines are). If it
-        otherwise evaluates to ``False``, the tick mark but no label is drawn.
+        ``None``, the tick mark is not drawn (but possible grid lines are). If
+        it otherwise evaluates to ``False``, the mark but no label is drawn.
     xmarks, ymarks, zmarks : bool, default True
         Show tick marks and labels?
     xlabels, ylabels, zlabels : bool, default True
