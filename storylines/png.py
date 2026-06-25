@@ -8,7 +8,7 @@ from __future__ import division
 import struct
 import zlib
 
-def save(filename, image):
+def save(filename, image, trns=None):
     """Save image as 8-bit PNG without filtering.
 
     Specified at https://www.w3.org/TR/PNG/.
@@ -33,7 +33,7 @@ def save(filename, image):
     image = [[tuple(min(max(int(round(x)), 0), 255) for x in col)
         for col in row] for row in image]
 
-    if colors == 3:
+    if colors in {3, 4}:
         pixels = [col for row in image for col in row]
 
         plte = sorted(set(pixels))
@@ -41,15 +41,23 @@ def save(filename, image):
         if len(plte) <= 256:
             color = 3
 
-            # assign 0 to most common color so that 0 before row (see below)
-            # does not stand out and compression becomes more effective:
+            if trns is not None and colors == 3:
+                # assign 0 to transparent color:
 
-            count = dict()
+                first = tuple(trns)
+                trns = [0]
+            else:
+                # assign 0 to most common color so that 0 before row (see below)
+                # does not stand out and compression becomes more effective:
 
-            for x in pixels:
-                count[x] = count.get(x, 0) + 1
+                count = dict()
 
-            imax = plte.index(max(count, key=count.get))
+                for x in pixels:
+                    count[x] = count.get(x, 0) + 1
+
+                first = max(count, key=count.get)
+
+            imax = plte.index(first)
 
             plte[0], plte[imax] = plte[imax], plte[0]
 
@@ -58,6 +66,10 @@ def save(filename, image):
             image = [[[indices[col]] for col in row] for row in image]
 
             plte = [x for col in plte for x in col]
+
+            if colors == 4:
+                trns = plte[3::4]
+                del plte[3::4]
 
     byte = [x for row in image for col in [[0]] + row for x in col]
 
@@ -76,6 +88,12 @@ def save(filename, image):
 
         if color == 3:
             chunk(b'PLTE', struct.pack('%dB' % len(plte), *plte))
+
+            if trns is not None:
+                chunk(b'tRNS', struct.pack('%dB' % len(trns), *trns))
+
+        elif trns is not None and color not in {4, 6}:
+            chunk(b'tRNS', struct.pack('!%dH' % colors, *trns))
 
         chunk(b'IDAT',
             zlib.compress(struct.pack('%dB' % len(byte), *byte), 9))
@@ -101,6 +119,8 @@ def load(filename):
 
         idat = b''
 
+        trns = None
+
         while True:
             size, = struct.unpack('!I', png.read(4))
             name = png.read(4)
@@ -119,6 +139,16 @@ def load(filename):
                 plte = [[byte[3 * n + z]
                     for z in range(3)]
                     for n in range(len(data) // 3)]
+
+            elif name == b'tRNS':
+                if color == 3:
+                    byte = iter(struct.unpack('%dB' % len(data), data))
+
+                    for col in plte:
+                        col.append(next(byte, 255))
+
+                elif color in {0, 2}:
+                    trns = list(struct.unpack('!%dH' % colors, data))
 
             elif name == b'IDAT':
                 idat += data
@@ -165,5 +195,10 @@ def load(filename):
             image = [[plte[image[y][x][0]]
                 for x in range(width)]
                 for y in range(height)]
+
+        elif trns is not None:
+            image = [[col + [0 if col == trns else 255]
+                for col in row]
+                for row in image]
 
         return image
