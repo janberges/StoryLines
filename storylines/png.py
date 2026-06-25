@@ -23,6 +23,8 @@ def save(filename, image, trns=None):
     image : list of list of list
         8-bit image data of shape (height, width, colors), where colors may be
         1 (grayscale), 2 (grayscale and alpha), 3 (RGB), or 4 (RGBA).
+    trns : list of int, optional
+        Grayscale or RGB color treated as transparent.
     """
     height = len(image)
     width = len(image[0])
