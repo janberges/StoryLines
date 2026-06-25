@@ -26,6 +26,7 @@
    examples/fatband
    examples/mandelbrot
    examples/moebius
+   examples/png
    examples/project
    examples/shortcut
 
