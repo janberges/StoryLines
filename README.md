@@ -15,12 +15,6 @@ StoryLines is a Python library to create plots in LaTeX format.
 
 ## Installation
 
-Optionally using a virtual environment:
-
-    python3 -m venv venv
-    source venv/bin/activate
-    python3 -m pip install --upgrade pip
-
 Either from PyPI:
 
     python3 -m pip install storylines
