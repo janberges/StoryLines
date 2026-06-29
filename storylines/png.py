@@ -194,9 +194,9 @@ def load(filename):
                     image[y][x][z] %= 256
 
         if color == 3:
-            image = [[plte[image[y][x][0]]
-                for x in range(width)]
-                for y in range(height)]
+            image = [[plte[col[0]]
+                for col in row]
+                for row in image]
 
         elif trns is not None:
             image = [[col + [0 if col == trns else 255]
