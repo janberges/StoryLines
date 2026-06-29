@@ -17,7 +17,11 @@ StoryLines is a Python library to create plots in LaTeX format.
 
 Either from PyPI:
 
-    python3 -m pip install storylines
+    python3 -m pip install --upgrade storylines
+
+From conda-forge:
+
+    conda install conda-forge::storylines
 
 Or from the repository:
 
